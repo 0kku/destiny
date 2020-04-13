@@ -10,8 +10,14 @@ import { isSpecialCaseObject } from "./specialCaseObjects.js";
 
 export class ReactiveArray<InputType> {
   [key: number]: IArrayValueType<InputType>;
-  #callbacks = new Set<IReactiveArrayCallback<IArrayValueType<InputType>>>();
   #value: IArrayValueType<InputType>[] = [];
+  #indices: ReactivePrimitive<number>[] = [];
+  #callbacks: Set<IReactiveArrayCallback<IArrayValueType<InputType>>> = new Set;
+  #length: ReactivePrimitive<number> = (() => {
+    const ref = new ReactivePrimitive(this.#value.length);
+    this.bind(() => ref.value = this.#value.length);
+    return ref;
+  })();
 
   constructor (
     ...array: InputType[]
@@ -31,7 +37,6 @@ export class ReactiveArray<InputType> {
           } else return false;
         },
 
-        //@ts-ignore
         get (
           target: ReactiveArray<InputType>,
           property: keyof ReactiveArray<InputType>,
@@ -84,19 +89,13 @@ export class ReactiveArray<InputType> {
     });
   }
 
+  get length () {
+    return this.#length;
+  }
+
   get value () {
     return this.#value.slice(0);
   }
-
-  // set value (
-  //   items: ValueType[],
-  // ) {
-  //   this.splice(
-  //     0,
-  //     this.#value.length,
-  //     ...items,
-  //   );
-  // }
 
   setValue (
     items: Array<InputType | IArrayValueType<InputType>>,
@@ -115,7 +114,6 @@ export class ReactiveArray<InputType> {
       ? this.#value.length + index
       : index;
     return this.#value[i];
-    // return this.pipe(() => this.#value[i]);
   }
 
   set (
@@ -324,16 +322,32 @@ export class ReactiveArray<InputType> {
             {parent: this},
           )
       ) as IArrayValueType<InputType>;
-    });
+    }) as IArrayValueType<InputType>[]; // Fix for TS3.8, shouldn't be needed in 3.9
 
     const deletedItems = this.#value.splice(start, deleteCount, ...reactiveItems);
-    console.trace("cb count", this.#callbacks.size);
+
+    const shiftedBy = items.length - deleteCount;
+    if (shiftedBy) {
+      for (let i = start + deleteCount; i < this.#indices.length; i++) {
+        this.#indices[i].value += shiftedBy;
+      }
+    }
+
+    const removedIndices = this.#indices.splice(
+      start,
+      deleteCount,
+      ...items.map((_, i) => new ReactivePrimitive(i + start)),
+    );
+    for (const removedIndex of removedIndices) {
+      removedIndex.value = -1;
+    }
+
     for (const callback of this.#callbacks) {
       queueMicrotask(() => {
         callback(start, deleteCount, ...reactiveItems);
       });
     }
-    // Here each callback that was specifically associated with deleted items should be removed, but idk how
+    
     return deletedItems;
   }
 
@@ -408,21 +422,15 @@ export class ReactiveArray<InputType> {
       index: ReactivePrimitive<number>,
       array: this,
     ) => U,
-  ): ReactiveArray<U> {
-    const cb = (v: IArrayValueType<InputType>, i: number) => {
-      return callback(
-        v,
-        this.pipe((index, deleteCount, ...items) => {
-          if (items.length === this.value.length || index > i) {
-            return i;
-          } else {
-            i += items.length - deleteCount;
-            return i;
-          }
-        }),
-        this,
-      )
-    };
+  ): Readonly<ReactiveArray<U>> {
+    const cb = (
+      v: IArrayValueType<InputType>,
+      i: number
+    ) => callback(
+      v,
+      this.#indices[i],
+      this,
+    );
 
     const newArr = new ReactiveArray(...this.#value.map(cb));
     this.#callbacks.add(
@@ -433,12 +441,10 @@ export class ReactiveArray<InputType> {
       ) => newArr.splice(
         index,
         deleteCount,
-        ...values.map((v, i) => {
-          return cb(v, i + index);
-        }),
+        ...values.map((v, i) => cb(v, i + index)),
       ),
     );
-    return newArr;
+    return newArr as Readonly<ReactiveArray<U>>;
   }
 
   slice (
@@ -463,7 +469,7 @@ export class ReactiveArray<InputType> {
   indexOf (
     ...args: Parameters<Array<IArrayValueType<InputType>>["indexOf"]>
   ) {
-    return this.pipe(() => this.#value.indexOf(...args));
+    return this.#indices[this.#value.indexOf(...args)];
   }
 
   join (
@@ -475,7 +481,7 @@ export class ReactiveArray<InputType> {
   lastIndexOf (
     ...args: Parameters<Array<IArrayValueType<InputType>>["lastIndexOf"]>
   ) {
-    return this.pipe(() => this.#value.lastIndexOf(...args));
+    return this.#indices[this.#value.lastIndexOf(...args)];
   }
 
   every (
@@ -524,30 +530,35 @@ export class ReactiveArray<InputType> {
     return this.pipe(() => this.#value.reduceRight(...args));
   }
 
+  // TODO: Maybe this shouldn't return a reactive item?
   find (
     ...args: Parameters<Array<IArrayValueType<InputType>>["find"]>
   ) {
     return this.pipe(() => this.#value.find(...args));
   }
 
+  // TODO: same as above
   findIndex (
     ...args: Parameters<Array<IArrayValueType<InputType>>["findIndex"]>
   ) {
     return this.pipe(() => this.#value.findIndex(...args));
   }
 
+  // TODO: this should return a ReactiveArray instead
   entries (
     ...args: Parameters<Array<IArrayValueType<InputType>>["entries"]>
   ) {
     return this.pipe(() => this.#value.entries(...args));
   }
 
+  // TODO: this should return a ReactiveArray instead
   keys (
     ...args: Parameters<Array<IArrayValueType<InputType>>["keys"]>
   ) {
     return this.pipe(() => this.#value.keys(...args));
   }
 
+  // TODO: this should return a ReactiveArray instead
   values (
     ...args: Parameters<Array<IArrayValueType<InputType>>["values"]>
   ) {
@@ -558,12 +569,6 @@ export class ReactiveArray<InputType> {
     ...args: Parameters<Array<IArrayValueType<InputType>>["includes"]>
   ) {
     return this.pipe(() => this.#value.includes(...args));
-  }
-
-  get length () {
-    const ref = new ReactivePrimitive(this.#value.length);
-    this.bind(() => ref.value = this.#value.length);
-    return ref;
   }
 
   //#endregion
