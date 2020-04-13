@@ -4,7 +4,6 @@ import { nodeToFragment } from "./nodeToFragment.js";
 export function valueToFragment (
   value: unknown,
 ) {
-  console.log(value);
   let fragment: DocumentFragment;
   if (value instanceof Node) {
     fragment = nodeToFragment(value);

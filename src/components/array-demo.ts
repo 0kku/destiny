@@ -19,16 +19,8 @@ customElements.define("array-demo", class extends DestinyElement {
     this.#timer = requestAnimationFrame(this.frame);
   }
   #timer = requestAnimationFrame(this.frame);
-  // #timer = setInterval(() => {
-  //   this.#items.splice(
-  //     Math.floor(Math.random() * this.#items.length.value),
-  //     1,
-  //     randomColor(),
-  //   );
-  // }, 1);
 
   disconnectedCallback () {
-    // clearInterval(this.#timer);
     cancelAnimationFrame(this.#timer);
   }
 

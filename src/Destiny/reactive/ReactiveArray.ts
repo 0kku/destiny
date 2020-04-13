@@ -147,7 +147,6 @@ export class ReactiveArray<InputType> {
     callback: IReactiveArrayCallback<IArrayValueType<InputType>>,
     noFirstRun = false,
   ) {
-    console.trace("cb added", this.#callbacks.size);
     this.#callbacks.add(callback);
     if (!noFirstRun) {
       callback(0, 0, ...this.#value);
@@ -352,7 +351,6 @@ export class ReactiveArray<InputType> {
   }
 
   update () {
-    console.trace("cb count", this.#callbacks.size);
     for (const callback of this.#callbacks) {
       queueMicrotask(() => {
         callback(0, 0);
@@ -488,7 +486,6 @@ export class ReactiveArray<InputType> {
     ...args: Parameters<Array<IArrayValueType<InputType>>["every"]>
   ): ReactivePrimitive<boolean> {
     return this.pipe(() => {
-      console.log("every updated");
       return this.#value.every(...args)
     });
   }

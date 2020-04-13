@@ -40,27 +40,27 @@ function reactive<T> (
   } else if (initialValue instanceof Array) {
     const newArr = new ReactiveArray(...initialValue);
     newArr.bind(() => options?.parent?.update());
-    console.log(initialValue, "was an Array, and became", newArr);
+    // console.log(initialValue, "was an Array, and became", newArr);
     return newArr;
   } else if (initialValue instanceof Promise) {
     const ref = new ReactivePrimitive(options?.fallback);
     ref.bind(() => options?.parent?.update())
     initialValue.then(value => ref.value = value);
-    console.log(initialValue, "was a Promise, and became", ref);
+    // console.log(initialValue, "was a Promise, and became", ref);
     return ref;
   } else if (isSpecialCaseObject(initialValue)) {
     const ref = new ReactivePrimitive(initialValue);
     options.parent && ref.bind(() => options?.parent?.update());
-    console.log(initialValue, "was an Object, and became", ref);
+    // console.log(initialValue, "was an Object, and became", ref);
     return ref;
   } else if (isObject(initialValue)) {
     const ref = reactiveObject(initialValue, options?.parent);
-    console.log(initialValue, "was an Object, and became", ref);
+    // console.log(initialValue, "was an Object, and became", ref);
     return ref;
   } else {
     const ref = new ReactivePrimitive(initialValue);
     ref.bind(() => options?.parent?.update());
-    console.log(initialValue, "was a primitive, and became", ref);
+    // console.log(initialValue, "was a primitive, and became", ref);
     return ref;
   }
 }
