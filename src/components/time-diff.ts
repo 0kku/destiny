@@ -45,21 +45,21 @@ customElements.define("time-diff", class extends DestinyElement {
             Start:
             <input
               type=time
-              @value-as-date=${task.start}
+              prop:value-as-date=${task.start}
             >
           </label>
           <label>
             End: 
             <input
               type=time
-              @value-as-date=${task.end}
+              prop:value-as-date=${task.end}
             >
           </label>
           <label>
             Name:
             <input
               type="text"
-              @value=${task.name}
+              prop:value=${task.name}
             >
           </label>
           <br>
@@ -72,7 +72,7 @@ customElements.define("time-diff", class extends DestinyElement {
       )}
       <input
         type=button
-        @onclick=${() => this.#tasks.push(this.createTask())}
+        on:click=${() => this.#tasks.push(this.createTask())}
         value="New task"
       >
     `;

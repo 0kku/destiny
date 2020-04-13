@@ -26,31 +26,54 @@ function kebabToPascal (
   );
 }
 
+const ignoredValues = new Set<unknown>([
+  undefined,
+  null,
+  true,
+  false,
+]);
+
+function matchChangeWatcher (
+  attributeName: string,
+) {
+  switch (attributeName) {
+    case "value":
+      return "input";
+    case "checked":
+    case "valueAsDate":
+    case "valueAsNumber":
+      return "change";
+    default:
+      return "";
+  }
+}
+
+const matchIndex = /__internal_(?<index>[0-9]+)_/;
+
 function hookAttributeSlotsUp (
   templ: DocumentFragment,
   props: unknown[],
 ) {
   const attributeSlots = Object.values(
-    templ.querySelectorAll("[data-DestinyAttributeSlot]"),
+    templ.querySelectorAll("[destiny\\:slot]"),
   ) as unknown as (HTMLElement & ChildNode)[];
 
   for (const element of attributeSlots) {
     for (let {name, value} of element.attributes) {
-      const isValueSlot = value.startsWith("@internal_");
-      const isNameSlot = name.startsWith("@internal_");
+      const {index: nameIndex} = name.match(matchIndex)?.groups ?? {};
+      const {index: valueIndex} = value.match(matchIndex)?.groups ?? {};
 
-      if (isNameSlot && isValueSlot) {
+      if (nameIndex && valueIndex) {
         throw new NotImplementedError("You can't yet have both the name and value be a slot.");
-      } else if (isNameSlot) {
-        const index = name.substring(10);
-        const item = props[Number(index)];
-        if (!item && item !== 0) continue;
+      } else if (nameIndex) {
+        const item = props[Number(nameIndex)];
+        if (!item && item !== 0) continue; //WTF?
         const resolvedName = String(item);
         element.setAttribute(
           resolvedName,
           value,
         );
-        if(item instanceof ReactivePrimitive) {
+        if (item instanceof ReactivePrimitive) {
           let previousName = name;
           item.bind(newName => {
             element.removeAttribute(previousName);
@@ -58,18 +81,30 @@ function hookAttributeSlotsUp (
             previousName = newName;
           });
         }
-      } else if (isValueSlot) {
-        const index = value.substring(10);
-        const item = props[Number(index)];
-        const isAssignment = name.startsWith("@");
-        const attributeName = isAssignment ? kebabToCamel(name.substring(1)) : name;
+      } else if (valueIndex) {
+        const item = props[Number(valueIndex)];
+        const {
+          namespace,
+          rawAttributeName,
+        } = (
+          name
+          .match(/(?:(?<namespace>[a-z]+)\:)?(?<rawAttributeName>.+)/)
+          ?.groups ?? {}
+        );
+        const isPropertyAssignment = namespace === "prop";
+        const isMethodCall = namespace === "call";
+        const isEventListener = namespace === "on";
+        const isDestinyNS = namespace === "destiny";
+
+        const attributeName = isPropertyAssignment || isMethodCall
+          ? kebabToCamel(rawAttributeName)
+          : rawAttributeName;
 
         function setAttributeValue (
           value: unknown,
         ) {
           const resolvedValue = (
-            ["boolean", "undefined"].includes(typeof value) ||
-            value === null
+            ignoredValues.has(value)
               ? ""
               : String(value)
           );
@@ -82,29 +117,46 @@ function hookAttributeSlotsUp (
         function setValue (
           value: unknown,
         ) {
-          if (isAssignment) {
+          if (isPropertyAssignment) {
             //@ts-ignore TODO gotta figure out later if this can be resolved properly by TS lol.
             element[attributeName] = value;
+          } else if (isMethodCall) {
+            if (Array.isArray(value)) {
+              //@ts-ignore TODO gotta figure out later if this can be resolved properly by TS lol.
+              element[attributeName](...value);
+            } else {
+              //@ts-ignore TODO gotta figure out later if this can be resolved properly by TS lol.
+              element[attributeName](value);
+            }
+          } else if (isEventListener) {
+            if (Array.isArray(value)) {
+              //@ts-ignore TODO gotta figure out later if this can be resolved properly by TS lol.
+              element.addEventListener(attributeName, ...value);
+            } else {
+              //@ts-ignore TODO gotta figure out later if this can be resolved properly by TS lol.
+              element.addEventListener(attributeName, value);
+            }
+            
+          } else if (isDestinyNS) {
+            if (attributeName === "ref") {
+              if (!(value instanceof ReactivePrimitive)) {
+                throw new TypeError("Ref must be a ReactivePrimitive");
+              }
+              value.value = element;
+            }
           } else {
             setAttributeValue(value);
           }
         }
         
         if (item instanceof ReactivePrimitive) {
-          console.log(attributeName, kebabToCamel(attributeName));
-          const changeWatcher = (
-            attributeName === "value" ? "input" :
-            attributeName === "valueAsDate" ? "change" :
-            attributeName === "valueAsNumber" ? "change" :
-            attributeName === "checked" ? "change" :
-            ""
-          );
+          const changeWatcher = matchChangeWatcher(attributeName);
           if (changeWatcher) {
             element.addEventListener(changeWatcher, e => {
-              console.log("Changed!", (e.currentTarget as HTMLInputElement)?.[attributeName as "value" | "checked" | "valueAsNumber" | "valueAsDate"]);
               // Sets the value whilst excluding itself of callbacks to call after the change
               item.set(
-                (e.currentTarget as HTMLInputElement)?.[attributeName as "value" | "checked" | "valueAsNumber" | "valueAsDate"],
+                (e.currentTarget as HTMLInputElement)
+                  ?.[attributeName as "value" | "checked" | "valueAsNumber" | "valueAsDate"],
                 setValue,
               );
             });
@@ -129,7 +181,6 @@ function hookContentSlotsUp (
   for (const contentSlot of contentSlots) {
     const index = contentSlot.dataset.index;
     const item = props[Number(index)];
-    // console.log("contenthook", templ);
     if (item instanceof ReactivePrimitive) {
       const slot = new Slot(contentSlot);
       item.bind(value => {

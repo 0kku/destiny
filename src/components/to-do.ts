@@ -42,7 +42,7 @@ customElements.define("to-do", class extends DestinyElement {
             <label>
               <input
                 type=checkbox
-                @checked=${item.done}
+                prop:checked=${item.done}
               >
               ${item.editing.pipe(editing => editing.value
                 ? html`<input type=text value=${item.title}>`
@@ -63,27 +63,27 @@ customElements.define("to-do", class extends DestinyElement {
                   type=button
                   value=💾
                   title=Save
-                  @onclick=${() => item.editing.value = false}
+                  on:click=${() => item.editing.value = false}
                 >`
               : html`
                 <input
                   type=button
                   value=📝
                   title=Edit
-                  @onclick=${() => item.editing.value = true}
+                  on:click=${() => item.editing.value = true}
                 >`
             )}
             <input
               type=button
               value=🚮
               title=Delete
-              @onclick=${() => this.#items.splice(i.value, 1)}
+              on:click=${() => this.#items.splice(i.value, 1)}
             >
           </li>
         `)}
         <li>
           <form
-            @onsubmit=${(e: Event) => {
+            on:submit=${(e: Event) => {
               e.preventDefault();
               this.#items.push({
                 title: this.#newValue.value,
@@ -93,7 +93,7 @@ customElements.define("to-do", class extends DestinyElement {
               this.#newValue.value = "";
             }}
           >
-            <input type=text @value=${this.#newValue} required>
+            <input type=text prop:value=${this.#newValue} required>
             <input type=submit value=➕>
           </form>
         </li>
@@ -102,9 +102,9 @@ customElements.define("to-do", class extends DestinyElement {
         <input
           type=checkbox
           class=check-all
-          @checked=${this.#items.every(item => item.done.value)}
-          @indeterminate=${this.#items.exclusiveSome(item => item.done.value)}
-          @onchange=${(e: InputEvent) => {
+          prop:checked=${this.#items.every(item => item.done.value)}
+          prop:indeterminate=${this.#items.exclusiveSome(item => item.done.value)}
+          on:change=${(e: InputEvent) => {
             this.#items.value.forEach(item => {
               item.done.value = (e.currentTarget as HTMLInputElement)?.checked;
             });

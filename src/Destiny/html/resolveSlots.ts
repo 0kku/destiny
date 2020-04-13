@@ -14,7 +14,7 @@ export function resolveSlots (
   while (walker.nextNode()) {
     const node = walker.currentNode;
     if (isText(node)) {
-      const matches = node.wholeText.matchAll(/@internal_([0-9]+)/g);
+      const matches = node.wholeText.matchAll(/__internal_([0-9]+)_/g);
       const fragment = {
         node,
         slots: [...matches].map(match => ({
@@ -29,10 +29,10 @@ export function resolveSlots (
     } else if (isElement(node)) {
       for (const {value, name} of node.attributes) {
         if (
-          value.startsWith("@internal_") ||
-          name.startsWith("@internal_")
+          value.includes("__internal_") ||
+          name.includes("__internal_")
         ) {
-          node.setAttribute("data-DestinyAttributeSlot", "");
+          node.setAttribute("destiny:slot", "");
         }
       }
     }

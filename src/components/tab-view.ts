@@ -26,13 +26,6 @@ customElements.define("tab-view", class extends DestinyElement {
   ]);
 
   render() {
-    console.log(
-      this.#selected.value,
-      this.#tabs,
-      this.#tabs[0],
-      this.#tabs[this.#selected.value],
-      this.#tabs[this.#selected.value].content,
-    );
     return html`
       <style>
         :host {
@@ -71,7 +64,7 @@ customElements.define("tab-view", class extends DestinyElement {
       <ul>
         ${this.#tabs.map((tab, i) => html`
           <li
-            @onclick=${() => this.#selected.value = i.value}
+            prop:onclick=${() => this.#selected.value = i.value}
             class=${ReactivePrimitive.from(
               (i, selected) => i.value === selected.value && "selected",
               i,
