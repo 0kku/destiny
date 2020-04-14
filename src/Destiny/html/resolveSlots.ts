@@ -27,11 +27,8 @@ export function resolveSlots (
         contentSlots.push(fragment);
       }
     } else if (isElement(node)) {
-      for (const {value, name} of node.attributes) {
-        if (
-          value.includes("__internal_") ||
-          name.includes("__internal_")
-        ) {
+      for (const {value} of node.attributes) {
+        if (value.includes("__internal_")) {
           node.setAttribute("destiny:slot", "");
         }
       }
