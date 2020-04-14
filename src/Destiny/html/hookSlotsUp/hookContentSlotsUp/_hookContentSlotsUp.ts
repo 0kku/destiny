@@ -1,5 +1,5 @@
 import { ReactivePrimitive, ReactiveArray } from "../../../_Destiny.js";
-import { valueToFragment } from "../../toFragment/valueToFragment.js";
+import { valueToFragment } from "./toFragment/valueToFragment.js";
 import { Slot } from "../../Slot.js";
 import { SlotArray } from "../../SlotArray.js";
 
@@ -8,11 +8,11 @@ export function hookContentSlotsUp (
   props: unknown[],
 ) {
   const contentSlots = Object.values(
-    templ.querySelectorAll(".__DestinySlot")
-  ) as unknown as (HTMLOrSVGElement & ChildNode)[];
+    templ.querySelectorAll("[destiny\\:content]")
+  ) as unknown as (HTMLElement & ChildNode)[];
 
   for (const contentSlot of contentSlots) {
-    const index = contentSlot.dataset.index;
+    const index = contentSlot.getAttribute("destiny:content");
     const item = props[Number(index)];
     if (item instanceof ReactivePrimitive) {
       const slot = new Slot(contentSlot);

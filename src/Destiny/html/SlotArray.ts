@@ -30,7 +30,7 @@ export class SlotArray {
   ) {
     fragments.forEach((fragment, i) => {
       const where = i + index;
-      const slotPlaceholder = new Comment("Slot placeholder");
+      const slotPlaceholder = new Comment("Destiny slot placeholder");
       if (!this.#domArray.length || where > this.#domArray.length - 1) {
         this.#endAnchor.replaceWith(slotPlaceholder, this.#endAnchor);
         // this.#parent.insertBefore(slotPlaceholder, this.#endAnchor);

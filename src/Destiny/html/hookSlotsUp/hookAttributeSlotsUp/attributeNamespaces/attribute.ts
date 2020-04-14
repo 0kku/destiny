@@ -1,5 +1,5 @@
-import { IValueProps } from "../../hookSlotsUp.js";
-import { nonRenderedValues } from "../../nonRenderedValues.js";
+import { IValueProps } from "../../_hookSlotsUp.js";
+import { stringifyValue } from "../../stringifyValue.js";
 
 export function attribute (
   {
@@ -10,13 +10,8 @@ export function attribute (
     valueEnd,
   }: IValueProps,
 ) {
-  const resolvedValue = (
-    nonRenderedValues.has(valueSlot)
-      ? ""
-      : String(valueSlot)
-  );
   element.setAttribute(
     attributeName,
-    `${valueStart}${resolvedValue}${valueEnd}`,
+    `${valueStart}${stringifyValue(valueSlot)}${valueEnd}`,
   );
 }

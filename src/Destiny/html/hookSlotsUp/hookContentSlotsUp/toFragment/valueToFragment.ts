@@ -1,18 +1,17 @@
 import { arrayToFragment } from "./arrayToFragment.js";
 import { nodeToFragment } from "./nodeToFragment.js";
+import { stringifyValue } from "../../stringifyValue.js";
 
 export function valueToFragment (
   value: unknown,
 ) {
-  let fragment: DocumentFragment;
   if (value instanceof Node) {
-    fragment = nodeToFragment(value);
+    return nodeToFragment(value);
   } else if (value instanceof DocumentFragment) {
-    fragment = value;
+    return value;
   } else if (Array.isArray(value)) {
-    fragment = arrayToFragment(value);
+    return arrayToFragment(value);
   } else {
-    fragment = nodeToFragment(new Text(String(value)));
+    return nodeToFragment(new Text(stringifyValue(value)));
   }
-  return fragment;
 }

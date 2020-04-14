@@ -4,7 +4,6 @@ export class Slot {
   #startAnchor = new Comment(`<DestinySlot(${this.#id})>`);
   #endAnchor = new Comment(`</DestinySlot(${this.#id})>`);
   #nodes: ChildNode[];
-  // #parent: HTMLElement;
 
   constructor (
     placeholderNode: ChildNode,
@@ -19,12 +18,6 @@ export class Slot {
     if (content) {
       this.update(content);
     }
-
-    // const parent = this.#nodes[0].parentElement;
-    // const parent = this.#nodes[0].getRootNode();
-    // console.log(parent, this.#nodes, this.#nodes[0].getRootNode());
-    // if (!parent) throw new Error("Can't find Slot's parent");
-    // this.#parent = parent;
   }
 
   update (
@@ -51,21 +44,9 @@ export class Slot {
   insertBeforeThis (
     ...nodes: Node[]
   ) {
-    this.#startAnchor.replaceWith(...nodes, this.#startAnchor);
-    // for (const node of nodes) {
-    //   // this.#startAnchor.insertAdjacentElement
-    //   this.#parent.insertBefore(node, this.#startAnchor);
-    // }
+    this.#startAnchor.replaceWith(
+      ...nodes,
+      this.#startAnchor,
+    );
   }
-
-  // insertAfterThis (
-  //   ...nodes: Node[]
-  // ) {
-  //   for (const node of nodes) {
-  //     this.#parent.insertBefore(
-  //       node,
-  //       this.#endAnchor.nextSibling,
-  //     );
-  //   }
-  // }
 }

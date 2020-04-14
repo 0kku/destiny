@@ -6,7 +6,7 @@ export function createSlot (
     const placeholder = nodes.pop()!;
     for (const node of nodes) node.remove();
     if (!fragment.childNodes.length) {
-      fragment.append(new Comment());
+      fragment.append(new Comment("Destiny slot placeholder"));
     }
     nodes = Object.values(fragment.childNodes);
     placeholder.replaceWith(fragment);
