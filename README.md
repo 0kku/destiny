@@ -25,7 +25,7 @@ This is an experimental library. There _will_ be breaking changes. Code is still
 3. run `node ./node_modules/typescript/bin/tsc` in root
 4. start a dev server (ex: `npm i -g http-server`) and open `/index.html` to view demo
 
-To get syntax-highlighting for HTML templates, you can use an extension called `bierner.lit-html` on VSCode. `lit-html` plugins for other editors probably also work. Also any extension that makes the editor treat template literals' tags as that block's file extension (ex. ``html`...`;`` is treated as an .html snippet) should also work. This only gives you syntax highlighting, though: slots are unfortunately not type checked; that would require a dedicated extension for this library, which does not yet exist.
+To get syntax-highlighting for HTML templates, you can use an extension called [`tobermory.es6-string-html`](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html) on VSCode. Similar plugins are available for other editors too. Any extension that makes the editor treat template literals' tags as that block's file extension (ex. ``html`...`;`` is treated as an .html snippet) should also work. This only gives you syntax highlighting, though: slots are unfortunately not type checked; that would require a dedicated extension for this library, which does not yet exist.
 
 ## Examples
 
