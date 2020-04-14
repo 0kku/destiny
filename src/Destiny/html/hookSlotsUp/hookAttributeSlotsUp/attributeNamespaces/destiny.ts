@@ -13,5 +13,10 @@ export const destiny = (
       throw new TypeError("Ref must be a ReactivePrimitive");
     }
     valueSlot.value = element;
+  } else if (attributeName === "callback") {
+    if (!(valueSlot instanceof Function)) {
+      throw new TypeError("Callback must be a function");
+    }
+    valueSlot(element);
   }
 }
