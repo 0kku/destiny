@@ -29,7 +29,7 @@ export function resolveSlots (
     } else if (isElement(node)) {
       for (const {value} of node.attributes) {
         if (value.includes("__internal_")) {
-          node.setAttribute("destiny:slot", "");
+          node.setAttribute("destiny:attr", "");
         }
       }
     }

@@ -1,4 +1,5 @@
-import { IValueProps } from "../../hookSlotsUp.js";
+import { IValueProps } from "../../_hookSlotsUp.js";
+import { kebabToCamel } from "../../../../utils/kebabToCamel.js";
 
 export const prop = (
   {

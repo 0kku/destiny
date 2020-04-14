@@ -1,4 +1,4 @@
-import { IValueProps } from "../../hookSlotsUp.js";
+import { IValueProps } from "../../_hookSlotsUp.js";
 import { ReactivePrimitive } from "../../../../_Destiny.js";
 
 export const destiny = (

@@ -1,5 +1,5 @@
 import { createTemplateObject } from "./createTemplateObject.js";
-import { hookSlotsUp } from "./hookSlotsUp/hookSlotsUp.js";
+import { hookSlotsUp } from "./hookSlotsUp/_hookSlotsUp.js";
 
 const templateCache = new WeakMap<
   TemplateStringsArray,

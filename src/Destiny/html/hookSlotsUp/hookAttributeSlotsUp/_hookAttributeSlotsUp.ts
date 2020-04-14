@@ -7,7 +7,7 @@ export function hookAttributeSlotsUp (
   props: unknown[],
 ) {
   const attributeSlots = Object.values(
-    templ.querySelectorAll("[destiny\\:slot]"),
+    templ.querySelectorAll("[destiny\\:attr]"),
   ) as unknown as (HTMLElement & ChildNode)[];
 
   for (const element of attributeSlots) {
