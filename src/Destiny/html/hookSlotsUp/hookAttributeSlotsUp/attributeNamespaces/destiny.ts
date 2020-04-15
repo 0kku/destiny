@@ -17,6 +17,8 @@ export const destiny = (
     if (!(valueSlot instanceof Function)) {
       throw new TypeError("Value of destiny:in must be a function");
     }
-    valueSlot(element);
+    queueMicrotask(
+      () => valueSlot(element),
+    );
   }
 }
