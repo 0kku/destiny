@@ -35,10 +35,36 @@ customElements.define("to-do", class extends DestinyElement {
         label [type=text] {
           width: 175px;
         }
+
+        li {
+          height: 24px;
+          overflow: hidden;
+        }
       </style>
       <ul>
         ${this.#items.map((item, i) => html`
-          <li>
+          <li
+            destiny:in=${(element: HTMLLIElement) => 
+              element.animate(
+                [
+                  {height: "0px"},
+                  {height: "24px"},
+                ],
+                {duration: 300, easing: "ease"},
+              ).play()
+            }
+            destiny:out=${async (element: HTMLLIElement) => {
+              const animation = element.animate(
+                [
+                  {height: "24px"},
+                  {height: "0px"},
+                ],
+                {duration: 300, easing: "ease", fill: "forwards"},
+              );
+              animation.play();
+              await animation.finished;
+            }}
+          >
             <label>
               <input
                 type=checkbox

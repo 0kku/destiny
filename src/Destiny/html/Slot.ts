@@ -1,3 +1,5 @@
+import { deferredElements } from "./deferredElements.js";
+
 let counter = 0;
 export class Slot {
   #id = counter++;
@@ -33,12 +35,16 @@ export class Slot {
   }
 
   remove () {
-    for (const node of this.#nodes) {
-      node.remove();
-    }
-    this.#startAnchor.remove();
-    this.#endAnchor.remove();
-    this.#nodes.splice(0, this.#nodes.length - 1);
+    Promise.all(
+      this.#nodes.map(node => deferredElements.get(node as HTMLElement)?.(node as HTMLElement))
+    ).then(() => {
+      for (const node of this.#nodes) {
+        node.remove();
+      }
+      this.#startAnchor.remove();
+      this.#endAnchor.remove();
+      this.#nodes.splice(0, this.#nodes.length - 1);
+    });
   }
 
   insertBeforeThis (

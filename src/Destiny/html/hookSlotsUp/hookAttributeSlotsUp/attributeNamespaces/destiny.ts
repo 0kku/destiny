@@ -1,5 +1,6 @@
 import { IValueProps } from "../../_hookSlotsUp.js";
 import { ReactivePrimitive } from "../../../../_Destiny.js";
+import { deferredElements } from "../../../deferredElements.js";
 
 export const destiny = (
   {
@@ -18,7 +19,14 @@ export const destiny = (
       throw new TypeError("Value of destiny:in must be a function");
     }
     queueMicrotask(
-      () => valueSlot(element),
+      () => queueMicrotask(
+        () => valueSlot(element),
+      ),
+    );
+  } else if (attributeName === "out") {
+    deferredElements.set(
+      element,
+      valueSlot as () => Promise<void>,
     );
   }
 }
