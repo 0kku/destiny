@@ -50,9 +50,8 @@ export class Slot {
   insertBeforeThis (
     ...nodes: Node[]
   ) {
-    this.#startAnchor.replaceWith(
+    this.#startAnchor.before(
       ...nodes,
-      this.#startAnchor,
     );
   }
 }
