@@ -4,7 +4,6 @@ import { Slot } from "./Slot.js";
 export class SlotArray {
   #startAnchor = new Comment("<DestinyArray>");
   #endAnchor = new Comment("</DestinyArray>");
-  // #parent: HTMLElement;
   #source: ReactiveArray<DocumentFragment>; 
   #domArray = [] as Slot[];
 
@@ -16,9 +15,6 @@ export class SlotArray {
       this.#startAnchor,
       this.#endAnchor,
     );
-    // const parent = this.#startAnchor.parentElement;
-    // if (!parent) throw new Error("SlotArray initialized with detached ChildNode");
-    // this.#parent = parent;
 
     this.#source = source;
     this.#source.bind(this.update);
@@ -32,8 +28,7 @@ export class SlotArray {
       const where = i + index;
       const slotPlaceholder = new Comment("Destiny slot placeholder");
       if (!this.#domArray.length || where > this.#domArray.length - 1) {
-        this.#endAnchor.replaceWith(slotPlaceholder, this.#endAnchor);
-        // this.#parent.insertBefore(slotPlaceholder, this.#endAnchor);
+        this.#endAnchor.before(slotPlaceholder);
       } else {
         this.#domArray[where].insertBeforeThis(slotPlaceholder);
       }

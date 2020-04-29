@@ -1,4 +1,4 @@
-import isText from "../typeChecks/isText.js";
+import isTextNode from "../typeChecks/isTextNode.js";
 import isElement from "../typeChecks/isElement.js";
 import { prepareContentSlots } from "./prepareContentSlots.js";
 import { IUnpreparedContentSlot } from "./interfaces.js";
@@ -13,7 +13,7 @@ export function resolveSlots (
   const contentSlots: IUnpreparedContentSlot[] = [];
   while (walker.nextNode()) {
     const node = walker.currentNode;
-    if (isText(node)) {
+    if (isTextNode(node)) {
       const matches = node.wholeText.matchAll(/__internal_([0-9]+)_/g);
       const fragment = {
         node,

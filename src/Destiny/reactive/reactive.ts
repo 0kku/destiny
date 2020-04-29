@@ -1,10 +1,8 @@
 import { ReactiveArray, ReactivePrimitive, reactiveObject } from "../_Destiny.js";
 import { isObject } from "../typeChecks/isObject.js";
 import { IReactiveValueType } from "./types/IReactiveRecursive.js";
-import { primitive } from "./types/primitive.js";
 import { IReactive } from "./types/IReactive.js";
-import { IReactiveObject } from "./types/IReactiveObject.js";
-import { ISpecialCaseObject, specialCaseObjects, isSpecialCaseObject } from "./specialCaseObjects.js";
+import { isSpecialCaseObject } from "./specialCaseObjects.js";
 import { isReactive } from "../typeChecks/isReactive.js";
 
 function reactive<T extends Promise<any>> (
@@ -19,14 +17,7 @@ function reactive<T> (
   options?: {
     parent?: IReactive<any>,
   },
-): IReactiveValueType<T>/*(
-  T extends IReactive<any> ? T :
-  T extends ISpecialCaseObject ? ReactivePrimitive<T> :
-  T extends Promise<infer V> ? ReactivePrimitive<V | undefined> :
-  T extends any[] ? ReactiveArray<T[number]> :
-  T extends object ? IReactiveObject<T> :
-  ReactivePrimitive<T>
-)*/;
+): IReactiveValueType<T>;
 function reactive<T> (
   initialValue: T,
   options: {
