@@ -1,5 +1,7 @@
 # Destiny UI
 
+[![Discord](https://img.shields.io/badge/chat-Discord-%23738ad6?logo=discord "Chat on Discord")](https://discord.gg/WS7JWRj)
+
 A reactive UI library for JavaScript and TypeScript. Uses standard JS/TS syntax; no compiling required. Built on top of the native Web Components API and uses the native HTML parser for the templates. No vDOM.
 
 ### Goals
