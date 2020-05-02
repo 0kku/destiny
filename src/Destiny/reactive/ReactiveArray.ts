@@ -527,18 +527,22 @@ export class ReactiveArray<InputType> {
     return this.pipe(() => this.#value.reduceRight(...args));
   }
 
-  // TODO: Maybe this shouldn't return a reactive item?
+  /**
+   * Works just like Array.prototype.find. Doesn't return a reactive value.
+   */
   find (
     ...args: Parameters<Array<IArrayValueType<InputType>>["find"]>
   ) {
-    return this.pipe(() => this.#value.find(...args));
+    return this.#value.find(...args);
   }
 
-  // TODO: same as above
+  /**
+   * Works just like Array.prototype.findIndex. Doesn't return a reactive value.
+   */
   findIndex (
     ...args: Parameters<Array<IArrayValueType<InputType>>["findIndex"]>
   ) {
-    return this.pipe(() => this.#value.findIndex(...args));
+    return this.#value.findIndex(...args);
   }
 
   // TODO: this should return a ReactiveArray instead
