@@ -545,11 +545,15 @@ export class ReactiveArray<InputType> {
     return this.#value.findIndex(...args);
   }
 
-  // TODO: this should return a ReactiveArray instead
-  entries (
-    ...args: Parameters<Array<IArrayValueType<InputType>>["entries"]>
-  ) {
-    return this.pipe(() => this.#value.entries(...args));
+  /**
+   * Works similar to Array.prototype.entries(). The difference is that it returns a readonly ReactiveArray containing the entries and is updated as the original array is updated. If you don't want this behavior, use `ReactiveArray.prototype.value.entries()` for a writable non-reactive array instead.
+   */
+  entries () {
+    const array = new ReactiveArray(...this.#value.entries());
+    this.bind((index, deleteCount, ...addedItems) => {
+      array.splice(index, deleteCount, ...addedItems.entries());
+    }, true);
+    return array as Readonly<typeof array>;
   }
 
   // TODO: this should return a ReactiveArray instead
