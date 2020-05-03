@@ -497,7 +497,7 @@ export class ReactiveArray<InputType> {
   }
 
   /**
-   * Is true when the callback returns true for some, but not all items in the array.
+   * Returns a readonly ReactivePrimitive<boolean>, which is set to true when the callback returns true for some, but not all items in the array. Is updated as the array updates. This is a custom method, and a non-reactive variant is not available on the native Array prototype.
    */
   exclusiveSome (
     cb: (
@@ -505,25 +505,41 @@ export class ReactiveArray<InputType> {
       index: number,
       array: IArrayValueType<InputType>[]
     ) => boolean,
-  ): ReactivePrimitive<boolean> {
+  ): Readonly<ReactivePrimitive<boolean>> {
     return this.pipe(() => this.#value.some(cb) && !this.#value.every(cb));
   }
 
+  /**
+   * Behaves akin to Array.prototype.forEach(), except will call the callback on newly added items as they're added. If you don't want this behavior, use ReactiveArray.prototype.value.forEach() instead.
+   */
   forEach (
     ...args: Parameters<Array<IArrayValueType<InputType>>["forEach"]>
   ) {
-    return this.pipe(() => this.#value.forEach(...args));
+    this.#value.forEach(...args);
+    this.bind(
+      (
+        index,
+        deleteCount,
+        ...addedItems
+      ) => addedItems.forEach(...args)
+    );
   }
 
+  /**
+   * Similar to Array.prototype.reduce, except that its return value is a readonly ReactivePrimitive and will be reevaluated every time the array chanes. If you don't want this behavior, use ReactiveArray.prototype.value.reduce for a non-reactive result.
+   */
   reduce (
     ...args: Parameters<Array<IArrayValueType<InputType>>["reduce"]>
-  ) {
+  ): Readonly<ReactivePrimitive<ReturnType<Array<IArrayValueType<InputType>>["reduce"]>>> {
     return this.pipe(() => this.#value.reduce(...args));
   }
 
+  /**
+   * Similar to Array.prototype.reduceRight, except that its return value is a readonly ReactivePrimitive and will be reevaluated every time the array chanes. If you don't want this behavior, use ReactiveArray.prototype.value.reduceRight for a non-reactive result.
+   */
   reduceRight (
     ...args: Parameters<Array<IArrayValueType<InputType>>["reduceRight"]>
-  ) {
+  ): Readonly<ReactivePrimitive<ReturnType<Array<IArrayValueType<InputType>>["reduceRight"]>>> {
     return this.pipe(() => this.#value.reduceRight(...args));
   }
 
@@ -556,24 +572,37 @@ export class ReactiveArray<InputType> {
     return array as Readonly<typeof array>;
   }
 
-  // TODO: this should return a ReactiveArray instead
-  keys (
-    ...args: Parameters<Array<IArrayValueType<InputType>>["keys"]>
-  ) {
-    return this.pipe(() => this.#value.keys(...args));
+  /**
+   * Works similar to Array.prototype.keys(). The difference is that it returns a readonly ReactiveArray containing the keys and is updated as the original array is updated. If you don't want this behavior, use `ReactiveArray.prototype.value.keys()` for a writable non-reactive array instead.
+   */
+  keys () {
+    const array = new ReactiveArray(...this.#value.keys());
+    this.bind((index, deleteCount, ...addedItems) => {
+      array.splice(index, deleteCount, ...addedItems.keys());
+    }, true);
+    return array as Readonly<typeof array>;
   }
 
-  // TODO: this should return a ReactiveArray instead
-  values (
-    ...args: Parameters<Array<IArrayValueType<InputType>>["values"]>
-  ) {
-    return this.pipe(() => this.#value.values(...args));
+  /**
+   * Works similar to Array.prototype.values(). The difference is that it returns a readonly ReactiveArray containing the values and is updated as the original array is updated. If you don't want this behavior, use `ReactiveArray.prototype.value.values()` for a writable non-reactive array instead.
+   */
+  values () {
+    const array = new ReactiveArray(...this.#value.values());
+    this.bind((index, deleteCount, ...addedItems) => {
+      array.splice(index, deleteCount, ...addedItems.values());
+    }, true);
+    return array as Readonly<typeof array>;
   }
 
+  /**
+   * Works similar to Array.prototype.includes(). The difference is that it returns a readonly ReactivePrimitive<boolean> containing the result and is updated as the original array is updated. If you don't want this behavior, use `ReactiveArray.prototype.value.includes()` for a plain boolean instead.
+   */
   includes (
     ...args: Parameters<Array<IArrayValueType<InputType>>["includes"]>
   ) {
-    return this.pipe(() => this.#value.includes(...args));
+    return this.pipe(
+      () => this.#value.includes(...args)
+    ) as Readonly<ReactivePrimitive<boolean>>;
   }
 
   //#endregion
