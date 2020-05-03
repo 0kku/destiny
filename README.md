@@ -1,10 +1,10 @@
 # Destiny UI
 
-[![Discord](https://img.shields.io/badge/chat-Discord-%23738ad6?logo=discord "Chat on Discord")](https://discord.gg/WS7JWRj)
+[![Discord](https://img.shields.io/badge/chat-Discord-%23738ad6?logo=discord "Chat on Discord")](https://discord.gg/WS7JWRj) ![alpha](https://img.shields.io/badge/-alpha-red) ![browser support: Firefox 74+, Chromium 82+](https://img.shields.io/badge/browser%20support-Firefox%2075%2B%20%7C%20Chromium%2082%2B-brightgreen)
 
 A reactive UI library for JavaScript and TypeScript. Uses standard JS/TS syntax; no compiling required. Built on top of the native Web Components API and uses the native HTML parser for the templates. No vDOM.
 
-### Goals
+## Goals
 
 - Quick to start prototyping
 - No mandatory compiling
@@ -18,7 +18,7 @@ A reactive UI library for JavaScript and TypeScript. Uses standard JS/TS syntax;
 
 ## Disclaimer
 
-This is an experimental library. There _will_ be breaking changes. Code is still a clusterfuck and leaks memory like crazy. Use at your own risk.
+❗ _This is an experimental library. There **will** be breaking changes. Some parts are still heavily under construction or missing entirely. Use at your own risk._
 
 ## How to run
 
@@ -91,8 +91,8 @@ No documentation yet, sorry.
 
 ## Supported platforms
 
-Current versions target newest stable release of V8 (Chromium). Support for SpiderMonkey (Firefox) is planned. No plans for JavaScriptCore (Safari) yet.
+Current versions target newest stable release of SpiderMonkey (Firefox) and V8 (Chromium). JavaScriptCore (Safari) is not yet supported.
 
 Versions ≥1.0 will target the latest two releases of Firefox and Chromium, and the latest release of Safari. Hopefully.
 
-Chakra (Internet Explorer & old Edge) will not be supported. Ever. New Edge uses V8 so it's supported.
+Chakra (Internet Explorer & old Edge) will not be supported. Ever. New Edge uses V8, so it's supported.
