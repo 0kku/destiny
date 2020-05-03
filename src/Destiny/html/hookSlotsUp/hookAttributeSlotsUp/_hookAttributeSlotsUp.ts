@@ -12,28 +12,29 @@ export function hookAttributeSlotsUp (
 
   for (const element of attributeSlots) {
     for (let {name, value} of element.attributes) {
-      const {
-        index,
+      const [
+        ,
         valueStart = "",
+        index,
         valueEnd = "",
-      } = (
+       ] = (
         value
         .match(
-          /(?<valueStart>.+)?__internal_(?<index>[0-9]+)_(?<valueEnd>.+)?/
+          /(.+)?__internal_([0-9]+)_(.+)?/
         )
-        ?.groups
-        ?? {}
+        ?? []
       );
 
       if (index) {
         const item = props[Number(index)];
-        const {
+        const [
+          ,
           namespace = "",
           attributeName,
-        } = (
+         ] = (
           name
-          .match(/(?:(?<namespace>[a-z]+)\:)?(?<attributeName>.+)/)
-          ?.groups ?? {}
+          .match(/(?:([a-z]+)\:)?(.+)/)
+          ?? []
         );
 
         const setValue = (
