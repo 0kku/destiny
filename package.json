@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "main": "./dist/main.js",
   "dependencies": {
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.1-rc"
   },
   "devDependencies": {},
   "scripts": {

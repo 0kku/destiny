@@ -167,25 +167,25 @@ export class DestinyBasicArray<T> {
     return newArr;
   }
 
-  flat (
-    depth = 1,
-  ) {
-    const newArr = new this.species(...this.#value.flat(depth));
-    this.#callbacks.add(() => {
-      newArr.value = this.#value.flat(depth);
-    });
-    return newArr;
-  }
+  // flat (
+  //   depth = 1,
+  // ) {
+  //   const newArr = new this.species(...this.#value.flat(depth));
+  //   this.#callbacks.add(() => {
+  //     newArr.value = this.#value.flat(depth);
+  //   });
+  //   return newArr;
+  // }
 
-  flatMap<U> (
-    callback: (value: T, index: number, array: T[]) => U | ReadonlyArray<U>,
-  ) {
-    const newArr = new this.species(...this.#value.flatMap(callback));
-    this.#callbacks.add(() => {
-      newArr.value = this.#value.flatMap(callback);
-    });
-    return newArr;
-  }
+  // flatMap<U> (
+  //   callback: (value: T, index: number, array: T[]) => U | ReadonlyArray<U>,
+  // ) {
+  //   const newArr = new this.species(...this.#value.flatMap(callback));
+  //   this.#callbacks.add(() => {
+  //     newArr.value = this.#value.flatMap(callback);
+  //   });
+  //   return newArr;
+  // }
 
   map<U> (
     callback: (value: T, index: number, array: T[]) => U,
