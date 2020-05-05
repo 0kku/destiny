@@ -1,7 +1,6 @@
 import { ReactivePrimitive } from "../_Destiny.js";
 import { toNumber } from "../utils/toNumber.js";
 import { reactive } from "./reactive.js";
-// import { isObject } from "../typeChecks/isObject.js";
 import { IArrayValueType } from "./types/IArrayValueType";
 import { IReactiveArrayCallback } from "./types/IReactiveArrayCallback";
 import { isReactive } from "../typeChecks/isReactive.js";
@@ -213,19 +212,31 @@ export class ReactiveArray<InputType> {
   //   return this;
   // }
 
+  /**
+   * Works similar to `Array::fill()`, except inserted values are made recursively reactive. The section identified by start and end is filled with `value`. **Note** that inserted object values are not cloned, which may cause unintended behavior.
+
+   * @param value  value to fill array section with
+   * @param start  index to start filling the array at. If start is negative, it is treated as length+start where length is the length of the array.
+   * @param end    index to stop filling the array at. If end is negative, it is treated as length+end.
+   */
   fill (
-    ...args: Parameters<Array<InputType>["fill"]>
+    value: InputType | IArrayValueType<InputType>,
+    start = 0,
+    end = this.#value.length,
   ) {
+    const length = end - start;
     this.splice(
-      0,
-      this.#value.length,
-      ...Array(this.#value.length).fill(...args),
+      start,
+      length,
+      ...Array.from({length}, () => value),
     );
     return this;
   }
 
   /**
-   * Equivalent to Array::filter(), except that it mutates the array in place.
+   * Equivalent to Array::filter(), except that it mutates the array in place. Removes the elements of the array that don't meet the condition specified in the callback function.
+   *
+   * @param callback The filter method calls the callback function once for each element in the array to determine if it should be removed.
    */
   mutFilter (
     callback: (value: IArrayValueType<InputType>, index: number, array: IArrayValueType<InputType>[]) => boolean,
@@ -249,13 +260,21 @@ export class ReactiveArray<InputType> {
     return this;
   }
 
+  /**
+   * Similar to `Array::map`, except that it mutates the array in place. Calls a defined callback function on each element of an array, and assigns the resulting element if it's different from the old one.
+   *
+   * @param callback The map method calls the callback function one time for each element in the array.
+   */
   mutMap (
     callback: (value: IArrayValueType<InputType>, index: number, array: IArrayValueType<InputType>[]) => IArrayValueType<InputType>,
   ) {
     this.#value
       .flatMap((v, i, a) => {
         const newValue = callback(v, i, a);
-        return newValue === v ? [] : {index: i, value: newValue};
+        return newValue === v
+          ? []
+          : {index: i, value: newValue}
+        ;
       })
       .reduce(
         (acc, {index, value}) => {
@@ -275,31 +294,43 @@ export class ReactiveArray<InputType> {
     return this;
   }
 
+  /**
+   * Works just like `Array::pop()`. Removes the last element from an array and returns it.
+   */
   pop () {
-    const index = this.#value.length - 1;
-    const removedItem = this.#value[index];
-    this.splice(index, 1);
-    return removedItem;
+    return this.splice(-1, 1)[0];
   }
 
+  /**
+   * Similar to `Array::push()`. Appends new element(s) to an array, and returns the new length of the array as a reactive number.
+   */
   push (
     ...items: InputType[]
   ) {
     this.splice(this.#value.length, 0, ...items);
-    return this.#value.length;
+    return this.length;
   }
 
+  /**
+   * Works just like `Array::reverse()`. Reverses the elements of the array in place.
+   */
   reverse () {
     this.setValue(this.#value.reverse());
     return this;
   }
 
+  /**
+   * Works just like `Array.shift()`. Removes the first element from an array and returns it.
+   */
   shift () {
-    const removedItem = this[0];
-    this.splice(0, 1);
-    return removedItem;
+    return this.splice(0, 1)[0];
   }
 
+  /**
+   * Works just like `Array::sort()`. Sorts the array.
+   * 
+   * @param compareFn  Specifies a function that defines the sort order. It is expected to return a negative value if first argument is less than second argument, zero if they're equal and a positive value otherwise. If omitted, the array elements are converted to strings, then sorted according to each character's Unicode code point value.
+   */
   sort (
     compareFn?: ((a: IArrayValueType<InputType>, b: IArrayValueType<InputType>) => number),
   ) {
@@ -307,6 +338,12 @@ export class ReactiveArray<InputType> {
     return this;
   }
 
+  /**
+   * Similar to `Array::splice()`. Added items are implicitly made recursively reactive.
+   * @param start        Where to start modifying the array
+   * @param deleteCount  How many items to remove
+   * @param items        Items to add to the array
+   */
   splice (
     start: number,
     deleteCount: number = this.#value.length - start,
@@ -350,6 +387,9 @@ export class ReactiveArray<InputType> {
     return deletedItems;
   }
 
+  /**
+   * Force the the array to dispatch events to its callback. The event will simply say `0` items were removed at index `0`, with `0` items added. No equivalent on native Array prototype.
+   */
   update () {
     for (const callback of this.#callbacks) {
       queueMicrotask(() => {
@@ -358,11 +398,14 @@ export class ReactiveArray<InputType> {
     }
   }
 
+  /**
+   * Similar to `Array::unshift()`. Returns the new length after the item(s) have been inserted.
+   */
   unshift (
     ...items: Array<InputType>
   ) {
     this.splice(0, 0, ...items);
-    return this.#value.length;
+    return this.length;
   }
 
   //#endregion
