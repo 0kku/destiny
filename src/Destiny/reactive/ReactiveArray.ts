@@ -198,19 +198,35 @@ export class ReactiveArray<InputType> {
   //   return newArr;
   // }
 
-  //TODO
-  // copyWithin (
-  //   target: number,
-  //   start: number,
-  //   end: number,
-  // ) {
-  //   this.splice(
-  //     target,
-  //     end - start,
-  //     ...this.#value.slice(start, end),
-  //   );
-  //   return this;
-  // }
+  /**
+   * Works just like `Array::copyWithin()`. Returns the this object after shallow-copying a section of the array identified by start and end to the same array starting at position target
+   * @param target Index where to start copying to. If target is negative, it is treated as length+target where length is the length of the array.
+   * @param start Where to start copying from. If start is negative, it is treated as length+start. Default: `0`. 
+   * @param end Where to stop copying from. If end is negative, it is treated as length+end. Default: `this.length.value`
+   */
+  copyWithin (
+    target: number,
+    start = 0,
+    end = this.#value.length,
+  ) {
+    const {length} = this.#value;
+    target = (target + length) % length;
+    start = (start + length) % length;
+    end = (end + length) % length;
+    const deleteCount = Math.min(
+      length - start,
+      end - start,
+    );
+    this.splice(
+      target,
+      deleteCount,
+      ...this.#value.slice(
+        start,
+        deleteCount + start,
+      ),
+    );
+    return this;
+  }
 
   /**
    * Works similar to `Array::fill()`, except inserted values are made recursively reactive. The section identified by start and end is filled with `value`. **Note** that inserted object values are not cloned, which may cause unintended behavior.
