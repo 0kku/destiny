@@ -9,10 +9,10 @@ import { isSpecialCaseObject } from "./specialCaseObjects.js";
 
 export class ReactiveArray<InputType> {
   [key: number]: IArrayValueType<InputType>;
-  #value: IArrayValueType<InputType>[] = [];
-  #indices: ReactivePrimitive<number>[] = [];
-  #callbacks: Set<IReactiveArrayCallback<IArrayValueType<InputType>>> = new Set;
-  #length: ReactivePrimitive<number> = (() => {
+  readonly #value: IArrayValueType<InputType>[] = [];
+  readonly #indices: ReactivePrimitive<number>[] = [];
+  readonly #callbacks: Set<IReactiveArrayCallback<IArrayValueType<InputType>>> = new Set;
+  readonly #length: Readonly<ReactivePrimitive<number>> = (() => {
     const ref = new ReactivePrimitive(this.#value.length);
     this.bind(() => ref.value = this.#value.length);
     return ref;
@@ -68,16 +68,25 @@ export class ReactiveArray<InputType> {
     );
   }
 
+  /**
+   * Iterates over the values of the array, similar to how regular Arrays can be iterated over.
+   */
   *[Symbol.iterator]() {
     yield* this.#value;
   }
 
+  /**
+   * Iterates over the updates to the array. Can be used with for-await-of.
+   */
   async *[Symbol.asyncIterator]() {
     while (1) {
       yield await this._nextUpdate();
     }
   }
 
+  /**
+   * Returns a promise that resolves when the next update fires, with the values the event fired with.
+   */
   private _nextUpdate () {
     return new Promise<[number, number, ...IArrayValueType<InputType>[]]>(resolve => {
       const cb: IReactiveArrayCallback<IArrayValueType<InputType>> = (...props) => {
@@ -88,14 +97,25 @@ export class ReactiveArray<InputType> {
     });
   }
 
+  /**
+   * The length of the ReactiveArray, as a ReactivePrimitive which updates as the array is modified.
+   */
   get length () {
     return this.#length;
   }
 
+  /**
+   * Returns the current values of the ReactiveArray as a regular Array.
+   */
   get value () {
     return this.#value.slice(0);
   }
 
+  // This is not a setter because TS doesn't like setters and getters having different values. The input array is turned reactive recursively.
+  /**
+   * Replaces all the current values of the array with values of the provided array.
+   * @param items array of items to replace the current ones with.
+   */
   setValue (
     items: Array<InputType | IArrayValueType<InputType>>,
   ) {
@@ -106,6 +126,10 @@ export class ReactiveArray<InputType> {
     );
   }
 
+  /**
+   * An alternative to using backet syntax `arr[index]` to access values. Bracket notation requires the Proxy, which slows down propety accesses, while this doesn't.
+   * @param index index at which you want to access a value
+   */
   get (
     index: number,
   ) {
@@ -115,6 +139,11 @@ export class ReactiveArray<InputType> {
     return this.#value[i];
   }
 
+  /**
+   * An alternative to using backet syntax `arr[index] = value` to set values. Bracket notation requires the Proxy, which slows down propety accesses, while this doesn't.
+   * @param index index at which you want to set a value
+   * @param value value you want to set at the specified index
+   */
   set (
     index: number,
     value: InputType,
@@ -126,15 +155,23 @@ export class ReactiveArray<InputType> {
     return value;
   }
 
+  /**
+   * Returns the arguments that a full, forced, update would for a callback. I.E. first item in the array is the index (`0`), second argument is delte count (current array length), and 3...n are the items currently in the array.
+   */
   private _argsForFullUpdate (): Parameters<IReactiveArrayCallback<IArrayValueType<InputType>>> {
     return [0, this.#value.length, ...this.#value];
   }
   
+  /**
+   * Creates a new ReactivePrimitive which is bound to the array it's called on. The value of the ReactivePrimitive is determined by the callback function provided, and is called every time theh array updates to update the value of the returned ReactivePrimitive.
+   * 
+   * @param callback The function to be called when the array is updated. It's called with `(startIndex, deleteCount, ...addedItems)`.
+   */
   pipe<
     F extends IReactiveArrayCallback<IArrayValueType<InputType>, ReturnType<F>>,
   > (
     callback: F,
-  ) {
+  ): Readonly<ReactivePrimitive<ReturnType<F>>> {
     const ref = new ReactivePrimitive(callback(...this._argsForFullUpdate()));
     this.bind((...args) => {
       ref.value = callback(...args);
@@ -142,10 +179,15 @@ export class ReactiveArray<InputType> {
     return ref;
   }
 
+  /**
+   * Adds a listener to the array, which is called when the array is modified in some capacity.
+   * @param callback The function to be called when the array is updated. It's called with `(startIndex, deleteCount, ...addedItems)`.
+   * @param noFirstRun Default: false. Determines whether the callback function should be called once when the listener is first added.
+   */
   bind (
     callback: IReactiveArrayCallback<IArrayValueType<InputType>>,
     noFirstRun = false,
-  ) {
+  ): this {
     this.#callbacks.add(callback);
     if (!noFirstRun) {
       callback(0, 0, ...this.#value);
@@ -153,10 +195,15 @@ export class ReactiveArray<InputType> {
     return this;
   }
 
+  /**
+   * Removes a listener that was added using `ReactiveArray::bind()`.
+   * @param callback The callback function to be unbound (removed from the array's update callbacks). Similar to EventListeners, it needs to be a reference to the same callaback function that was previously added.
+   */
   unbind (
     callback: IReactiveArrayCallback<IArrayValueType<InputType>>,
-  ) {
+  ): this {
     this.#callbacks.delete(callback);
+    return this;
   }
 
   //#region Mutating methods
@@ -208,7 +255,7 @@ export class ReactiveArray<InputType> {
     target: number,
     start = 0,
     end = this.#value.length,
-  ) {
+  ): this {
     const {length} = this.#value;
     target = (target + length) % length;
     start = (start + length) % length;
@@ -239,7 +286,7 @@ export class ReactiveArray<InputType> {
     value: InputType | IArrayValueType<InputType>,
     start = 0,
     end = this.#value.length,
-  ) {
+  ): this {
     const length = end - start;
     this.splice(
       start,
@@ -256,7 +303,7 @@ export class ReactiveArray<InputType> {
    */
   mutFilter (
     callback: (value: IArrayValueType<InputType>, index: number, array: IArrayValueType<InputType>[]) => boolean,
-  ) {
+  ): this {
     this.#value
       .flatMap((v, i, a) =>  callback(v, i, a) ? [] : i)
       .reduce(
@@ -283,7 +330,7 @@ export class ReactiveArray<InputType> {
    */
   mutMap (
     callback: (value: IArrayValueType<InputType>, index: number, array: IArrayValueType<InputType>[]) => IArrayValueType<InputType>,
-  ) {
+  ): this {
     this.#value
       .flatMap((v, i, a) => {
         const newValue = callback(v, i, a);
