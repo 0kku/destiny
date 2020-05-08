@@ -1,3 +1,5 @@
+import { ReactiveArray } from "./ReactiveArray";
+
 export class ReactivePrimitive<T> {
   #value: T;
   callbacks = new Set<(value: T) => void>();
@@ -72,10 +74,10 @@ export class ReactivePrimitive<T> {
 
   static from<
     T,
-    Callback extends (...values: ReactivePrimitive<T>[]) => any,
+    Callback extends (...values: (ReactivePrimitive<T> | ReactiveArray<T>)[]) => any,
   > (
     updater: Callback,
-    ...refs: ReactivePrimitive<T>[]
+    ...refs: (ReactivePrimitive<T> | ReactiveArray<T>)[]
   ): ReactivePrimitive<ReturnType<Callback>> {
     const newRef = new ReactivePrimitive<ReturnType<Callback>>(updater(...refs));
     refs.forEach((ref, i) => 
@@ -92,7 +94,7 @@ export class ReactivePrimitive<T> {
     cb: (value: ReactivePrimitive<T>) => K,
   ): ReactivePrimitive<K> {
     return ReactivePrimitive.from(
-      cb,
+      cb as (value: ReactivePrimitive<T> | ReactiveArray<T>) => K,
       this,
     );
   }
