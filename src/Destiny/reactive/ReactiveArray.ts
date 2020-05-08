@@ -1,17 +1,26 @@
 import { ReactivePrimitive } from "../_Destiny.js";
-import { toNumber } from "../utils/toNumber.js";
 import { reactive } from "./reactive.js";
 import { IArrayValueType } from "./types/IArrayValueType";
 import { IReactiveArrayCallback } from "./types/IReactiveArrayCallback";
 import { isReactive } from "../typeChecks/isReactive.js";
 import { isPrimitive } from "../typeChecks/isPrimitive.js";
 import { isSpecialCaseObject } from "./specialCaseObjects.js";
+import { reactiveArrayProxyConfig } from "./reactiveArrayProxyConfig.js";
 
 export class ReactiveArray<InputType> {
+  /** The keys are enabled by the Proxy defined in the constructor */
   [key: number]: IArrayValueType<InputType>;
+
+  /** An Array containing the current values of the ReactiveArray */
   readonly #value: IArrayValueType<InputType>[] = [];
+
+  /** An Array containing ReactivePrimitives for each index of the ReactiveArray */
   readonly #indices: ReactivePrimitive<number>[] = [];
+
+  /** A Set containing all the callbacks to be called whenever the ReactiveArray is updated */
   readonly #callbacks: Set<IReactiveArrayCallback<IArrayValueType<InputType>>> = new Set;
+
+  /** Size of the ReactiveArray as a ReactivePrimitive */
   readonly #length: Readonly<ReactivePrimitive<number>> = (() => {
     const ref = new ReactivePrimitive(this.#value.length);
     this.bind(() => ref.value = this.#value.length);
@@ -24,47 +33,7 @@ export class ReactiveArray<InputType> {
     this.splice(0, 0, ...array);
     return new Proxy(
       this,
-      {
-        deleteProperty (
-          target: ReactiveArray<InputType>,
-          property: keyof ReactiveArray<InputType> | string,
-        ) {
-          const index = toNumber(property);
-          if (!Number.isNaN(index)) {
-            target.splice(index, 1);
-            return true;
-          } else return false;
-        },
-
-        get (
-          target: ReactiveArray<InputType>,
-          property: keyof ReactiveArray<InputType>,
-        ) {
-          const index = toNumber(property);
-          if (!Number.isNaN(index)) { // Was valid number key (i.e. array index)
-            return target.get(index);
-          } else { // Was a string or symbol key
-            const value = target[property];
-            return typeof value === "function"
-              ? value.bind(target) // Without binding, #private fields break in Proxies
-              : value;
-          }
-        },
-  
-        set (
-          target: ReactiveArray<InputType>,
-          property: keyof ReactiveArray<InputType> | string,
-          value: InputType,
-        ) {
-          const index = toNumber(property);
-          if (!Number.isNaN(index)) {
-            target.set(index, value);
-            return true;
-          } else {
-            return false;
-          }
-        },
-      },
+      reactiveArrayProxyConfig,
     );
   }
 

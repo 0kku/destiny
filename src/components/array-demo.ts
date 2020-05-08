@@ -11,11 +11,10 @@ const randomColor = () => (
 customElements.define("array-demo", class extends DestinyElement {
   #items = reactive(Array.from({length: 256}, randomColor));
   frame = () => {
-    this.#items.splice(
-      Math.floor(Math.random() * this.#items.length.value),
-      1,
-      randomColor(),
+    const randomIndex = Math.floor(
+      Math.random() * this.#items.length.value,
     );
+    this.#items[randomIndex] = randomColor();
     this.#timer = requestAnimationFrame(this.frame);
   }
   #timer = requestAnimationFrame(this.frame);
