@@ -469,7 +469,10 @@ export class ReactiveArray<InputType> {
         ...values
       ) => newArr.splice(
         index,
-        deleteCount,
+        this.value
+          .slice(index, index + deleteCount)
+          .filter(callback)
+          .length,
         ...values.filter(callback)
       ),
     );
