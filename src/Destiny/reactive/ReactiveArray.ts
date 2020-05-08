@@ -172,41 +172,81 @@ export class ReactiveArray<InputType> {
   //#region Mutating methods
   // Unless specified otherwise, these methods follow the signature of equivalent Array prototype methods.
 
-  //TODO
-  // concat<
-  //   U,
-  //   K extends ValueType | U
-  // > (
-  //   ...items: Array<K | K[] | DestinyPrimitive<K> | DestinyArray<K>>
-  // ) {
-  //   const newArr = new DestinyArray<ValueType | U>(...this);
-  //   let cursor = this.#value.length;
-  //   this.bind(newArr.splice);
-  //   for (const item of items) {
-  //     if (item instanceof DestinyArray) {
-  //       item.bind(
-  //         (
-  //           index,
-  //           deleteCount,
-  //           ...values
-  //         ) => newArr.splice(
-  //           index + cursor,
-  //           deleteCount,
-  //           ...values
-  //         ),
-  //       );
-  //       cursor += item.value.length;
-  //     } else if (item instanceof DestinyPrimitive) {
-  //       item.bind(value => newArr.splice(cursor++, 1, value));
-  //     } else if (Array.isArray(item)) {
-  //       newArr.splice(cursor, 0, ...item);
-  //       cursor += item.length;
-  //     } else {
-  //       newArr.splice(cursor++, 0, item);
-  //     }
-  //   }
-  //   return newArr;
-  // }
+  /**
+   * Conbines the array with one or more other arrays, or other values.
+   * 
+   * Similar to `Array::concat()`, except that it returns a readonly ReactiveArray. It accepts arrays, ReactiveArrays, ReactivePrimitives, or other items as parameters. Any ReactiveArrays or ReactivePrimitives will be tracked, and the resulting ReacativeArray will be updated whenever they get updated.
+   * 
+   * @param items The items to be tacked onto the original array.
+   */
+  concat<
+    U,
+    K extends IArrayValueType<InputType> | U,
+  > (
+    ...items: Array<K | K[] | ReactivePrimitive<K> | ReactiveArray<K>>
+  ): Readonly<ReactiveArray<U | IArrayValueType<InputType>>> {
+    const newArr = this.clone() as ReactiveArray<IArrayValueType<InputType> | U>;
+    this.bind(newArr.splice);
+    const lengthTally: Array<{value: number}> = [
+      this.length,
+    ];
+    function currentOffset (
+      cutoff: number,
+      index = 0,
+    ) {
+      let tally = index;
+      for (let i = 0; i < cutoff; i++) {
+        tally += lengthTally[i].value;
+      }
+      return tally;
+    }
+    for (const [i, item] of items.entries()) {
+      if (item instanceof ReactiveArray) {
+        item.bind(
+          (
+            index,
+            deleteCount,
+            ...values
+          ) => newArr.splice(
+            currentOffset(i, index),
+            deleteCount,
+            ...values
+          ),
+        );
+        lengthTally.push(item.length);
+      } else if (item instanceof ReactivePrimitive) {
+        item.bind(
+          value => newArr.splice(
+            currentOffset(i),
+            1,
+            value,
+          ),
+        );
+        lengthTally.push({
+          value: 1,
+        });
+      } else if (Array.isArray(item)) {
+        newArr.splice(
+          currentOffset(i),
+          0,
+          ...item,
+        );
+        lengthTally.push({
+          value: item.length,
+        });
+      } else {
+        newArr.splice(
+          currentOffset(i),
+          0,
+          item,
+        );
+        lengthTally.push({
+          value: 1,
+        });
+      }
+    }
+    return newArr;
+  }
 
   /**
    * Works just like `Array::copyWithin()`. Returns the this object after shallow-copying a section of the array identified by start and end to the same array starting at position target
