@@ -1,5 +1,4 @@
 import { IValueProps } from "../../_hookSlotsUp.js";
-import { kebabToCamel } from "../../../../utils/kebabToCamel.js";
 
 /**
  * prop:<PropertyName> takes in any property and assigns it to
@@ -27,5 +26,5 @@ export const prop = (
     : valueSlot
   );
   //@ts-ignore TODO gotta figure out later if this can be resolved properly by TS lol.
-  element[kebabToCamel(attributeName)] = value;
+  element[attributeName] = value;
 };

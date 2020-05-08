@@ -1,6 +1,7 @@
 import { ReactivePrimitive } from "../../../_Destiny.js";
 import { attributeNamespaces } from "./attributeNamespaces/_attributeNamespaces.js";
 import { matchChangeWatcher, watchedAttribute } from "./matchChangeWatcher.js";
+import { kebabToCamel } from "../../../utils/kebabToCamel.js";
 
 export function hookAttributeSlotsUp (
   templ: DocumentFragment,
@@ -27,7 +28,7 @@ export function hookAttributeSlotsUp (
 
       if (index) {
         const item = props[Number(index)];
-        const [
+        let [
           ,
           namespace = "",
           attributeName,
@@ -36,6 +37,9 @@ export function hookAttributeSlotsUp (
           .match(/(?:([a-z]+)\:)?(.+)/)
           ?? []
         );
+        if (namespace) {
+          attributeName = kebabToCamel(attributeName);
+        }
 
         const setValue = (
           valueSlot: unknown,

@@ -1,5 +1,4 @@
 import { IValueProps } from "../../_hookSlotsUp.js";
-import { kebabToCamel } from "../../../../utils/kebabToCamel.js";
 
 /**
  * call:<ElementMethod> takes an array of arguments to be passed to
@@ -25,12 +24,11 @@ export const call = (
     valueSlot,
   }: IValueProps,
 ) => {
-  const name = kebabToCamel(attributeName);
   if (Array.isArray(valueSlot)) {
     //@ts-ignore TODO gotta figure out later if this can be resolved properly by TS lol.
-    element[name](...valueSlot);
+    element[attributeName](...valueSlot);
   } else {
     //@ts-ignore TODO gotta figure out later if this can be resolved properly by TS lol.
-    element[name](valueSlot);
+    element[attributeName](valueSlot);
   }
 }
