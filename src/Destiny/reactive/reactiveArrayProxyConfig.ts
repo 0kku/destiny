@@ -10,9 +10,9 @@ export const reactiveArrayProxyConfig = {
     if (!Number.isNaN(index)) {
       target.splice(index, 1);
       return true;
-    }
-    else
+    } else {
       return false;
+    }
   },
 
   get<InputType>(
@@ -22,12 +22,12 @@ export const reactiveArrayProxyConfig = {
     const index = toNumber(property);
     if (!Number.isNaN(index)) { // Was valid number key (i.e. array index)
       return target.get(index);
-    }
-    else { // Was a string or symbol key
+    } else { // Was a string or symbol key
       const value = target[property];
-      return typeof value === "function"
+      return (typeof value === "function"
         ? value.bind(target) // Without binding, #private fields break in Proxies
-        : value;
+        : value
+      );
     }
   },
 
@@ -38,10 +38,9 @@ export const reactiveArrayProxyConfig = {
   ) {
     const index = toNumber(property);
     if (!Number.isNaN(index)) {
-      target.set(index, value);
+      target.splice(index, 1, value);
       return true;
-    }
-    else {
+    } else {
       return false;
     }
   },

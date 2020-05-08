@@ -1,11 +1,8 @@
 import { ReactivePrimitive } from "../_Destiny.js";
-import { reactive } from "./reactive.js";
 import { IArrayValueType } from "./types/IArrayValueType";
 import { IReactiveArrayCallback } from "./types/IReactiveArrayCallback";
-import { isReactive } from "../typeChecks/isReactive.js";
-import { isPrimitive } from "../typeChecks/isPrimitive.js";
-import { isSpecialCaseObject } from "./specialCaseObjects.js";
 import { reactiveArrayProxyConfig } from "./reactiveArrayProxyConfig.js";
+import { makeNonPrimitiveItemsReactive } from "./makeNonPrimitiveItemsReactive.js";
 
 export class ReactiveArray<InputType> {
   /** The keys are enabled by the Proxy defined in the constructor */
@@ -117,9 +114,6 @@ export class ReactiveArray<InputType> {
     index: number,
     value: InputType,
   ) {
-    if (index > this.#value.length) {
-      throw new RangeError("Out of bounds assignment. Sparse arrays are not allowed. Consider using .push() instead.");
-    }
     this.splice(index, 1, value);
     return value;
   }
@@ -381,19 +375,41 @@ export class ReactiveArray<InputType> {
     deleteCount: number = this.#value.length - start,
     ...items: Array<InputType | IArrayValueType<InputType>>
   ) {
-    const reactiveItems = items.map(v => {
-      return (
-        isReactive(v) || isPrimitive(v) || isSpecialCaseObject(v)
-        ? v 
-        : reactive(
-            v,
-            {parent: this},
-          )
-      ) as IArrayValueType<InputType>;
-    }) as IArrayValueType<InputType>[]; // Fix for TS3.8, shouldn't be needed in 3.9
-
+    if (start > this.#value.length) {
+      throw new RangeError("Out of bounds assignment. Sparse arrays are not allowed. Consider using .push() instead.");
+    }
+    
+    this._adjustIndices(start, deleteCount, items);
+    const reactiveItems = makeNonPrimitiveItemsReactive(items, this);
     const deletedItems = this.#value.splice(start, deleteCount, ...reactiveItems);
+    this._dispatchUpdateEvents(start, deleteCount, reactiveItems);
+    
+    return deletedItems;
+  }
 
+  private _dispatchUpdateEvents (
+    start: number,
+    deleteCount: number,
+    newItems: IArrayValueType<InputType>[] = [],
+  ) {
+    for (const callback of this.#callbacks) {
+      queueMicrotask(() => {
+        callback(start, deleteCount, ...newItems);
+      });
+    }
+  }
+
+  /**
+   * Updates the indices of each item whose index changed due to the update. Indices of removed items will become `-1`. Also inserts in new indices as `ReactivePrimitive<number>` for any added items.
+   * @param start Index at which the ReactiveArray started changing
+   * @param deleteCount How many items were deleted
+   * @param items Items that were added
+   */
+  private _adjustIndices (
+    start: number,
+    deleteCount: number,
+    items: Array<InputType | IArrayValueType<InputType>>,
+  ) {
     const shiftedBy = items.length - deleteCount;
     if (shiftedBy) {
       for (let i = start + deleteCount; i < this.#indices.length; i++) {
@@ -409,25 +425,13 @@ export class ReactiveArray<InputType> {
     for (const removedIndex of removedIndices) {
       removedIndex.value = -1;
     }
-
-    for (const callback of this.#callbacks) {
-      queueMicrotask(() => {
-        callback(start, deleteCount, ...reactiveItems);
-      });
-    }
-    
-    return deletedItems;
   }
 
   /**
    * Force the the array to dispatch events to its callback. The event will simply say `0` items were removed at index `0`, with `0` items added. No equivalent on native Array prototype.
    */
   update () {
-    for (const callback of this.#callbacks) {
-      queueMicrotask(() => {
-        callback(0, 0);
-      });
-    }
+    this._dispatchUpdateEvents(0, 0);
   }
 
   /**
