@@ -1,6 +1,6 @@
 # Destiny UI
 
-[![Discord](https://img.shields.io/badge/chat-Discord-%23738ad6?logo=discord "Chat on Discord")](https://discord.gg/WS7JWRj) ![alpha](https://img.shields.io/badge/-alpha-red) ![browser support: Firefox 74+, Chromium 82+](https://img.shields.io/badge/browser%20support-Firefox%2075%2B%20%7C%20Chromium%2082%2B-brightgreen)
+[![Discord](https://img.shields.io/badge/chat-Discord-%23738ad6?logo=discord&logoColor=white "Chat on Discord")](https://discord.gg/WS7JWRj) ![alpha](https://img.shields.io/badge/-alpha-red) [![Firefox 75.0+](https://img.shields.io/badge/Firefox-75.0+-brightgreen?logo=mozilla%20firefox&logoColor=white)](https://www.mozilla.org/en-US/exp/firefox/new/) [![Chromium 82.0+](https://img.shields.io/badge/Chromium-82.0+-brightgreen?logo=google%20chrome&logoColor=white)](https://www.chromium.org/) [![No support for Safari yet](https://img.shields.io/badge/Safari-no%20support%20yet-red?logo=safari&logoColor=white)](https://www.apple.com/safari/)
 
 A reactive UI library for JavaScript and TypeScript. Uses standard JS/TS syntax; no compiling required. Built on top of the native Web Components API and uses the native HTML parser for the templates. No vDOM.
 
