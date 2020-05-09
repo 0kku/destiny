@@ -1,4 +1,5 @@
 /**
+ * A class for creating new custom elements in Destiny UI.
  * @abstract
  */
 export class DestinyElement extends HTMLElement {

@@ -1,5 +1,9 @@
+/**
+ * Checks if a given Node is a DOM ChildNode.
+ * @param input The item to be checked
+ */
 export default function isChildNode(
-  input: any,
+  input: Node,
 ): input is ChildNode {
-  return true;
+  return true; //TODO
 }
