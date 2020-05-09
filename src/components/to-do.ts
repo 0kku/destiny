@@ -14,7 +14,7 @@ customElements.define("to-do", class extends DestinyElement {
       editing: false,
     },
     {
-      title: "Show this off to Mike",
+      title: "Travel the world",
       done: false,
       editing: false,
     },
@@ -23,22 +23,29 @@ customElements.define("to-do", class extends DestinyElement {
   render () {
     return html`
       <style>
-        label {
+        label, [type=button], [type=submit] {
+          cursor: pointer;
+        }
+
+        li {
+          height: 24px;
+          overflow: hidden;
+        }
+
+        .task-name, .edit-task [type=text] {
+          box-sizing: border-box;
           display: inline-block;
-          width: 200px;
+          width: 175px;
         }
 
         [type=text] {
           box-sizing: border-box;
           width: 200px;
         }
-        label [type=text] {
-          width: 175px;
-        }
 
-        li {
-          height: 24px;
-          overflow: hidden;
+        .edit-task {
+          display: inline;
+          white-space: nowrap;
         }
       </style>
       <ul>
@@ -65,50 +72,67 @@ customElements.define("to-do", class extends DestinyElement {
               await animation.finished;
             }}
           >
-            <label>
-              <input
-                type=checkbox
-                prop:checked=${item.done}
-              >
-              ${item.editing.pipe(editing => editing.value
-                ? html`<input type=text value=${item.title}>`
-                : html`
+            ${item.editing.pipe(editing => editing.value
+              ? html`
+                <input
+                  type=checkbox
+                  prop:checked=${item.done}
+                >
+                <form
+                  class=edit-task
+                  on:submit=${(e: Event) => {
+                    e.preventDefault();
+                    item.editing.value = false;
+                  }}
+                >
+                  <input type=text value=${item.title}>
+                  <input
+                    type=submit
+                    value=💾
+                    title=Save
+                  >
+                </form>
+                <input
+                  type=button
+                  value=🚮
+                  title=Delete
+                  on:click=${() => this.#items.splice(i.value, 1)}
+                >
+              `
+              : html`
+                <label>
+                  <input
+                    type=checkbox
+                    prop:checked=${item.done}
+                  >
                   <span
+                    class=task-name
                     style=${item.done.pipe(
                       v => v.value && "text-decoration: line-through",
                     )}
                   >
                     ${item.title}
                   </span>
-                `
-              )}
-            </label>
-            ${item.editing.pipe(editing => editing.value
-              ? html`
-                <input
-                  type=button
-                  value=💾
-                  title=Save
-                  on:click=${() => item.editing.value = false}
-                >`
-              : html`
+                </label>
                 <input
                   type=button
                   value=📝
                   title=Edit
                   on:click=${() => item.editing.value = true}
-                >`
+                >
+                <input
+                  type=button
+                  value=🚮
+                  title=Delete
+                  on:click=${() => this.#items.splice(i.value, 1)}
+                >
+              `
             )}
-            <input
-              type=button
-              value=🚮
-              title=Delete
-              on:click=${() => this.#items.splice(i.value, 1)}
-            >
           </li>
         `)}
         <li>
           <form
+            id=add-task
             on:submit=${(e: Event) => {
               e.preventDefault();
               this.#items.push({
