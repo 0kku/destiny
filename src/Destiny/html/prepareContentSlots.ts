@@ -8,6 +8,10 @@ function createPlaceholder (
   return placeholder;
 }
 
+/**
+ * Replaces string markers marking content slots with placeholder elements that are marked with the `destiny:content` attribute so they can be easily replaced when hooking up content values.
+ * @param contentSlots Descriptions of where the string markers are located
+ */
 export function prepareContentSlots(
   contentSlots: IUnpreparedContentSlot[],
 ) {

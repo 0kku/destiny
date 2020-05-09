@@ -1,5 +1,9 @@
 import { resolveSlots } from "./resolveSlots.js";
 
+/**
+ * Parses and processes a `TemplateStringsArray` into a `DocumentFragment`.
+ * @param param0 The template strings to parse and process
+ */
 export function createTemplateObject (
   [first, ...strings]: TemplateStringsArray,
 ) {

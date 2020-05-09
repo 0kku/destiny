@@ -3,6 +3,10 @@ import isElement from "../typeChecks/isElement.js";
 import { prepareContentSlots } from "./prepareContentSlots.js";
 import { IUnpreparedContentSlot } from "./interfaces.js";
 
+/**
+ * Figures out from a freshly parsed `HTMLTemplate` where slots are located so they can be quickly hooked up with values.
+ * @param template the template element to be processed
+ */
 export function resolveSlots (
   template: HTMLTemplateElement,
 ) {
