@@ -1,4 +1,8 @@
-import { ReactivePrimitive } from "../_Destiny.js";
+/**
+ * This module is currently not being used at all. It will be reworked entirely in the near future.
+ */
+
+import { ReactivePrimitive } from "../../_Destiny.js";
 
 type IReactiveArrayCallback<T> = (
   index: number,

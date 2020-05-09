@@ -1,5 +1,5 @@
 import { primitive } from "./primitive";
-import { ISpecialCaseObject } from "../specialCaseObjects";
+import { ISpecialCaseObject } from "../reactiveObject/specialCaseObjects";
 import { IReactiveValueType } from "./IReactiveRecursive";
 
 export type IArrayValueType<T> = 

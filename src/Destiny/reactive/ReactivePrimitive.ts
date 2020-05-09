@@ -1,4 +1,4 @@
-import { ReactiveArray } from "./ReactiveArray";
+import { ReactiveArray } from "./ReactiveArray/_ReactiveArray.js";
 
 /**
  * `ReactivePrimitive`s are reactive values that contain a single value which can be updated and whose updates can be listened to.

@@ -1,9 +1,12 @@
-import { ReactivePrimitive } from "../_Destiny.js";
-import { IArrayValueType } from "./types/IArrayValueType";
-import { IReactiveArrayCallback } from "./types/IReactiveArrayCallback";
+import { ReactivePrimitive } from "../../_Destiny.js";
+import { IArrayValueType } from "../types/IArrayValueType";
+import { IReactiveArrayCallback } from "../types/IReactiveArrayCallback.js";
 import { reactiveArrayProxyConfig } from "./reactiveArrayProxyConfig.js";
 import { makeNonPrimitiveItemsReactive } from "./makeNonPrimitiveItemsReactive.js";
 
+/**
+ * `ReactiveArray`s are reactive values that contain multiple values which can be updated and whose updates can be listened to. In general, `ReactiveArray`s behave very similar to native `Array`s. The main difference is, that most primitive values are given as `ReactivePrimitive`s and any immutable methods will return a new readonly `ReactiveArray`, whose values are tied to the original `ReactiveArray`. The class also provides a few custom convenience methods.
+ */
 export class ReactiveArray<InputType> {
   /** The keys are enabled by the Proxy defined in the constructor */
   [key: number]: IArrayValueType<InputType>;

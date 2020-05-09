@@ -1,7 +1,7 @@
 import { ReactiveArray, ReactivePrimitive } from "../../_Destiny.js";
 import { IReactiveObject } from "./IReactiveObject";
 import { primitive } from "./primitive.js";
-import { ISpecialCaseObject } from "../specialCaseObjects.js";
+import { ISpecialCaseObject } from "../reactiveObject/specialCaseObjects.js";
 import { IReactive } from "./IReactive.js";
 
 export type IArrayValueType<T> = 
