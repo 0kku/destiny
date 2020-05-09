@@ -1,5 +1,5 @@
 import { DestinyElement, html, reactive, ReactivePrimitive } from "../Destiny/_Destiny.js";
-import "./to-do.js";
+import "./to-do/to-do.js";
 import "./visitor-demo.js";
 import "./array-demo.js";
 import "./time-diff.js";
