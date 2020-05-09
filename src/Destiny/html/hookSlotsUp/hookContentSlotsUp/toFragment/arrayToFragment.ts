@@ -1,6 +1,10 @@
 import { IPropBottom } from "../../../interfaces.js";
 import { shouldBeRendered } from "../../stringifyValue.js";
 
+/**
+ * Converts an array of items into a `DocumentFragment`.
+ * @param nodes The items to be converted
+ */
 export function arrayToFragment (
   nodes: IPropBottom[],
 ) {

@@ -1,17 +1,31 @@
 import { ReactiveArray } from "../_Destiny.js";
 import { Slot } from "./Slot.js";
 
+/**
+ * Keeps track of `ReactiveArray`s slotted into a template in the DOM. 
+ */
 export class SlotArray {
+  /** A "bookmark" for where in the DOM this `SlotArray` starts */
   #startAnchor = new Comment("<DestinyArray>");
-  #endAnchor = new Comment("</DestinyArray>");
-  #source: ReactiveArray<DocumentFragment>; 
-  #domArray = [] as Slot[];
 
+  /** A "bookmark" for where in the DOM this `SlotArray` ends */
+  #endAnchor = new Comment("</DestinyArray>");
+
+  /** The original `ReactiveArray` this instance is receiving updates from */
+  #source: ReactiveArray<DocumentFragment>;
+
+  /** All the `Slot`s being tracked by this instance */
+  #domArray: Slot[] = [];
+
+  /**
+   * @param placeholderNode A `Node` which is used as a "bookmark" of where in the DOM the `SlotArray`'s content should be inserted
+   * @param source The `ReactiveArray` which is being rendered
+   */
   constructor (
-    node: ChildNode,
+    placeholderNode: ChildNode,
     source: ReactiveArray<DocumentFragment>,
   ) {
-    node.replaceWith(
+    placeholderNode.replaceWith(
       this.#startAnchor,
       this.#endAnchor,
     );
@@ -20,6 +34,11 @@ export class SlotArray {
     this.#source.bind(this.update);
   }
 
+  /**
+   * Inserts zero or more `DocumentFragment`s into the DOM, and creates `Slot`s out of them to track them.
+   * @param index Index at which to insert the items
+   * @param fragments the items to be inserted
+   */
   private _insertToDom (
     index: number,
     ...fragments: DocumentFragment[]
@@ -36,6 +55,11 @@ export class SlotArray {
     });
   }
 
+  /**
+   * Removes zero or more `Slot`s from the DOM.
+   * @param from Index at which to start removing `Slot`s
+   * @param count How many `Slot`s to remove
+   */
   private _removeFromDom (
     from: number,
     count: number,
@@ -50,6 +74,12 @@ export class SlotArray {
     this.#domArray.splice(from, count);
   }
 
+  /**
+   * Analogous to `ReactiveArray::splice()`. Removes zero or more `Slot`s from DOM, and inserts zero or more new ones.
+   * @param index Index at which to start modifying `Slots`
+   * @param deleteCount How many `Slot`s to remove
+   * @param items Any new items to be inserted into DOM
+   */
   update = (
     index: number,
     deleteCount: number,
