@@ -3,6 +3,11 @@ import { attributeNamespaces } from "./attributeNamespaces/_attributeNamespaces.
 import { matchChangeWatcher, watchedAttribute } from "./matchChangeWatcher.js";
 import { kebabToCamel } from "../../../utils/kebabToCamel.js";
 
+/**
+ * Goes through all the elements in a template that are flagged with the `destiny::attr` attribute and figures out what events need to be listened to, and how the DOM needs to be updated if any of the given props are reactive.
+ * @param templ A template element that has been processed by `resolveSlots()`.
+ * @param props Any items that were slotted into the HTML template
+ */
 export function hookAttributeSlotsUp (
   templ: DocumentFragment,
   props: unknown[],
