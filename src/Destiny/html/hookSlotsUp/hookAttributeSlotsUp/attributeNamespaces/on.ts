@@ -1,17 +1,18 @@
 import { IValueProps } from "../../_hookSlotsUp.js";
 
 /**
- * on:<EventName> adds an event listener. It either takes a
+ * `on:<EventName>` adds an event listener. It either takes a
  * callback function, or an array containing a callback
  * function and options.
  * 
  * Example usage:
+ * ```html
+ * <button on:click=${() => alert("Hi!")}>Click me!</button>
  * 
- *      <button on:click=${() => alert("Hi!")}>Click me!</button>
- * 
- *      <container-block
- *        on:scroll=${[scrollHandler, {passive:true}]}
- *      ></container-block>
+ * <container-block
+ *   on:scroll=${[scrollHandler, {passive:true}]}
+ * ></container-block>
+ * ```
  */
 export const on = (
   {

@@ -1,7 +1,7 @@
 import { IValueProps } from "../../_hookSlotsUp.js";
 
 /**
- * call:<ElementMethod> takes an array of arguments to be passed to
+ * `call:<ElementMethod>` takes an array of arguments to be passed to
  * the method being called, or a single argument to be called with.
  * 
  * Note that method names need to use kebab-case instead of camelCase
@@ -10,12 +10,18 @@ import { IValueProps } from "../../_hookSlotsUp.js";
  * "requestSubmit", call "request-submit".
  * 
  * Note that like all namespaced attributes, input is not optional and
- * must be slotted with ${} for performance reasons. To call something
+ * must be slotted with `${}` for performance reasons. To call something
  * without arguments, pass in an empty array.
  * 
  * Example usage:
  * 
- *    <form call:request-submit=${[]}></form>
+ * ```html
+ * <form call:request-submit=${[]}></form>
+ * ```
+ * 
+ * @param argument.element element the attribute is on
+ * @param argument.attributeName name of the attribute, without the namespace
+ * @param argument.value the value that was slotted in
  */
 export const call = (
   {

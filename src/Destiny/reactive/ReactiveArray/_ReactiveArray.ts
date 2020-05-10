@@ -489,8 +489,8 @@ export class ReactiveArray<InputType> {
 
   //#endregion
 
-  // #region Non-mutating methods that return a new DestinyArray
-  // Unless specified otherwise, these behave in a similar manner to the equivalent Array prototype methods, except that they return a reactive DestinyArray instead of a regular Array.
+  // #region Non-mutating methods that return a new ReaectiveArray
+  // Unless specified otherwise, these behave in a similar manner to the equivalent Array prototype methods, except that they return a reactive ReaectiveArray instead of a regular Array.
 
   /**
    * Similar to `Array::filter()`, except that it returns a readonly ReactiveArray, which is updated as the originating array is mutated. If you don't want this begavior, use `ReactiveArray.prototype.value.filter()` instead.
