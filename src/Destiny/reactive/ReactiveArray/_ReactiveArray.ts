@@ -3,6 +3,7 @@ import { IArrayValueType } from "../types/IArrayValueType";
 import { IReactiveArrayCallback } from "../types/IReactiveArrayCallback.js";
 import { reactiveArrayProxyConfig } from "./reactiveArrayProxyConfig.js";
 import { makeNonPrimitiveItemsReactive } from "./makeNonPrimitiveItemsReactive.js";
+import { NotImplementedError } from "../../utils/NotImplementedError.js";
 
 /**
  * `ReactiveArray`s are reactive values that contain multiple values which can be updated and whose updates can be listened to. In general, `ReactiveArray`s behave very similar to native `Array`s. The main difference is, that most primitive values are given as `ReactivePrimitive`s and any immutable methods will return a new readonly `ReactiveArray`, whose values are tied to the original `ReactiveArray`. The class also provides a few custom convenience methods.
@@ -509,38 +510,40 @@ export class ReactiveArray<InputType> {
   }
 
   // TODO
-  // flat (
-  //   depth = 1,
-  // ) {
-  //   const newArr = new ReactiveArray(
-  //     ...this.#value.flat(depth),
-  //   );
-  //   this.#callbacks.add(
-  //     () => newArr.setValue(
-  //       this.#value.flat(depth),
-  //     ),
-  //   );
-  //   return newArr;
-  // }
+  flat (
+    depth = 1,
+  ) {
+    throw new NotImplementedError("See https://github.com/0kku/destiny/issues/1");
+    // const newArr = new ReactiveArray(
+    //   ...this.#value.flat(depth),
+    // );
+    // this.#callbacks.add(
+    //   () => newArr.setValue(
+    //     this.#value.flat(depth),
+    //   ),
+    // );
+    // return newArr;
+  }
 
   // TODO
-  // flatMap<U> (
-  //   callback: (
-  //     value: IArrayValueType<InputType>,
-  //     index: ReactivePrimitive<number>,
-  //     array: IArrayValueType<InputType>[],
-  //   ) => U | ReadonlyArray<U>,
-  // ) {
-  //   const newArr = new ReactiveArray(
-  //     ...this.#value.flatMap(callback)
-  //   );
-  //   this.pipe(() => {
-  //     newArr.setValue(
-  //       this.#value.flatMap(callback),
-  //     );
-  //   });
-  //   return newArr;
-  // }
+  flatMap<U> (
+    callback: (
+      value: IArrayValueType<InputType>,
+      index: ReactivePrimitive<number>,
+      array: IArrayValueType<InputType>[],
+    ) => U | ReadonlyArray<U>,
+  ) {
+    throw new NotImplementedError("See https://github.com/0kku/destiny/issues/1");
+    // const newArr = new ReactiveArray(
+    //   ...this.#value.flatMap(callback)
+    // );
+    // this.pipe(() => {
+    //   newArr.setValue(
+    //     this.#value.flatMap(callback),
+    //   );
+    // });
+    // return newArr;
+  }
 
   /**
    * Similar to `Array::map()`, except that it returns a readonly ReactiveArray, which gets gets updated with mapped values as the originating array is updated. If you don't want this behavior, use `ReactiveArray.prototype.value.map()` instead.
