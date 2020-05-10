@@ -33,7 +33,7 @@ function reactive<T> (
   } = {},
 ) {
   if (isReactive(initialValue)) {
-    console.log(initialValue, "was already reactive");
+    // console.log(initialValue, "was already reactive");
     return initialValue;
   } else if (initialValue instanceof Array) {
     const newArr = new ReactiveArray(...initialValue);

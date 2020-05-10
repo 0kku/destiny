@@ -495,30 +495,15 @@ export class ReactiveArray<InputType> {
   /**
    * Similar to `Array::filter()`, except that it returns a readonly ReactiveArray, which is updated as the originating array is mutated. If you don't want this begavior, use `ReactiveArray.prototype.value.filter()` instead.
    */
-  filter<S extends IArrayValueType<InputType>> (
+  filter (
     callback: (
       value: IArrayValueType<InputType>,
       index: number,
       array: IArrayValueType<InputType>[],
-    ) => value is S,
-  ): Readonly<ReactiveArray<S>> {
-    const newArr: ReactiveArray<S> = new ReactiveArray(
-      ...this.#value.filter(callback),
-    );
-    this.#callbacks.add(
-      (
-        index,
-        deleteCount,
-        ...values
-      ) => newArr.splice(
-        index,
-        this.value
-          .slice(index, index + deleteCount)
-          .filter(callback)
-          .length,
-        ...values.filter(callback)
-      ),
-    );
+    ) => unknown,
+  ): Readonly<ReactiveArray<InputType>> {
+    const newArr: ReactiveArray<InputType> = new ReactiveArray;
+    this.bind(() => newArr.setValue(this.#value.filter(callback)));
     
     return newArr;
   }
