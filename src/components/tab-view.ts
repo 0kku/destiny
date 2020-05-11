@@ -66,7 +66,7 @@ customElements.define("tab-view", class extends DestinyElement {
           <li
             on:click=${() => this.#selected.value = i.value}
             class=${ReactivePrimitive.from(
-              (i, selected) => i.value === selected.value && "selected",
+              (i, selected) => i === selected && "selected",
               i,
               this.#selected,
             )}
@@ -74,9 +74,7 @@ customElements.define("tab-view", class extends DestinyElement {
         `)}
       </ul>
       <main>
-        ${this.#selected.pipe(selected => html`
-          ${this.#tabs[selected.value].content.value()}
-        `)}
+        ${this.#selected.pipe(selected => this.#tabs[selected].content.value())}
       </main>
     `;
   }

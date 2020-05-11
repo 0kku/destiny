@@ -42,14 +42,14 @@ customElements.define("array-demo", class extends DestinyElement {
           line-height: 32px;
           margin: 4px;
           border-radius: 3px;
-          text-shadow: 1px 1px 3px rgba(0,0,0,.5);
-          box-shadow: 1px 1px 3px rgba(0,0,0,.5);
+          text-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
+          box-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
           font-family: monospace;
         }
       </style>
       <ul>
         ${this.#items.map((text, i) => html`
-          <li style=${`background-color: ${text};`}>${i}</li>
+          <li style="background-color: ${text};">${i}</li>
         `)}
       </ul>
     `;

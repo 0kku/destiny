@@ -1,5 +1,8 @@
 import { ReactiveArray } from "./ReactiveArray/_ReactiveArray.js";
 
+type Unwrap<T> = T extends ReactivePrimitive<infer U> ? U : T extends ReactiveArray<infer U> ? U : never;
+type UnwrapAll<T> = { [K in keyof T]: Unwrap<T[K]> };
+
 /**
  * `ReactivePrimitive`s are reactive values that contain a single value which can be updated and whose updates can be listened to.
  */
@@ -65,9 +68,10 @@ export class ReactivePrimitive<T> {
    */
   bind (
     callback: (newValue: T) => any,
+    noFirstCall = false,
   ) {
     this.#callbacks.add(callback);
-    callback(this.value);
+    if (!noFirstCall) callback(this.#value);
     return this;
   }
 
@@ -112,19 +116,24 @@ export class ReactivePrimitive<T> {
    * @param refs One or more `ReactivePrimitive`s or `ReactiveArray`s which are to be piped into a new one.
    */
   static from<
-    T,
-    Callback extends (...values: (ReactivePrimitive<T> | ReactiveArray<T>)[]) => any,
+    T extends Array<ReactivePrimitive<any> | ReactiveArray<any>>,
+    Callback extends (...values: UnwrapAll<T>) => any,
   > (
     updater: Callback,
-    ...refs: (ReactivePrimitive<T> | ReactiveArray<T>)[]
+    ...refs: T
   ): ReactivePrimitive<ReturnType<Callback>> {
-    const newRef = new ReactivePrimitive<ReturnType<Callback>>(updater(...refs));
-    refs.forEach((ref, i) => 
+    const newRef = new ReactivePrimitive<ReturnType<Callback>>(
+      // @ts-ignore TS is dumb and there's seemingly no way to tell it this is OK
+      updater(...refs.map(v => v.value)),
+    );
+    refs.forEach(ref => 
       ref.bind(() => {
         queueMicrotask(() => {
-          newRef.value = updater(...refs);
+          // @ts-ignore TS is dumb and there's seemingly no way to tell it this is OK
+          newRef.value = updater(...refs.map(v => v.value));
         });
-      }
+      },
+      true,
     ));
     return newRef;
   }
@@ -134,23 +143,60 @@ export class ReactivePrimitive<T> {
    * @param callback A function which will be called whenever the original `ReactivePrimitive` is updated, and whose return value is assigned to the output `ReactivePrimitive`
    */
   pipe <K> (
-    callback: (value: ReactivePrimitive<T>) => K,
-  ): ReactivePrimitive<K> {
+    callback: (value: T) => K,
+  ): Readonly<ReactivePrimitive<K>> {
     return ReactivePrimitive.from(
-      callback as (value: ReactivePrimitive<T> | ReactiveArray<T>) => K,
+      callback,
       this,
     );
   }
+
+  truthy<T> (
+    valueWhenTruthy: T,
+    valueWhenFalsy?: undefined,
+  ): Readonly<ReactivePrimitive<T | undefined>>
+  truthy<T, K> (
+    valueWhenTruthy: T,
+    valueWhenFalsy: K,
+  ): Readonly<ReactivePrimitive<T | K>> {
+    return this.pipe(v => v ? valueWhenTruthy : valueWhenFalsy);
+  }
+
+  falsy<T> (
+    valueWhenFalsy: T,
+    valueWhenTruthy?: undefined,
+  ): Readonly<ReactivePrimitive<T | undefined>>
+  falsy<T, K> (
+    valueWhenFalsy: T,
+    valueWhenTruthy: K,
+  ): Readonly<ReactivePrimitive<T | K>> {
+    return this.pipe(v => v ? valueWhenTruthy : valueWhenFalsy);
+  }
+
+  ternary<A> (
+    condition: (newValue: T) => boolean, 
+    yes: A,
+    no?: undefined,
+  ): Readonly<ReactivePrimitive<A | undefined>>
+  ternary<A, B> (
+    condition: (newValue: T) => boolean, 
+    yes: A,
+    no: B,
+  ): Readonly<ReactivePrimitive<A | B>> {
+    return this.pipe(v => condition(v) ? yes : no);
+  }
 }
 
-// const a = new Ref(3);
-// const b = new Ref(6);
-// const c = Ref.from(
-//   ([a, b]) => a.value + b.value,
+// const a = new ReactivePrimitive(3);
+// const b = new ReactivePrimitive("6");
+// const d = new ReactiveArray(["7", "8"]);
+// const c = ReactivePrimitive.from(
+//   (a, b, d) => a + b,
 //   a,
 //   b,
+//   d
 // );
 // console.log(a.value, b.value, c.value); //3, 6, 9
 // a.value++;
-// b.value = 38;
+// b.value = "38";
 // console.log(a.value, b.value, c.value); //4, 38, 42

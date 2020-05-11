@@ -80,7 +80,7 @@ customElements.define("task-item", class extends DestinyElement {
             this.item.editing.value = false;
           }}
         >
-          ${this.item.editing.pipe(editing => !editing.value
+          ${this.item.editing.pipe(editing => !editing
             ? html`
               <label>
                 <input
@@ -89,9 +89,7 @@ customElements.define("task-item", class extends DestinyElement {
                 >
                 <span
                   class=task-name
-                  style=${this.item.done.pipe(
-                    v => v.value && "text-decoration: line-through",
-                  )}
+                  style=${this.item.done.truthy("text-decoration: line-through")}
                 >
                   ${this.item.title}
                 </span>

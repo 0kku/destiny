@@ -20,12 +20,6 @@ function formatTime (
   return [daysString, hoursString, minutesString, secondsString].join("");
 }
 
-const createTask = () => ({
-  start: new Date(0),
-  end: new Date(0),
-  name: "new task",
-});
-
 customElements.define("time-diff", class extends DestinyElement {
   #tasks = reactive([this.createTask()]); //initialize an array of tasks, with one task in it
 
@@ -64,7 +58,7 @@ customElements.define("time-diff", class extends DestinyElement {
           </label>
           <br>
           Duration of "${task.name}": ${ReactivePrimitive.from(
-            (start, end) => formatTime(Number(end.value) - Number(start.value)),
+            (start, end) => formatTime(Number(end) - Number(start)),
             task.start,
             task.end,
           )}
