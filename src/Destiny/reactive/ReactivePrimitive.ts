@@ -79,7 +79,7 @@ export class ReactivePrimitive<T> {
    * Forces an update event to be dispatched.
    */
   update () {
-    this.set();
+    this.set(this.#value);
   }
   
   /**
@@ -88,7 +88,7 @@ export class ReactivePrimitive<T> {
    * @param noUpdate One or more callback methods you don't want to be called on this update. This can be useful for example when responding to DOM events: you wouldn't want to update the DOM with the new value on the same element that caused the udpate in the first place.
    */
   set (
-  	value: T = this.#value,
+  	value: T,
     ...noUpdate: Array<(newValue: T) => any>
   ) {
     if (value !== this.#value) {
@@ -158,6 +158,10 @@ export class ReactivePrimitive<T> {
   truthy<T, K> (
     valueWhenTruthy: T,
     valueWhenFalsy: K,
+  ): Readonly<ReactivePrimitive<T | K>>
+  truthy<T, K> (
+    valueWhenTruthy: T,
+    valueWhenFalsy: K,
   ): Readonly<ReactivePrimitive<T | K>> {
     return this.pipe(v => v ? valueWhenTruthy : valueWhenFalsy);
   }
@@ -166,6 +170,10 @@ export class ReactivePrimitive<T> {
     valueWhenFalsy: T,
     valueWhenTruthy?: undefined,
   ): Readonly<ReactivePrimitive<T | undefined>>
+  falsy<T, K> (
+    valueWhenFalsy: T,
+    valueWhenTruthy: K,
+  ): Readonly<ReactivePrimitive<T | K>>
   falsy<T, K> (
     valueWhenFalsy: T,
     valueWhenTruthy: K,
