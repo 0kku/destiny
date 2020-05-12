@@ -29,6 +29,10 @@ customElements.define("to-do", class extends DestinyElement {
   render () {
     return html`
       <style>
+        label {
+          line-height: 32px;
+        }
+
         label, [type=button], [type=submit] {
           cursor: pointer;
         }
@@ -40,6 +44,8 @@ customElements.define("to-do", class extends DestinyElement {
         }
 
         input:not([type=checkbox]) {
+          color: white;
+          text-shadow: 1px 1px 1px rgba(0,0,0,.7);
           vertical-align: top;
           box-sizing: border-box;
           width: 40px;
@@ -64,8 +70,6 @@ customElements.define("to-do", class extends DestinyElement {
         }
 
         input[type=text] {
-          color: white;
-          text-shadow: 1px 1px 1px rgba(0,0,0,.7);
           padding: 0 6px;
           width: 200px;
           height: 30px;
@@ -91,6 +95,7 @@ customElements.define("to-do", class extends DestinyElement {
             destiny:out=${animateOut}
           ></task-item>
         `)}
+        ${this.#items.length.falsy(html`<li><i>No items to show</i></li>`)}
         <li>
           <form
             id=add-task
@@ -123,9 +128,12 @@ customElements.define("to-do", class extends DestinyElement {
         >
         Check all
       </label>
+      <input
+        type=button
+        value="Clear done"
+        style="width: auto"
+        on:click=${() => this.#items.mutFilter(v => !v.done.value)}
+      >
     `;
   }
 });
-
-const f = document.createElement("input");
-f.addEventListener("change", e => {})
