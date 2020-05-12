@@ -9,19 +9,19 @@ customElements.define("tab-view", class extends DestinyElement {
   #tabs = reactive([
     {
       title: "Visitor demo",
-      content: () => html`<visitor-demo></visitor-demo>`,
+      content: html`<visitor-demo></visitor-demo>`,
     },
     {
       title: "Todo",
-      content: () => html`<to-do></to-do>`,
+      content: html`<to-do></to-do>`,
     },
     {
       title: "Array demo",
-      content: () => html`<array-demo></array-demo>`,
+      content: html`<array-demo></array-demo>`,
     },
     {
       title: "Time difference",
-      content: () => html`<time-diff></time-diff>`,
+      content: html`<time-diff></time-diff>`,
     },
   ]);
 
@@ -74,7 +74,7 @@ customElements.define("tab-view", class extends DestinyElement {
         `)}
       </ul>
       <main>
-        ${this.#selected.pipe(selected => this.#tabs[selected].content.value())}
+        ${this.#selected.pipe(selected => this.#tabs[selected].content.value)}
       </main>
     `;
   }

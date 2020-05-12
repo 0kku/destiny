@@ -9,6 +9,7 @@ import { stringifyValue } from "../../stringifyValue.js";
 export function valueToFragment (
   value: unknown,
 ) {
+  if (value instanceof Function) value = value();
   if (value instanceof Node) {
     return nodeToFragment(value);
   } else if (value instanceof DocumentFragment) {

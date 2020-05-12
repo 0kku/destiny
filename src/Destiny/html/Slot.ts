@@ -18,7 +18,7 @@ export class Slot {
    */
   constructor (
     placeholderNode: ChildNode,
-    content?: DocumentFragment,
+    content?: (() => DocumentFragment) | DocumentFragment,
   ) {
     this.#nodes = [placeholderNode];
     placeholderNode.replaceWith(
@@ -36,8 +36,9 @@ export class Slot {
    * @param fragment New content for the slot
    */
   update (
-    fragment: DocumentFragment,
+    input: (() => DocumentFragment) | DocumentFragment,
   ) {
+    const fragment = input instanceof Function ? input() : input;
     const placeholder = this.#nodes.pop()!;
     for (const node of this.#nodes) node.remove();
     if (!fragment.childNodes.length) {

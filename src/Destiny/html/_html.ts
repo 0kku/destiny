@@ -25,12 +25,14 @@ export function html (
     );
   };
 
-  const content = template.content.cloneNode(true) as DocumentFragment;
-
-  hookSlotsUp(
-    content,
-    props,
-  );
-
-  return content;
+  return () => {
+    const content = template!.content.cloneNode(true) as DocumentFragment;
+  
+    hookSlotsUp(
+      content,
+      props,
+    );
+  
+    return content;
+  }
 }

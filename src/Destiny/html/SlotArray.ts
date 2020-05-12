@@ -41,7 +41,7 @@ export class SlotArray {
    */
   private _insertToDom (
     index: number,
-    ...fragments: DocumentFragment[]
+    ...fragments: Array<DocumentFragment | (() => DocumentFragment)>
   ) {
     fragments.forEach((fragment, i) => {
       const where = i + index;

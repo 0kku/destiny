@@ -9,10 +9,10 @@ export class DestinyElement extends HTMLElement {
     }
     super();
     const shadow = this.attachShadow({ mode: "open" });
-    queueMicrotask(() => shadow.appendChild(this.render()));
+    queueMicrotask(() => shadow.appendChild(this.render()()));
   }
 
-  render(): Node {
-    return new Text;
+  render(): () => Node {
+    return () => new Text;
   }
 }
