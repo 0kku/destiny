@@ -1,4 +1,4 @@
-import { DestinyElement, html, reactive, ReactivePrimitive } from "../Destiny/_Destiny.js";
+import { DestinyElement, html, reactive, expression } from "../Destiny/_Destiny.js";
 import "./to-do/to-do.js";
 import "./visitor-demo.js";
 import "./array-demo.js";
@@ -65,11 +65,7 @@ customElements.define("tab-view", class extends DestinyElement {
         ${this.#tabs.map((tab, i) => html`
           <li
             on:click=${() => this.#selected.value = i.value}
-            class=${ReactivePrimitive.from(
-              (i, selected) => i === selected && "selected",
-              i,
-              this.#selected,
-            )}
+            class=${expression`${i} === ${this.#selected} && "selected"`}
           >${tab.title}</li>
         `)}
       </ul>

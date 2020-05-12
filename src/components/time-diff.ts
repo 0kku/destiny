@@ -1,4 +1,4 @@
-import { DestinyElement, html, reactive, ReactivePrimitive } from "../Destiny/_Destiny.js";
+import { DestinyElement, html, reactive, expression } from "../Destiny/_Destiny.js";
 
 function formatTimeFragment (
   input: number,
@@ -57,11 +57,9 @@ customElements.define("time-diff", class extends DestinyElement {
             >
           </label>
           <br>
-          Duration of "${task.name}": ${ReactivePrimitive.from(
-            (start, end) => formatTime(Number(end) - Number(start)),
-            task.start,
-            task.end,
-          )}
+          Duration of "${task.name}": ${expression`
+            ${formatTime}(Number(${task.end}) - Number(${task.start}))
+          `}
         </div>`
       )}
       <input
