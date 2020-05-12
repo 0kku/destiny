@@ -1,6 +1,9 @@
 import { ReactiveArray } from "./ReactiveArray/_ReactiveArray.js";
 
-type Unwrap<T> = T extends ReactivePrimitive<infer U> ? U : T extends ReactiveArray<infer U> ? U : never;
+type Unwrap<T> = 
+  T extends ReactivePrimitive<infer U> ? U :
+  T extends ReactiveArray<infer U> ? U :
+  never;
 type UnwrapAll<T> = { [K in keyof T]: Unwrap<T[K]> };
 
 /**
@@ -116,13 +119,13 @@ export class ReactivePrimitive<T> {
    * @param refs One or more `ReactivePrimitive`s or `ReactiveArray`s which are to be piped into a new one.
    */
   static from<
-    T extends Array<ReactivePrimitive<any> | ReactiveArray<any>>,
-    Callback extends (...values: UnwrapAll<T>) => any,
+    TParams extends Array<ReactivePrimitive<any> | ReactiveArray<any>>,
+    TReturn
   > (
-    updater: Callback,
-    ...refs: T
-  ): ReactivePrimitive<ReturnType<Callback>> {
-    const newRef = new ReactivePrimitive<ReturnType<Callback>>(
+    updater: (...values: UnwrapAll<TParams>) => TReturn,
+    ...refs: TParams
+  ): Readonly<ReactivePrimitive<TReturn>> {
+    const newRef = new ReactivePrimitive<TReturn>(
       // @ts-ignore TS is dumb and there's seemingly no way to tell it this is OK
       updater(...refs.map(v => v.value)),
     );
