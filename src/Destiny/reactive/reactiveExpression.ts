@@ -11,7 +11,7 @@ const cache: WeakMap<TemplateStringsArray, Function> = new WeakMap;
  * **Note: the expression is not akin to arrow functions. It does _not_ have access to outside variables, so those need to be slotted in also.**
  * 
  * Example usage:
- * ```js
+ * ```ts
  * const a = reactive(2);
  * const b = reactive(5);
  * const c = expression`${a} + ${b}`;
@@ -20,6 +20,12 @@ const cache: WeakMap<TemplateStringsArray, Function> = new WeakMap;
  * console.log(c.value); // -1
  * ```
  * _Note that `c` in this example is of type `Readonly<ReactivePrimitive<unknown>>`. I'm afraid it's impossible to infer the type correctly._
+ * 
+ * However, you can set the type explicitly:
+ * ```ts
+ * const c = expression<number>`${a} + ${b}`;
+ * ```
+ * Here, the type of `c` is `Readonly<ReactivePrimitive<number>>`. There's still no type checking inside the expression and it won't check if that's the type it _actually_ returns, though.
  */
 export function expression<T = unknown> (
   templ: TemplateStringsArray,
