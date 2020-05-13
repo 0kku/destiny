@@ -30,6 +30,7 @@ customElements.define("to-do", class extends DestinyElement {
     return html`
       <style>
         label {
+          height: 32px;
           line-height: 32px;
         }
 
@@ -95,7 +96,14 @@ customElements.define("to-do", class extends DestinyElement {
             destiny:out=${animateOut}
           ></task-item>
         `)}
-        ${this.#items.length.falsy(html`<li><i>No items to show</i></li>`)}
+        ${this.#items.length.falsy(html`
+          <li
+            destiny:in=${animateIn}
+            destiny:out=${animateOut}
+          >
+            <i>No items to show</i>
+          </li>
+        `)}
         <li>
           <form
             id=add-task

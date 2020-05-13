@@ -39,28 +39,38 @@ export class Slot {
     input: (() => DocumentFragment) | DocumentFragment,
   ) {
     const fragment = input instanceof Function ? input() : input;
-    const placeholder = this.#nodes.pop()!;
-    for (const node of this.#nodes) node.remove();
-    if (!fragment.childNodes.length) {
-      fragment.append(new Comment("Destiny empty value"));
-    }
+    this._disposeCurrentNodes();
     this.#nodes = Object.values(fragment.childNodes);
-    placeholder.replaceWith(fragment);
+    this.#endAnchor.before(fragment);
+  }
+
+  /**
+   * First removes all the current nodes from this Slot's list of tracked nodes, then waits for any exit tasks (such as animations) these nodes might have, and removes each node once all the tasks have finished running.
+   */
+  private async _disposeCurrentNodes () {
+    const nodesToDisposeOf = this.#nodes.splice(
+      0,
+      this.#nodes.length,
+    ) as HTMLElement[];
+
+    await Promise.all(
+      nodesToDisposeOf.map(
+        node => deferredElements.get(node)?.(node),
+      ),
+    );
+
+    for (const node of nodesToDisposeOf) {
+      node.remove();
+    }
   }
 
   /**
    * Removes all the associated content from the DOM and destroys the `Slot`. Note: this is an async function and will wait for any exit animations or other tasks to finish before removing anything. Exit tasks for HTML elements are defined by the `destiny:out` attribute; if the callback function given to it returns a `Promise`, that's what's being awaited before removal.
    */
   async remove () {
-    await Promise.all(
-      this.#nodes.map(node => deferredElements.get(node as HTMLElement)?.(node as HTMLElement))
-    );
-    for (const node of this.#nodes) {
-      node.remove();
-    }
+    await this._disposeCurrentNodes();
     this.#startAnchor.remove();
     this.#endAnchor.remove();
-    this.#nodes.splice(0, this.#nodes.length - 1);
   }
 
   /**
