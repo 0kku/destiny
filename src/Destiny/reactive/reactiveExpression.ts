@@ -21,10 +21,10 @@ const cache: WeakMap<TemplateStringsArray, Function> = new WeakMap;
  * ```
  * _Note that `c` in this example is of type `Readonly<ReactivePrimitive<unknown>>`. I'm afraid it's impossible to infer the type correctly._
  */
-export function expression (
+export function expression<T = unknown> (
   templ: TemplateStringsArray,
   ...args: unknown[]
-): Readonly<ReactivePrimitive<unknown>> {
+): Readonly<ReactivePrimitive<T>> {
   
   let fn = cache.get(templ);
   if (!fn) {
@@ -40,13 +40,15 @@ export function expression (
   )
 }
 
+/** Generates a function from a tempalte string to be used as a callback for `ReactivePrimitive.from()`. */
 function generateFn (
   templ: TemplateStringsArray,
-  args: unknown[]
+  args: unknown[],
 ) {
   const functionBody = templ.reduce(
     (acc, v, i) => `${acc}args[${i-1}]${isReactive(args[i-1]) ? ".value" : ""}${v}`,
   );
+
   return new Function(
     "args",
     `return (${functionBody})`,
