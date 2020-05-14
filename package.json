@@ -1,16 +1,19 @@
 {
   "name": "destiny",
   "description": "A reactive UI library for JavaScript and TypeScript.",
-  "version": "0.0.0",
+  "version": "0.2.0",
   "main": "./dist/examples/main.js",
   "dependencies": {
-    "typescript": "^3.9.1-rc"
+    "typescript": "^3.9.2"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "compile": "node ./node_modules/typescript/bin/tsc",
+    "watch": "node ./node_modules/typescript/bin/tsc -w"
   },
   "keywords": [],
-  "author": "",
-  "license": "OSL 3.0"
+  "repository": "https://github.com/0kku/destiny",
+  "author": "https://github.com/0kku/",
+  "license": "OSL-3.0"
 }
