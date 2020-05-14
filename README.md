@@ -24,8 +24,8 @@ A reactive UI library for JavaScript and TypeScript. Uses standard JS/TS syntax;
 
 1. install node
 2. run `npm i` in root
-3. run `node ./node_modules/typescript/bin/tsc` in root
-4. start a dev server (ex: `npm i -g http-server`) and open `/index.html` to view demo
+3. run `npm run compile` in root
+4. start a dev server (ex: `npx http-server .`) and open `/index.html` to view demo
 
 To get syntax-highlighting for HTML templates, you can use an extension called [`tobermory.es6-string-html`](https://marketplace.visualstudio.com/items?itemName=Tobermory.es6-string-html) on VSCode. Similar plugins are available for other editors too. Any extension that makes the editor treat template literals' tags as that block's file extension (ex. ``html`...`;`` is treated as an .html snippet) should also work. This only gives you syntax highlighting, though: slots are unfortunately not type checked; that would require a dedicated extension for this library, which does not yet exist.
 
@@ -38,7 +38,7 @@ The `html` template tag will parse the content as HTML and returns a `DocumentFr
 In the below example, two reactive items `#who` and `#count` are defined. `#who` is set as the value of an input element: the value of `#who` is updated whenever the text field in question receives input. `#who` is also rendered as text below, so as the user types, the text below will update in real time. `#count` on the other hand is just a number which is incremented once a second; the seconds counter is automatically rerendered every time the count changes.
 
 ```js
-import { DestinyElement, html, reactive } from "destiny";
+import { DestinyElement, html, reactive } from "https://code.okku.dev/destiny-ui/0.2.0/dist/mod.js";
 
 customElements.define("example-component", class extends DestinyElement {
   #who = reactive("visitor");
@@ -68,6 +68,8 @@ The library figures out what the appropriate DOM operation for each slot is from
 You can also make arrays reactive. ReactiveArrays will behave generally akin to normal array, except that they will give you reactive properties instead of normal ones. You can manipulate the array like you would normal arrays: forget immutability! Here's an example of using a reactive array:
 
 ```js
+import { html, reactive } from "https://code.okku.dev/destiny-ui/0.2.0/dist/mod.js";
+
 const thingsILike = reactive(["cats", "JavaScript", "sleep"]);
 
 document.body.append(html`
@@ -76,7 +78,7 @@ document.body.append(html`
       <li>${value}</li>
     `)}
   </ul>
-`);
+`());
 
 // later update the list:
 setTimeout(() => {
@@ -87,7 +89,7 @@ setTimeout(() => {
 
 ## Docs
 
-No documentation yet, sorry.
+No documentation yet, sorry. Some documentation can be found in source, however. Not ideal, but better than nothing for now.
 
 ## Supported platforms
 
