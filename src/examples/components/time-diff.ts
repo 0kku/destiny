@@ -1,4 +1,4 @@
-import { DestinyElement, html, reactive, expression } from "../../Destiny/mod.js";
+import { DestinyElement, html, reactive, expression } from "../../mod.js";
 
 function formatTimeFragment (
   input: number,

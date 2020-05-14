@@ -1,5 +1,5 @@
-import { DestinyElement, html } from "../../../Destiny/mod.js";
-import { IReactiveObject } from "../../../Destiny/reactive/types/IReactiveObject.js";
+import { DestinyElement, html } from "../../../mod.js";
+import { IReactiveObject } from "../../../reactive/types/IReactiveObject.js";
 
 customElements.define("task-item", class extends DestinyElement {
   set item (

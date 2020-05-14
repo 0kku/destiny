@@ -1,4 +1,4 @@
-import { DestinyElement, html, reactive, expression } from "../../Destiny/mod.js";
+import { DestinyElement, html, reactive, expression } from "../../mod.js";
 import "./to-do/_to-do.js";
 import "./visitor-demo.js";
 import "./array-demo.js";
