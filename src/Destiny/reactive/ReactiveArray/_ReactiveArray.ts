@@ -13,25 +13,32 @@ export class ReactiveArray<InputType> {
   [key: number]: IArrayValueType<InputType>;
 
   /** An Array containing the current values of the ReactiveArray */
-  readonly #value: IArrayValueType<InputType>[] = [];
+  readonly #value: IArrayValueType<InputType>[];
 
   /** An Array containing ReactivePrimitives for each index of the ReactiveArray */
-  readonly #indices: ReactivePrimitive<number>[] = [];
+  readonly #indices: ReactivePrimitive<number>[];
 
   /** A Set containing all the callbacks to be called whenever the ReactiveArray is updated */
   readonly #callbacks: Set<IReactiveArrayCallback<IArrayValueType<InputType>>> = new Set;
 
   /** Size of the ReactiveArray as a ReactivePrimitive */
-  readonly #length: Readonly<ReactivePrimitive<number>> = (() => {
-    const ref = new ReactivePrimitive(this.#value.length);
-    this.bind(() => ref.value = this.#value.length);
-    return ref;
-  })();
+  readonly #length: Readonly<ReactivePrimitive<number>>;
 
   constructor (
-    ...array: InputType[]
+    ...input: InputType[]
   ) {
-    this.splice(0, 0, ...array);
+    this.#value = makeNonPrimitiveItemsReactive(
+      input,
+      this,
+    );
+    this.#length = ReactivePrimitive.from(
+      () => this.#value.length,
+      this,
+    );
+    this.#indices = input.map(
+      (_, i) => new ReactivePrimitive(i),
+    );
+
     return new Proxy(
       this,
       reactiveArrayProxyConfig,
