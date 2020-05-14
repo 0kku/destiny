@@ -1,4 +1,4 @@
-import { ReactiveArray, ReactivePrimitive, reactiveObject } from "../_Destiny.js";
+import { ReactiveArray, ReactivePrimitive, reactiveObject } from "../mod.js";
 import { isObject } from "../typeChecks/isObject.js";
 import { IReactiveValueType } from "./types/IReactiveRecursive.js";
 import { IReactive } from "./types/IReactive.js";

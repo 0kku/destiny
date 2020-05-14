@@ -2,7 +2,7 @@
   "name": "destiny",
   "description": "A reactive UI library for JavaScript and TypeScript.",
   "version": "0.0.0",
-  "main": "./dist/main.js",
+  "main": "./dist/examples/main.js",
   "dependencies": {
     "typescript": "^3.9.1-rc"
   },

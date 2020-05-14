@@ -1,4 +1,4 @@
-import { DestinyElement, html } from "../Destiny/_Destiny.js";
+import { DestinyElement, html } from "../../Destiny/mod.js";
 import "./tab-view.js";
 
 customElements.define("app-root", class extends DestinyElement {

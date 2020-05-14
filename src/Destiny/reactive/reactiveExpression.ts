@@ -1,4 +1,4 @@
-import { ReactivePrimitive, ReactiveArray } from "../_Destiny.js";
+import { ReactivePrimitive, ReactiveArray } from "../mod.js";
 import { isReactive } from "../typeChecks/isReactive.js";
 
 const cache: WeakMap<TemplateStringsArray, Function> = new WeakMap;

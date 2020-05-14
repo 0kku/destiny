@@ -1,4 +1,4 @@
-import { DestinyElement, html, reactive } from "../../Destiny/_Destiny.js";
+import { DestinyElement, html, reactive } from "../../../Destiny/mod.js";
 import { animateIn, animateOut } from "./animations.js";
 import "./task-item.js";
 

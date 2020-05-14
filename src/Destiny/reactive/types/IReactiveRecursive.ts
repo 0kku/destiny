@@ -1,4 +1,4 @@
-import { ReactiveArray, ReactivePrimitive } from "../../_Destiny.js";
+import { ReactiveArray, ReactivePrimitive } from "../../mod.js";
 import { IReactiveObject } from "./IReactiveObject";
 import { primitive } from "./primitive.js";
 import { ISpecialCaseObject } from "../reactiveObject/specialCaseObjects.js";

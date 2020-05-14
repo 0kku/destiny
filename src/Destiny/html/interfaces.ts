@@ -1,4 +1,4 @@
-import { ReactivePrimitive } from "../_Destiny.js";
+import { ReactivePrimitive } from "../mod.js";
 
 export interface IUnpreparedContentSlot {
   node: Text,

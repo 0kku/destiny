@@ -1,5 +1,5 @@
 import { IValueProps } from "../../_hookSlotsUp.js";
-import { ReactivePrimitive } from "../../../../_Destiny.js";
+import { ReactivePrimitive } from "../../../../mod.js";
 import { deferredElements } from "../../../deferredElements.js";
 
 export const destiny = (

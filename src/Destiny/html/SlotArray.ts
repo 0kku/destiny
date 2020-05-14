@@ -1,4 +1,4 @@
-import { ReactiveArray } from "../_Destiny.js";
+import { ReactiveArray } from "../mod.js";
 import { Slot } from "./Slot.js";
 
 /**

@@ -1,4 +1,4 @@
-import { DestinyElement, html, reactive } from "../Destiny/_Destiny.js";
+import { DestinyElement, html, reactive } from "../../Destiny/mod.js";
 
 customElements.define("visitor-demo", class extends DestinyElement {
   #who = reactive("visitor");

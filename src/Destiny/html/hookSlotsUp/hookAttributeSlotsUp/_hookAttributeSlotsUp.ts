@@ -1,4 +1,4 @@
-import { ReactivePrimitive } from "../../../_Destiny.js";
+import { ReactivePrimitive } from "../../../mod.js";
 import { attributeNamespaces } from "./attributeNamespaces/_attributeNamespaces.js";
 import { matchChangeWatcher, watchedAttribute } from "./matchChangeWatcher.js";
 import { kebabToCamel } from "../../../utils/kebabToCamel.js";

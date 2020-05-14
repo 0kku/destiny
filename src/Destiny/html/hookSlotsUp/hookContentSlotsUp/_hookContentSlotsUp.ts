@@ -1,4 +1,4 @@
-import { ReactivePrimitive, ReactiveArray } from "../../../_Destiny.js";
+import { ReactivePrimitive, ReactiveArray } from "../../../mod.js";
 import { valueToFragment } from "./toFragment/valueToFragment.js";
 import { Slot } from "../../Slot.js";
 import { SlotArray } from "../../SlotArray.js";

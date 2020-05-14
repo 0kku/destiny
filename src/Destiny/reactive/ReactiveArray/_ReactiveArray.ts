@@ -1,4 +1,4 @@
-import { ReactivePrimitive } from "../../_Destiny.js";
+import { ReactivePrimitive } from "../../mod.js";
 import { IArrayValueType } from "../types/IArrayValueType";
 import { IReactiveArrayCallback } from "../types/IReactiveArrayCallback.js";
 import { reactiveArrayProxyConfig } from "./reactiveArrayProxyConfig.js";

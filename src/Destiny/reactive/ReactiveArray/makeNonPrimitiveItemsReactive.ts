@@ -1,5 +1,5 @@
 import { IArrayValueType } from "../types/IReactiveRecursive";
-import { ReactiveArray } from "../../_Destiny.js";
+import { ReactiveArray } from "../../mod.js";
 import { isReactive } from "../../typeChecks/isReactive.js";
 import { isPrimitive } from "../../typeChecks/isPrimitive.js";
 import { isSpecialCaseObject } from "../reactiveObject/specialCaseObjects.js";

@@ -1,5 +1,5 @@
-import { DestinyElement, html, reactive, expression } from "../Destiny/_Destiny.js";
-import "./to-do/to-do.js";
+import { DestinyElement, html, reactive, expression } from "../../Destiny/mod.js";
+import "./to-do/_to-do.js";
 import "./visitor-demo.js";
 import "./array-demo.js";
 import "./time-diff.js";
