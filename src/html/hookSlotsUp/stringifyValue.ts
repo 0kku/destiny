@@ -17,6 +17,6 @@ export const stringifyValue = (
   input: unknown,
 ) => (
   shouldBeRendered(input)
-  ? String(input)
-  : ""
+    ? String(input)
+    : ""
 );

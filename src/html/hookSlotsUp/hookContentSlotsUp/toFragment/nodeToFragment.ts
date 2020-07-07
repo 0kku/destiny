@@ -5,7 +5,7 @@
 export function nodeToFragment (
   node: Node,
 ) {
-  const fragment = document.createDocumentFragment();
+  const fragment = new DocumentFragment;
   fragment.append(node);
   return fragment;
 }

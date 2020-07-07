@@ -1,4 +1,5 @@
 import { deferredElements } from "./deferredElements.js";
+import { TemplateResult } from "./TemplateResult.js";
 
 /** A counter for labling `Comment`s for `Slot`s. */
 let counter = 0;
@@ -18,7 +19,7 @@ export class Slot {
    */
   constructor (
     placeholderNode: ChildNode,
-    content?: (() => DocumentFragment) | DocumentFragment,
+    content?: TemplateResult | DocumentFragment,
   ) {
     this.#nodes = [placeholderNode];
     placeholderNode.replaceWith(
@@ -36,9 +37,11 @@ export class Slot {
    * @param fragment New content for the slot
    */
   update (
-    input: (() => DocumentFragment) | DocumentFragment,
+    input: TemplateResult | DocumentFragment,
   ) {
-    const fragment = input instanceof Function ? input() : input;
+    const fragment = input instanceof TemplateResult
+      ? input.content
+      : input;
     this._disposeCurrentNodes();
     this.#nodes = Object.values(fragment.childNodes);
     this.#endAnchor.before(fragment);

@@ -78,7 +78,7 @@ customElements.define("tab-view", class extends DestinyElement {
           >
             ${title}
           </a>
-        `())}
+        `)}
       </nav>
 
       <hash-router>
@@ -86,7 +86,7 @@ customElements.define("tab-view", class extends DestinyElement {
           <main slot=${value.path}>
             ${value.content}
           </main>
-        `())}
+        `)}
         <main slot=404>
           Couldn't find resource "${route}". <br>
           Please check your spelling.

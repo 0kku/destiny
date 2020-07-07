@@ -1,17 +1,20 @@
-import { IPropBottom } from "../../../interfaces.js";
 import { shouldBeRendered } from "../../stringifyValue.js";
+import { valueToFragment } from "./valueToFragment.js";
 
 /**
  * Converts an array of items into a `DocumentFragment`.
- * @param nodes The items to be converted
+ * @param values The items to be converted
  */
 export function arrayToFragment (
-  nodes: IPropBottom[],
+  values: unknown[],
 ) {
-  const fragment = document.createDocumentFragment();
+  const fragment = new DocumentFragment;
 
-  console.log(...nodes.filter(shouldBeRendered));
-  fragment.append(...nodes.filter(shouldBeRendered));
-  console.log(fragment);
+  fragment.append(
+    ...values
+    .filter(shouldBeRendered)
+    .map(valueToFragment),
+  );
+
   return fragment;
 }

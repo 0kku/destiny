@@ -1,5 +1,5 @@
 import { createTemplateObject } from "./createTemplateObject.js";
-import { hookSlotsUp } from "./hookSlotsUp/_hookSlotsUp.js";
+import { TemplateResult } from "./TemplateResult.js";
 
 /** Used to cache parsed `DocumentFragment`s so looped templates don't need to be reparsed on each iteration. */
 const templateCache = new WeakMap<
@@ -25,14 +25,5 @@ export function html (
     );
   };
 
-  return () => {
-    const content = template!.content.cloneNode(true) as DocumentFragment;
-  
-    hookSlotsUp(
-      content,
-      props,
-    );
-  
-    return content;
-  }
+  return new TemplateResult(template, props);
 }

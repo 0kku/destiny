@@ -1,18 +1,23 @@
+import type { Renderable } from "./html/Renderable";
+
 /**
  * A class for creating new custom elements in Destiny UI.
- * @abstract
  */
-export class DestinyElement extends HTMLElement {
+export abstract class DestinyElement extends HTMLElement {
   constructor() {
     if (new.target === DestinyElement) {
       throw new TypeError("Can't initialize abstract class.")
     }
     super();
     const shadow = this.attachShadow({ mode: "open" });
-    queueMicrotask(() => shadow.appendChild(this.render()()));
+    queueMicrotask(
+      () => {
+        shadow.appendChild(
+          this.render().content,
+        );
+      },
+    );
   }
 
-  render(): () => Node {
-    return () => new Text;
-  }
+  abstract render(): Renderable;
 }

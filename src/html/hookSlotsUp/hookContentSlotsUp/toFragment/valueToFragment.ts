@@ -1,6 +1,7 @@
 import { arrayToFragment } from "./arrayToFragment.js";
 import { nodeToFragment } from "./nodeToFragment.js";
 import { stringifyValue } from "../../stringifyValue.js";
+import { TemplateResult } from "../../../TemplateResult.js";
 
 /**
  * A polymorphic helper which figures out the type of the input and determines a suitable way to convert it into a `DocumentFragment`.
@@ -8,15 +9,20 @@ import { stringifyValue } from "../../stringifyValue.js";
  */
 export function valueToFragment (
   value: unknown,
-) {
-  if (value instanceof Function) value = value();
-  if (value instanceof Node) {
-    return nodeToFragment(value);
+): DocumentFragment {
+  if (value instanceof TemplateResult) {
+    return value.content;
   } else if (value instanceof DocumentFragment) {
     return value;
+  } else if (value instanceof Node) {
+    return nodeToFragment(value);
   } else if (Array.isArray(value)) {
     return arrayToFragment(value);
   } else {
-    return nodeToFragment(new Text(stringifyValue(value)));
+    return nodeToFragment(
+      new Text(
+        stringifyValue(value),
+      ),
+    );
   }
 }

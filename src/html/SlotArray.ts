@@ -1,5 +1,6 @@
 import { ReactiveArray } from "../mod.js";
 import { Slot } from "./Slot.js";
+import { TemplateResult } from "./TemplateResult.js";
 
 /**
  * Keeps track of `ReactiveArray`s slotted into a template in the DOM. 
@@ -41,7 +42,7 @@ export class SlotArray {
    */
   private _insertToDom (
     index: number,
-    ...fragments: Array<DocumentFragment | (() => DocumentFragment)>
+    ...fragments: Array<DocumentFragment | TemplateResult>
   ) {
     fragments.forEach((fragment, i) => {
       const where = i + index;
