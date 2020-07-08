@@ -11,10 +11,10 @@ export type IArrayValueType<T> =
 
 export type IReactiveValueType<T> =
   T extends IReactive<any> ? T :
-  T extends ISpecialCaseObject ? ReactivePrimitive<T> :
+  // T extends ISpecialCaseObject ? ReactivePrimitive<T> :
   T extends Promise<infer V> ? ReactivePrimitive<V | undefined> :
-  T extends any[] ? ReactiveArray<T[number]> :
-  T extends object ? IReactiveObject<T> :
+  T extends Array<infer V> ? ReactiveArray<V> :
+  T extends object ? T :
   T extends boolean ? ReactivePrimitive<boolean> :
   ReactivePrimitive<T>
 ;

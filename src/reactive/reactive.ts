@@ -4,6 +4,8 @@ import { IReactiveValueType } from "./types/IReactiveRecursive.js";
 import { IReactive } from "./types/IReactive.js";
 import { isSpecialCaseObject } from "./reactiveObject/specialCaseObjects.js";
 import { isReactive } from "../typeChecks/isReactive.js";
+import { observe, IObjectObserverCallback, forceUpdate } from "./reactiveObject/reactiveObject.js";
+import { isPrimitive } from "../typeChecks/isPrimitive.js";
 
 /**
  * A polymorphic convenience function that will convert any value into a reactive value recursively. `Array`s are converted into `ReactiveArray`s. Most `Object`s get their keys converted into reactive items using the same algorithm (see `reactiveObject.js` for more details). Other values are converted into `ReactivePrimitive`s.
@@ -33,34 +35,33 @@ function reactive<T> (
   } = {},
 ) {
   if (isReactive(initialValue)) {
-    // console.log(initialValue, "was already reactive");
     return initialValue;
-  } else if (initialValue instanceof Array) {
-    const newArr = new ReactiveArray(...initialValue);
-    newArr.bind(() => options?.parent?.update());
-    // console.log(initialValue, "was an Array, and became", newArr);
-    return newArr;
-  } else if (initialValue instanceof Promise) {
-    const ref = new ReactivePrimitive(options?.fallback);
-    ref.bind(() => options?.parent?.update())
-    initialValue.then(value => ref.value = value);
-    // console.log(initialValue, "was a Promise, and became", ref);
-    return ref;
-  } else if (isSpecialCaseObject(initialValue)) {
-    const ref = new ReactivePrimitive(initialValue);
-    options.parent && ref.bind(() => options?.parent?.update());
-    // console.log(initialValue, "was an Object, and became", ref);
-    return ref;
-  } else if (isObject(initialValue)) {
-    const ref = reactiveObject(initialValue, options?.parent);
-    // console.log(initialValue, "was an Object, and became", ref);
-    return ref;
-  } else {
-    const ref = new ReactivePrimitive(initialValue);
-    ref.bind(() => options?.parent?.update());
-    // console.log(initialValue, "was a primitive, and became", ref);
-    return ref;
   }
+
+  let reactiveEntity: IReactive<unknown>;
+  
+  if (initialValue instanceof Array) {
+    reactiveEntity = new ReactiveArray(...initialValue);
+  } else if (initialValue instanceof Promise) {
+    reactiveEntity = new ReactivePrimitive(options?.fallback);
+    initialValue.then(value => (reactiveEntity as ReactivePrimitive<unknown>).value = value);
+  // } else if (isSpecialCaseObject(initialValue)) {
+  //   reactiveEntity = new ReactivePrimitive(initialValue);
+  } else if (isObject(initialValue)) {
+    reactiveEntity = reactiveObject(initialValue);
+  } else {
+    reactiveEntity = new ReactivePrimitive(initialValue);
+  }
+
+  const {parent} = options;
+  if (parent) {
+    observe(
+      reactiveEntity,
+      () => forceUpdate(parent),
+    );
+  }
+
+  return reactiveEntity as IReactive<unknown>;
 }
 
 export {reactive};

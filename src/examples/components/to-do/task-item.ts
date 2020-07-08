@@ -1,13 +1,14 @@
 import { DestinyElement, html } from "../../../mod.js";
 import { IReactiveObject } from "../../../reactive/types/IReactiveObject.js";
+import { observe } from "../../../reactive/reactiveObject/reactiveObject.js";
 
 customElements.define("task-item", class extends DestinyElement {
   set item (
-    _: IReactiveObject<{
+    _: {
         title: string;
         done: boolean;
         editing: boolean;
-    }>,
+    },
   ) {}
   set removeItem (
     _: () => void,
@@ -77,10 +78,10 @@ customElements.define("task-item", class extends DestinyElement {
           class=edit-task
           on:submit=${(e: Event) => {
             e.preventDefault();
-            this.item.editing.value = false;
+            this.item.editing = false;
           }}
         >
-          ${this.item.editing.pipe(editing => !editing
+          ${observe(this.item, (_prop, _val, {editing}) => !editing
             ? html`
               <label>
                 <input
@@ -89,7 +90,7 @@ customElements.define("task-item", class extends DestinyElement {
                 >
                 <span
                   class=task-name
-                  style=${this.item.done.truthy("text-decoration: line-through")}
+                  style=${observe(this.item, (_prop, _val, {done}) => done && "text-decoration: line-through")}
                 >
                   ${this.item.title}
                 </span>
@@ -98,7 +99,7 @@ customElements.define("task-item", class extends DestinyElement {
                 type=button
                 value=📝
                 title=Edit
-                on:click=${() => this.item.editing.value = true}
+                on:click=${() => this.item.editing = true}
               >
             ` : html`
               <input
