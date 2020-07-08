@@ -269,7 +269,7 @@ export function pipe<
 
 
 
-type F = typeof foo["lastIndex"];
+// type F = typeof foo["lastIndex"];
 
 
 // export function unobserve<T extends object> (
