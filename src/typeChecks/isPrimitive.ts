@@ -1,4 +1,4 @@
-import { primitive } from "../reactive/types/primitive";
+import { IPrimitive } from "../reactive/types/IPrimitive.js";
 
 /**
  * Checks if a given value is one of the seven primitive types in JavaScript.
@@ -6,13 +6,9 @@ import { primitive } from "../reactive/types/primitive";
  */
 export function isPrimitive (
   input: unknown,
-): input is primitive {
-  return [
-    "string",
-    "number",
-    "bigint",
-    "boolean",
-    "symbol",
-    "undefined",
+): input is IPrimitive {
+  return ![
+    "object",
+    "function",
   ].includes(typeof input) || input === null;
 }

@@ -1,9 +1,9 @@
-import { IArrayValueType } from "../types/IReactiveRecursive";
+import { IArrayValueType } from "../types/IArrayValueType.js";
 import { ReactiveArray } from "../../mod.js";
 import { isReactive } from "../../typeChecks/isReactive.js";
-import { isPrimitive } from "../../typeChecks/isPrimitive.js";
 import { isSpecialCaseObject } from "../reactiveObject/specialCaseObjects.js";
 import { reactive } from "../reactive.js";
+import { isObject } from "../../typeChecks/isObject.js";
 
 /**
  * Converts a given array of values into a reactive value recursively if it's not to be treated as a primitive. I.E. `Array`s and most `Object`s will be converted, but primitive values will not. This is useful for `ReactiveArrays`, whose direct children are managed directly by the class itself, but whose deeply nested descendants need to be tracked separately.
@@ -14,10 +14,11 @@ export function makeNonPrimitiveItemsReactive<InputType> (
   items: Array<InputType | IArrayValueType<InputType>>,
   parent: ReactiveArray<InputType>,
 ): IArrayValueType<InputType>[] {
-  return items.map(v => {
+  return items.map((v: unknown) => {
     return (
-      isReactive(v) || isPrimitive(v) || isSpecialCaseObject(v)
-      ? v 
+      // Without casting to unknown, TSC crashes. IDK why.
+      isReactive(v) || !isObject(v as unknown) || isSpecialCaseObject(v)
+      ? v
       : reactive(
           v,
           {parent},

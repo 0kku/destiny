@@ -1,25 +1,52 @@
-import { reactive } from "../reactive.js";
-import { IReactive } from "../types/IReactive.js";
+import { IReactiveEntity } from "../types/IReactiveEntity";
 import { IReactiveObject } from "../types/IReactiveObject.js";
+import { propertyDescriptorToReactive } from "./propertyDescriptorToReactive.js";
+import { reactiveObjectFlag } from "./reactiveObjectFlag.js";
 
 /**
- * Takes an object, and turns each of its keys reactive recursively: `Object` values are run through this same function, `Array` values are converted to `ReactiveArray`s and other values are turned into `ReactivePrimitive`s. Some object types are except from this, as specified in `specialCaseObjects`, however, a better solution needs to be found in due time.
- * @param input The object whose keys are to be made reactive
- * @param parent Another reactive object to whom any reactive items created should report to when updating, so updates can correctly propagate to the highest level
+ * Takes an object, and passes each of its non-function properties to `reactive()`, which makes the entire structure reactive recursively.
+ * 
+ * !Note: this method modifies the original object. It may break code that relies on that not happening. There may be cases where objects (either the top level one, or one further down) misbehaves or breaks. To avoid an inner object from being converted, wrap it in `new ReactivePrimitive()`.
+ * 
+ * @param input The object whose properties are to be made reactive
+ * @param parent Another reactive entity to which any reactive items created should report to when updating, so updates can correctly propagate to the highest level
  */
 export function reactiveObject<T extends object> (
   input: T,
-  parent?: IReactive<unknown>,
+  parent?: IReactiveEntity<unknown>,
 ): IReactiveObject<T> {
-  return Object.fromEntries(
-    Object
-    .entries(input)
-    .map(([k, v]) => [
-      k,
-      reactive(
-        v,
-        {parent}
+  let current: object = input;
+  const prototypeChain = [];
+  do {
+    prototypeChain.unshift(Object.getOwnPropertyDescriptors(current));
+  } while (current = Reflect.getPrototypeOf(current));
+
+  Object.seal(
+    Object.defineProperties(input,
+      Object.fromEntries(
+        Object.entries(
+          Object.assign(
+            prototypeChain.shift()!,
+            ...prototypeChain,
+            {
+              [reactiveObjectFlag]: {
+                writable: false,
+                enumerable: false,
+                value: true,
+              },
+            },
+          ) as (object & {
+            [x: string]: PropertyDescriptor,
+          }),
+        )
+        .filter(([, {value, configurable}]) => (
+          typeof value !== "function" && 
+          configurable
+        ))
+        .map(propertyDescriptorToReactive(parent)),
       ),
-    ]),
-  ) as IReactiveObject<T>;
+    ),
+  );
+
+  return input as IReactiveObject<T>;
 }

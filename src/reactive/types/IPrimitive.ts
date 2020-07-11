@@ -1,5 +1,5 @@
 
-export type primitive = 
+export type IPrimitive = 
   undefined |
   null |
   boolean |
