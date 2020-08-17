@@ -1,12 +1,12 @@
-import { DestinyElement, html, expression } from "../../mod.js";
+import { DestinyElement, html, expression, component } from "../../mod.js";
+import { route } from "./hash-router.js";
 import "./to-do/_to-do.js";
 import "./visitor-demo.js";
 import "./array-demo.js";
 import "./time-diff.js";
 import "./hash-router.js";
-import { route } from "./hash-router.js";
 
-customElements.define("tab-view", class extends DestinyElement {
+component(class TabView extends DestinyElement {
   #tabs = [
     {
       path: "/",

@@ -5,3 +5,4 @@ export {ReactivePrimitive} from "./reactive/ReactivePrimitive.js";
 export {ReactiveArray} from "./reactive/ReactiveArray/_ReactiveArray.js";
 export {reactiveObject} from "./reactive/reactiveObject/reactiveObject.js";
 export {expression} from "./reactive/reactiveExpression.js";
+export {component} from "./component.js";

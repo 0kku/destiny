@@ -1,7 +1,7 @@
-import { DestinyElement, html } from "../../../mod.js";
+import { DestinyElement, html, component } from "../../../mod.js";
 import { TReactiveObject } from "../../../reactive/types/IReactiveObject.js";
 
-customElements.define("task-item", class extends DestinyElement {
+component(class TaskItem extends DestinyElement {
   set item (
     _: TReactiveObject<{
         title: string,

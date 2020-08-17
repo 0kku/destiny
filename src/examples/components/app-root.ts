@@ -1,7 +1,7 @@
-import { DestinyElement, html } from "../../mod.js";
+import { DestinyElement, html, component } from "../../mod.js";
 import "./tab-view.js";
 
-customElements.define("app-root", class extends DestinyElement {
+component(class AppRoot extends DestinyElement {
   render () {
     return html`
       <tab-view></tab-view>

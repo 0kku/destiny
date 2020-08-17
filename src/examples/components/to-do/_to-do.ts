@@ -1,4 +1,4 @@
-import { DestinyElement, html, reactive } from "../../../mod.js";
+import { DestinyElement, html, reactive, component } from "../../../mod.js";
 import { animateIn, animateOut } from "./animations.js";
 import "./task-item.js";
 
@@ -6,7 +6,7 @@ type TInputChangeEvent = InputEvent & {
   currentTarget: HTMLInputElement,
 };
 
-customElements.define("to-do", class extends DestinyElement {
+component(class ToDo extends DestinyElement {
   #newValue = reactive("");
   #items = reactive([
     {

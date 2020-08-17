@@ -1,4 +1,4 @@
-import { DestinyElement, html, reactive, expression } from "../../mod.js";
+import { DestinyElement, html, reactive, expression, component } from "../../mod.js";
 
 function formatTimeFragment (
   input: number,
@@ -20,7 +20,7 @@ function formatTime (
   return [daysString, hoursString, minutesString, secondsString].join("");
 }
 
-customElements.define("time-diff", class extends DestinyElement {
+component(class TimeDiff extends DestinyElement {
   #tasks = reactive([this.createTask()]); //initialize an array of tasks, with one task in it
 
   createTask () {
