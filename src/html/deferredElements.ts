@@ -3,5 +3,5 @@
  */
 export const deferredElements = new Map<
   HTMLElement,
-  (element: HTMLElement) => Promise<void>
+  (element: HTMLElement) => Promise<void> | void
 >();

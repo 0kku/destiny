@@ -1,3 +1,4 @@
+import { deferredElements } from "./html/deferredElements";
 import type { Renderable } from "./html/Renderable";
 
 /**
@@ -17,6 +18,17 @@ export abstract class DestinyElement extends HTMLElement {
         );
       },
     );
+  }
+
+  out (
+    callback: (element: HTMLElement) => Promise<void> | void,
+  ): this {
+    deferredElements.set(
+      this,
+      callback,
+    );
+
+    return this;
   }
 
   abstract render (): Renderable;
