@@ -1,20 +1,26 @@
 import { reactive } from "../reactive.js";
-import { IReactiveEntity } from "../types/IReactiveEntity.js";
+import { TReactiveEntity } from "../types/IReactiveEntity.js";
 import { ReactivePrimitive } from "../../mod.js";
+
+type TPropertyDescriptorEntry = [
+  key: string,
+  descriptor: PropertyDescriptor,
+];
 
 /**
  * Modifies a `PropertyDescriptor` to have its value reactive and sets it to unconfigurable.
  * 
  * @param parent Another reactive entity to which any reactive items created should report to when updating, so updates can correctly propagate to the highest level
  */
-export function propertyDescriptorToReactive (
-  parent?: IReactiveEntity<unknown>,
+export function propertyDescriptorToReactive<T> (
+  parent?: TReactiveEntity<T>,
 ) {
   return (
-    propertyDescriptorEntry: [string, PropertyDescriptor],
-  ) => {
+    propertyDescriptorEntry: TPropertyDescriptorEntry,
+  ): TPropertyDescriptorEntry => {
     const [key, descriptor] = propertyDescriptorEntry;
-    const {get, set} = descriptor;
+    const get = descriptor.get?.bind(descriptor) as (() => unknown) | undefined;
+    const set = descriptor.set?.bind(descriptor) as ((v: unknown) => void) | undefined;
   
     if (
       (get && !set) ||  // No point observing readonly properties
@@ -25,7 +31,7 @@ export function propertyDescriptorToReactive (
     descriptor.configurable = false;
     
     const ref = reactive(
-      descriptor.value,
+      descriptor.value as unknown,
       {parent},
     );
 
@@ -52,5 +58,5 @@ export function propertyDescriptorToReactive (
     }
     
     return propertyDescriptorEntry;
-  }
+  };
 }

@@ -2,8 +2,8 @@ import { DestinyElement, html, reactive } from "../../../mod.js";
 import { animateIn, animateOut } from "./animations.js";
 import "./task-item.js";
 
-type InputChangeEvent = InputEvent & {
-  currentTarget: HTMLInputElement
+type TInputChangeEvent = InputEvent & {
+  currentTarget: HTMLInputElement,
 };
 
 customElements.define("to-do", class extends DestinyElement {
@@ -128,7 +128,7 @@ customElements.define("to-do", class extends DestinyElement {
           class=check-all
           prop:checked=${this.#items.every(item => item.done.value)}
           prop:indeterminate=${this.#items.exclusiveSome(item => item.done.value)}
-          on:change=${(e: InputChangeEvent) => {
+          on:change=${(e: TInputChangeEvent) => {
             this.#items.value.forEach(item => {
               item.done.value = e.currentTarget.checked;
             });

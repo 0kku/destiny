@@ -5,6 +5,6 @@
  */
 export function isObject (
   input: unknown,
-): input is object {
+): input is Record<string, unknown> {
   return input && typeof input === "object";
 }

@@ -31,7 +31,7 @@ customElements.define("time-diff", class extends DestinyElement {
     };
   }
 
-  render() {
+  render () {
     return html`
       ${this.#tasks.map(task => html`
         <div>

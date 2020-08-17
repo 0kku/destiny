@@ -6,8 +6,8 @@ import { valueToFragment } from "./valueToFragment.js";
  * @param values The items to be converted
  */
 export function arrayToFragment (
-  values: unknown[],
-) {
+  values: Array<unknown>,
+): DocumentFragment {
   const fragment = new DocumentFragment;
 
   fragment.append(

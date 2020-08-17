@@ -3,11 +3,11 @@ import { Renderable } from "./Renderable.js";
 
 export class TemplateResult extends Renderable {
   #template: HTMLTemplateElement;
-  #props: unknown[];
+  #props: Array<unknown>;
 
   constructor (
     template: HTMLTemplateElement,
-    props: unknown[],
+    props: Array<unknown>,
   ) {
     super();
     this.#template = template;

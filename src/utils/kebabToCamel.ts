@@ -4,7 +4,7 @@
  */
 export function kebabToCamel (
   input: string,
-) {
+): string {
   return input.replace(
     /(-[a-z])/g,
     match => match[1].toUpperCase(),

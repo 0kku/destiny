@@ -1,4 +1,4 @@
-import { IUnpreparedContentSlot } from "./interfaces";
+import { TUnpreparedContentSlot } from "./interfaces";
 
 function createPlaceholder (
   index: number,
@@ -12,13 +12,14 @@ function createPlaceholder (
  * Replaces string markers marking content slots with placeholder elements that are marked with the `destiny:content` attribute so they can be easily replaced when hooking up content values.
  * @param contentSlots Descriptions of where the string markers are located
  */
-export function prepareContentSlots(
-  contentSlots: IUnpreparedContentSlot[],
-) {
-  return contentSlots.flatMap(contentSlot => {
+export function prepareContentSlots (
+  contentSlots: Array<TUnpreparedContentSlot>,
+): void {
+  type TSlot = TUnpreparedContentSlot["slots"][number] | undefined;
+  contentSlots.forEach(contentSlot => {
     const raw = contentSlot.node.textContent ?? "";
     const nodes = contentSlot.slots.flatMap((slot, i, a) => [
-      new Text(raw.slice(a[i - 1]?.end ?? 0, slot.start)),
+      new Text(raw.slice((a[i - 1] as TSlot)?.end ?? 0, slot.start)),
       createPlaceholder(slot.index),
     ]);
     contentSlot.node.replaceWith(

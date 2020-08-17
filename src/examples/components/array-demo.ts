@@ -16,14 +16,14 @@ customElements.define("array-demo", class extends DestinyElement {
     );
     this.#items[randomIndex] = randomColor();
     this.#timer = requestAnimationFrame(this.frame);
-  }
+  };
   #timer = requestAnimationFrame(this.frame);
 
   disconnectedCallback () {
     cancelAnimationFrame(this.#timer);
   }
 
-  render() {
+  render () {
     return html`
       <style>
         ul {

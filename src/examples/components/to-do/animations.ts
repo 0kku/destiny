@@ -1,18 +1,18 @@
 export function animateIn (
   element: HTMLElement,
-) {
+): void {
   element.animate(
     [
       {height: "0px"},
       {height: "32px"},
     ],
     {duration: 300, easing: "ease"},
-  ).play()
+  ).play();
 }
 
 export async function animateOut (
   element: HTMLElement,
-) {
+): Promise<void> {
   const animation = element.animate(
     [
       {height: "32px"},

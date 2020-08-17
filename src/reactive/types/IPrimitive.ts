@@ -1,10 +1,9 @@
-
-export type IPrimitive = 
-  undefined |
-  null |
-  boolean |
-  string |
-  number |
-  bigint |
-  symbol
-;
+export type TPrimitive = (
+  | undefined
+  | null
+  | boolean
+  | string
+  | number
+  | bigint
+  | symbol
+);

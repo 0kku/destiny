@@ -4,18 +4,25 @@
 
 import { ReactivePrimitive } from "../../mod.js";
 
-type IReactiveArrayCallback<T> = (
+type TReactiveArrayCallback<T, R = unknown> = (
   index: number,
   deleteCount: number,
   ...values: Array<T>
-) => any;
+) => R;
+
+type TArrayUpdateArguments<T> = [
+  startEditingAt: number, 
+  deleteCount: number,
+  ...newElements: Array<T>
+];
 
 export class DestinyBasicArray<T> {
-  #callbacks = new Set<IReactiveArrayCallback<T>>();
-  #value = [] as T[];
+  #callbacks = new Set<TReactiveArrayCallback<T>>();
+
+  #value = [] as Array<T>;
 
   constructor (
-    ...array: T[]
+    ...array: Array<T>
   ) {
     this.#value = array;
   }
@@ -25,7 +32,7 @@ export class DestinyBasicArray<T> {
    * 
    * TODO: Decide if this should return Iterator<T> or Iterator<DestinyPrimitive<T>>
    */
-  *[Symbol.iterator]() {
+  *[Symbol.iterator] (): Iterable<T> {
     yield* this.#value;
   }
 
@@ -54,28 +61,28 @@ export class DestinyBasicArray<T> {
    *      });
    *    }
    */
-  async *[Symbol.asyncIterator]() {
-    while (1) {
+  async *[Symbol.asyncIterator] (): AsyncIterable<TArrayUpdateArguments<T>> {
+    while (true) {
       yield await this._nextUpdate();
     }
   }
 
-  private _nextUpdate () {
-    return new Promise<[number, number, ...T[]]>(resolve => {
-      const cb: IReactiveArrayCallback<T> = (...props) => {
+  private _nextUpdate (): Promise<TArrayUpdateArguments<T>> {
+    return new Promise<[number, number, ...Array<T>]>(resolve => {
+      const cb: TReactiveArrayCallback<T> = (...props) => {
         resolve(props);
         this.#callbacks.delete(cb);
-      }
+      };
       this.#callbacks.add(cb);
     });
   }
 
-  get value (): T[] {
+  get value (): Array<T> {
     return this.#value.slice(0);
   }
 
   set value (
-    items: T[],
+    items: Array<T>,
   ) {
     this.splice(
       0,
@@ -98,24 +105,26 @@ export class DestinyBasicArray<T> {
     return value;
   }
 
-  private _argsForFullUpdate (): Parameters<IReactiveArrayCallback<T>> {
+  private _argsForFullUpdate (): Parameters<TReactiveArrayCallback<T>> {
     return [0, this.#value.length - 1, ...this.#value];
   }
   
   pipe<
-    F extends IReactiveArrayCallback<T>,
+    R,
+    F extends TReactiveArrayCallback<T, R>,
   > (
     callback: F,
-  ) {
+  ): ReactivePrimitive<R> {
     const ref = new ReactivePrimitive(
-      callback(...this._argsForFullUpdate()) as ReturnType<F>,
+      callback(...this._argsForFullUpdate()),
     );
     this.bind((...args) => ref.value = callback(...args));
+
     return ref;
   }
 
   bind (
-    callback: IReactiveArrayCallback<T>,
+    callback: TReactiveArrayCallback<T>,
     noFirstRun = false,
   ): this {
     this.#callbacks.add(callback);
@@ -129,7 +138,7 @@ export class DestinyBasicArray<T> {
     start: number,
     deleteCount: number = this.#value.length - start,
     ...items: Array<T>
-  ) {
+  ): Array<T> {
     const deletedItems = this.#value.splice(start, deleteCount, ...items);
     for (const callback of this.#callbacks) {
       callback(start, deleteCount, ...items);
@@ -141,9 +150,9 @@ export class DestinyBasicArray<T> {
    * This method exists because TS is dumb and can't figure out constructor types or symbol keys.
    * The return type is incorrect too. The actual type is typeof this.
    */
-  private get species(): typeof DestinyBasicArray {
-    //@ts-ignore
-    return this.constructor[Symbol.species];
+  private get _species (): typeof DestinyBasicArray {
+    //@ts-ignore TS doesn't support indexing with symbols
+    return this.constructor[Symbol.species] as typeof DestinyBasicArray;
   }
 
   /* 
@@ -153,9 +162,9 @@ export class DestinyBasicArray<T> {
    */
 
   filter<S extends T> (
-    callback: (value: T, index: number, array: T[]) => value is S,
+    callback: (value: T, index: number, array: Array<T>) => value is S,
   ): DestinyBasicArray<S> {
-    const newArr = new this.species(...this.#value.filter(callback));
+    const newArr = new this._species(...this.#value.filter(callback));
     this.#callbacks.add(
       (
         index,
@@ -192,9 +201,9 @@ export class DestinyBasicArray<T> {
   // }
 
   map<U> (
-    callback: (value: T, index: number, array: T[]) => U,
-  ) {
-    const newArr = new this.species(...this.#value.map(callback));
+    callback: (value: T, index: number, array: Array<T>) => U,
+  ): DestinyBasicArray<U> {
+    const newArr = new this._species(...this.#value.map(callback));
     this.#callbacks.add(
       (
         index,
@@ -212,12 +221,12 @@ export class DestinyBasicArray<T> {
   slice (
     start = 0,
     end = this.#value.length - 1,
-  ) {
-    const newArr = new this.species(...this.#value.slice(start, end));
+  ): DestinyBasicArray<T> {
+    const newArr = new this._species(...this.#value.slice(start, end));
     this.bind((
       index: number,
       deleteCount: number,
-      ...values: T[]
+      ...values: Array<T>
     ) => newArr.splice(
       index - start,
       deleteCount,
@@ -288,31 +297,33 @@ export class DestinyBasicArray<T> {
     return this.pipe(() => this.#value.findIndex(...args));
   }
 
-  entries () {
+  entries (): DestinyBasicArray<[number, T]> {
     return this.map((v, i) => [i, v] as [number, T]);
   }
 
-  keys () {
+  keys (): DestinyBasicArray<number> {
     return this.map((_, i) => i);
   }
 
-  values () {
+  values (): DestinyBasicArray<T> {
     return this.map(v => v);
   }
 
   includes (
     ...args: Parameters<Array<T>["includes"]>
-  ) {
+  ): ReactivePrimitive<boolean> {
     return this.pipe(() => this.#value.includes(...args));
   }
 
   #length?: ReactivePrimitive<number>;
+
   get length (): ReactivePrimitive<number> {
     if (!this.#length) {
       this.#length = new ReactivePrimitive(this.#value.length);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       this.bind(() => this.#length!.value = this.#value.length);
     }
     
     return this.#length;
   }
-};
+}

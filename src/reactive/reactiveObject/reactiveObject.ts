@@ -1,5 +1,5 @@
-import { IReactiveEntity } from "../types/IReactiveEntity";
-import { IReactiveObject } from "../types/IReactiveObject.js";
+import { TReactiveEntity } from "../types/IReactiveEntity";
+import { TReactiveObject } from "../types/IReactiveObject.js";
 import { propertyDescriptorToReactive } from "./propertyDescriptorToReactive.js";
 import { reactiveObjectFlag } from "./reactiveObjectFlag.js";
 
@@ -11,21 +11,25 @@ import { reactiveObjectFlag } from "./reactiveObjectFlag.js";
  * @param input The object whose properties are to be made reactive
  * @param parent Another reactive entity to which any reactive items created should report to when updating, so updates can correctly propagate to the highest level
  */
-export function reactiveObject<T extends object> (
+export function reactiveObject<T extends Record<string, unknown>, K = unknown> (
   input: T,
-  parent?: IReactiveEntity<unknown>,
-): IReactiveObject<T> {
-  let current: object = input;
-  const prototypeChain = [];
+  parent?: TReactiveEntity<K>,
+): TReactiveObject<T> {
+  let current: Record<string, unknown> | undefined = input;
+  const prototypeChain: Array<{
+    [x: string]: PropertyDescriptor,
+  }> = [];
   do {
     prototypeChain.unshift(Object.getOwnPropertyDescriptors(current));
-  } while (current = Reflect.getPrototypeOf(current));
+  // eslint-disable-next-line no-cond-assign
+  } while (current = Reflect.getPrototypeOf(current) as Record<string, unknown> | undefined);
 
   Object.seal(
     Object.defineProperties(input,
       Object.fromEntries(
         Object.entries(
           Object.assign(
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             prototypeChain.shift()!,
             ...prototypeChain,
             {
@@ -35,9 +39,9 @@ export function reactiveObject<T extends object> (
                 value: true,
               },
             },
-          ) as (object & {
+          ) as {
             [x: string]: PropertyDescriptor,
-          }),
+          },
         )
         .filter(([, {value, configurable}]) => (
           typeof value !== "function" && 
@@ -48,5 +52,5 @@ export function reactiveObject<T extends object> (
     ),
   );
 
-  return input as IReactiveObject<T>;
+  return input as TReactiveObject<T>;
 }

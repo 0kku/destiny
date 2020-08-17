@@ -10,11 +10,11 @@ import { SlotArray } from "../../SlotArray.js";
  */
 export function hookContentSlotsUp (
   templ: DocumentFragment,
-  props: unknown[],
-) {
+  props: Array<unknown>,
+): void {
   const contentSlots = Object.values(
     templ.querySelectorAll("[destiny\\:content]")
-  ) as unknown as (HTMLElement & ChildNode)[];
+  ) as unknown as Array<HTMLElement & ChildNode>;
 
   for (const contentSlot of contentSlots) {
     const index = contentSlot.getAttribute("destiny:content");

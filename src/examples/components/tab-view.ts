@@ -1,4 +1,4 @@
-import { DestinyElement, html, reactive, expression } from "../../mod.js";
+import { DestinyElement, html, expression } from "../../mod.js";
 import "./to-do/_to-do.js";
 import "./visitor-demo.js";
 import "./array-demo.js";
@@ -30,7 +30,7 @@ customElements.define("tab-view", class extends DestinyElement {
     },
   ];
 
-  render() {
+  render () {
     return html`
       <style>
         :host {

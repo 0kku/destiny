@@ -1,6 +1,6 @@
 import { ReactivePrimitive } from "../../../mod.js";
 import { attributeNamespaces } from "./attributeNamespaces/_attributeNamespaces.js";
-import { matchChangeWatcher, watchedAttribute } from "./matchChangeWatcher.js";
+import { matchChangeWatcher, TWatchedAttribute } from "./matchChangeWatcher.js";
 import { kebabToCamel } from "../../../utils/kebabToCamel.js";
 
 /**
@@ -10,48 +10,49 @@ import { kebabToCamel } from "../../../utils/kebabToCamel.js";
  */
 export function hookAttributeSlotsUp (
   templ: DocumentFragment,
-  props: unknown[],
-) {
+  props: Array<unknown>,
+): void {
   const attributeSlots = Object.values(
     templ.querySelectorAll("[destiny\\:attr]"),
-  ) as unknown as (HTMLElement & ChildNode)[];
+  ) as unknown as Array<HTMLElement & ChildNode>;
 
   for (const element of attributeSlots) {
-    for (let {name, value} of element.attributes) {
-      const [
-        ,
+    for (const {name, value} of element.attributes) {
+      const {
         valueStart = "",
         index,
         valueEnd = "",
-       ] = (
-        value
-        .match(
-          /(.+)?__internal_([0-9]+)_(.+)?/
-        )
-        ?? []
+      } = (
+        /(?<valueStart>.+)?__internal_(?<index>[0-9]+)_(?<valueEnd>.+)?/u
+        .exec(value)
+        ?.groups
+        ?? {}
       );
 
       if (index) {
         const item = props[Number(index)];
-        let [
-          ,
+        const {
           namespace = "",
-          attributeName,
-         ] = (
-          name
-          .match(/(?:([a-z]+)\:)?(.+)/)
-          ?? []
+          attributeNameRaw,
+        } = (
+          /(?:(?<namespace>[a-z]+):)?(?<attributeNameRaw>.+)/
+          .exec(name)
+          ?.groups
+          ?? {}
         );
-        if (namespace) {
-          attributeName = kebabToCamel(attributeName);
-        }
+        const attributeName = (
+          namespace
+          ? kebabToCamel(attributeNameRaw)
+          : attributeNameRaw
+        );
 
         const setValue = (
           valueSlot: unknown,
         ) => (
           attributeNamespaces
-          .get(namespace)
-          ?.({
+          .get(
+            namespace as "" | "prop" | "call" | "on" | "destiny",
+          )?.({
             element,
             attributeName,
             valueSlot,
@@ -66,8 +67,8 @@ export function hookAttributeSlotsUp (
             element.addEventListener(changeWatcher, e => {
               // Sets the value whilst excluding itself of callbacks to call after the change
               item.set(
-                (e.currentTarget as HTMLInputElement)
-                  ?.[attributeName as watchedAttribute],
+                (e.currentTarget as HTMLInputElement | null)
+                ?.[attributeName as TWatchedAttribute],
                 setValue,
               );
             });

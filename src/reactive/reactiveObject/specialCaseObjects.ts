@@ -13,11 +13,11 @@ export const specialCaseObjects = [
 
 export function isSpecialCaseObject (
   input: unknown,
-): input is ISpecialCaseObject {
+): input is TSpecialCaseObject {
   const type = typeof input;
   if (type === "function") return true;
   else if (type !== "object") return false;
   else return specialCaseObjects.some(constr => input instanceof constr);
 }
 
-export type ISpecialCaseObject = InstanceType<typeof specialCaseObjects[number]>;
+export type TSpecialCaseObject = InstanceType<typeof specialCaseObjects[number]>;

@@ -13,7 +13,7 @@ window.addEventListener("hashchange", e => {
 });
 
 customElements.define("hash-router", class extends DestinyElement {
-  render() {
+  render () {
     return html`
       <slot name=${route}>
         <slot name=404>

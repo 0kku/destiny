@@ -1,4 +1,4 @@
-import { IValueProps } from "../../_hookSlotsUp.js";
+import { TValueProps } from "../../_hookSlotsUp.js";
 
 /**
  * `on:<EventName>` adds an event listener. It either takes a
@@ -19,8 +19,8 @@ export const on = (
     element,
     attributeName,
     valueSlot,
-  }: IValueProps,
-) => {
+  }: TValueProps,
+): void => {
   if (Array.isArray(valueSlot)) {
     //@ts-ignore TODO gotta figure out later if this can be resolved properly by TS lol.
     element.addEventListener(attributeName, ...valueSlot);
@@ -28,4 +28,4 @@ export const on = (
     //@ts-ignore TODO gotta figure out later if this can be resolved properly by TS lol.
     element.addEventListener(attributeName, valueSlot);
   }
-}
+};

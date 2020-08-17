@@ -1,4 +1,4 @@
-import { IValueProps } from "../../_hookSlotsUp.js";
+import { TValueProps } from "../../_hookSlotsUp.js";
 import { stringifyValue } from "../../stringifyValue.js";
 
 /**
@@ -17,8 +17,8 @@ export function attribute (
     valueStart,
     valueSlot,
     valueEnd,
-  }: IValueProps,
-) {
+  }: TValueProps,
+): void {
   element.setAttribute(
     attributeName,
     `${valueStart}${stringifyValue(valueSlot)}${valueEnd}`,

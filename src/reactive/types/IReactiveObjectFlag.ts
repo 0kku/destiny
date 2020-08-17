@@ -1,5 +1,5 @@
 import { reactiveObjectFlag } from "../reactiveObject/reactiveObjectFlag.js";
 
-export type IReactiveObjectFlag = {
+export type TReactiveObjectFlag = {
   [reactiveObjectFlag]: true,
 };

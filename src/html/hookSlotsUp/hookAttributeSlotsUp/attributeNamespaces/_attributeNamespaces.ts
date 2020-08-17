@@ -13,4 +13,4 @@ export const attributeNamespaces = new Map([
   ["on", on],
   ["destiny", destiny],
   ["", attribute],
-]);
+] as const);

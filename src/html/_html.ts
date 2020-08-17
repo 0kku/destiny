@@ -14,8 +14,8 @@ const templateCache = new WeakMap<
  */
 export function html (
   strings: TemplateStringsArray,
-  ...props: unknown[]
-) {
+  ...props: Array<unknown>
+): TemplateResult {
   let template = templateCache.get(strings);
 
   if (!template) {
@@ -23,7 +23,7 @@ export function html (
       strings,
       template = createTemplateObject(strings),
     );
-  };
+  }
 
   return new TemplateResult(template, props);
 }

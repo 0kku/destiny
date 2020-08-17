@@ -2,13 +2,13 @@ import { hookContentSlotsUp } from "./hookContentSlotsUp/_hookContentSlotsUp.js"
 import { hookAttributeSlotsUp } from "./hookAttributeSlotsUp/_hookAttributeSlotsUp.js";
 
 
-export interface IValueProps {
+export type TValueProps = {
   element: HTMLElement & ChildNode,
   attributeName: string,
   valueStart: string,
   valueSlot: unknown,
   valueEnd: string,
-}
+};
 
 /**
  * Goes through the elements in a given `HTMLTemplateElement`, and adds reactivity to any slots that were given a reactive item to keep the view in sync with the application state.
@@ -17,8 +17,8 @@ export interface IValueProps {
  */
 export function hookSlotsUp (
   template: DocumentFragment,
-  props: unknown[],
-) {
+  props: Array<unknown>,
+): void {
   hookAttributeSlotsUp(template, props);
   hookContentSlotsUp(template, props);
 }

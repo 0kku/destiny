@@ -5,7 +5,7 @@ const propToWatcherMap = {
   valueAsNumber: "change",
 } as const;
 
-export type watchedAttribute = keyof typeof propToWatcherMap;
+export type TWatchedAttribute = keyof typeof propToWatcherMap;
 
 /**
  * Figures out if and what event listener needs to be attached to a DOM element based on the name of an attribute.
@@ -13,6 +13,7 @@ export type watchedAttribute = keyof typeof propToWatcherMap;
  */
 export function matchChangeWatcher (
   attributeName: string,
-) {
-  return propToWatcherMap[attributeName as watchedAttribute] ?? "";
+): typeof propToWatcherMap[TWatchedAttribute] | "" {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  return propToWatcherMap[attributeName as TWatchedAttribute] ?? "";
 }

@@ -1,4 +1,5 @@
-import { IValueProps } from "../../_hookSlotsUp.js";
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+import { TValueProps } from "../../_hookSlotsUp.js";
 
 /**
  * `call:<ElementMethod>` takes an array of arguments to be passed to
@@ -28,8 +29,8 @@ export const call = (
     element,
     attributeName,
     valueSlot,
-  }: IValueProps,
-) => {
+  }: TValueProps,
+): void => {
   if (Array.isArray(valueSlot)) {
     //@ts-ignore TODO gotta figure out later if this can be resolved properly by TS lol.
     element[attributeName](...valueSlot);
@@ -37,4 +38,4 @@ export const call = (
     //@ts-ignore TODO gotta figure out later if this can be resolved properly by TS lol.
     element[attributeName](valueSlot);
   }
-}
+};

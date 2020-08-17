@@ -1,4 +1,4 @@
-import { IReactive } from "../reactive/types/IReactive.js";
+import { TReactive } from "../reactive/types/IReactive.js";
 import { ReactiveArray, ReactivePrimitive } from "../mod.js";
 import { reactiveObjectFlag } from "../reactive/reactiveObject/reactiveObjectFlag.js";
 
@@ -9,7 +9,7 @@ import { reactiveObjectFlag } from "../reactive/reactiveObject/reactiveObjectFla
  */
 export function isReactive (
   input: unknown,
-): input is IReactive<unknown> {
+): input is TReactive<unknown> {
   return [
     ReactiveArray,
     ReactivePrimitive,

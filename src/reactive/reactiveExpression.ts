@@ -1,7 +1,8 @@
 import { ReactivePrimitive, ReactiveArray } from "../mod.js";
 import { isReactive } from "../typeChecks/isReactive.js";
 
-const cache: WeakMap<TemplateStringsArray, Function> = new WeakMap;
+type TExpressionBody<T = unknown> = (args: Array<unknown>) => T;
+const cache: WeakMap<TemplateStringsArray, TExpressionBody> = new WeakMap;
 
 /**
  * ! **This method is experimental and might be removed in the future due to lack of possibility of type checking.**
@@ -29,34 +30,36 @@ const cache: WeakMap<TemplateStringsArray, Function> = new WeakMap;
  */
 export function expression<T = unknown> (
   templ: TemplateStringsArray,
-  ...args: unknown[]
+  ...args: Array<unknown>
 ): Readonly<ReactivePrimitive<T>> {
-  
-  let fn = cache.get(templ);
-  if (!fn) {
-    cache.set(
-      templ,
-      fn = generateFn(templ, args),
-    );
-  }
+  const fn = cache.get(templ) as TExpressionBody<T> | undefined ?? (() => {
+    const fn = generateFn<T>(templ, args);
+    cache.set(templ, fn);
+    return fn;
+  })();
 
   return ReactivePrimitive.from(
-    () => fn!(args),
-    ...args.filter(arg => isReactive(arg)) as Array<ReactivePrimitive<unknown> | ReactiveArray<unknown>>
-  )
+    () => fn(args),
+    ...args.filter(
+      arg => isReactive(arg),
+    ) as Array<ReactivePrimitive<unknown> | ReactiveArray<unknown>>,
+  );
 }
 
 /** Generates a function from a tempalte string to be used as a callback for `ReactivePrimitive.from()`. */
-function generateFn (
+function generateFn<T = unknown> (
   templ: TemplateStringsArray,
-  args: unknown[],
-) {
+  args: Array<unknown>,
+): TExpressionBody<T> {
   const functionBody = templ.reduce(
-    (acc, v, i) => `${acc}args[${i-1}]${isReactive(args[i-1]) ? ".value" : ""}${v}`,
+    (acc, v, i) => (
+      `${acc}args[${i-1}]${isReactive(args[i-1]) ? ".value" : ""}${v}`
+    ),
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-implied-eval
   return new Function(
     "args",
     `return (${functionBody})`,
-  );
+  ) as TExpressionBody<T>;
 }

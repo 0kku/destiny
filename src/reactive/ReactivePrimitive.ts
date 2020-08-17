@@ -1,10 +1,12 @@
 import { ReactiveArray } from "./ReactiveArray/_ReactiveArray.js";
 
-type Unwrap<T> = 
+type TUnwrap<T> = 
   T extends ReactivePrimitive<infer U> ? U :
   T extends ReactiveArray<infer U> ? U :
   never;
-type UnwrapAll<T> = { [K in keyof T]: Unwrap<T[K]> };
+type TUnwrapAll<T> = {
+  [K in keyof T]: TUnwrap<T[K]>
+};
 
 /**
  * `ReactivePrimitive`s are reactive values that contain a single value which can be updated and whose updates can be listened to.
@@ -28,26 +30,26 @@ export class ReactivePrimitive<T> {
   /**
    * Same as `this.value`. The current value of the `ReactivePrimitive`.
    */
-  valueOf () {
+  valueOf (): T {
     return this.value;
   }
 
   /**
    * When the object is attempted to be cast to a primitive, the current value of `this.value` is used as a hint. Obviously, if you're trying to cast a `ReactivePrimitive<string>` into a `number`, it'll just cast `this.value` from a `string` to a `number`.
    */
-  [Symbol.toPrimitive] () {
+  [Symbol.toPrimitive] (): T {
     return this.value;
   }
 
-  get [Symbol.toStringTag]() {
+  get [Symbol.toStringTag] (): string {
     return `Destiny<${typeof this.#value}>`;
   }
 
   /**
    * Instances of this class can be iterated over asynchronously; it will iterate over updates to the `value`. You can use this feature using `for-await-of`.
    */
-  async *[Symbol.asyncIterator]() {
-    while (1) {
+  async *[Symbol.asyncIterator] (): AsyncIterable<T> {
+    while (true) {
       yield await this._nextUpdate();
     }
   }
@@ -55,12 +57,12 @@ export class ReactivePrimitive<T> {
   /**
    * Returns a Promise which will resolve the next time the `value` is updated.
    */
-  private _nextUpdate () {
-    return new Promise<T> (resolve => {
+  private _nextUpdate (): Promise<T> {
+    return new Promise<T>(resolve => {
       const cb = (v: T) => {
         resolve(v);
         this.#callbacks.delete(cb);
-      }
+      };
       this.#callbacks.add(cb);
     });
   }
@@ -70,9 +72,9 @@ export class ReactivePrimitive<T> {
    * @param callback the function to be called on updates
    */
   bind (
-    callback: (newValue: T) => any,
+    callback: (newValue: T) => void,
     noFirstCall = false,
-  ) {
+  ): this {
     this.#callbacks.add(callback);
     if (!noFirstCall) callback(this.#value);
     return this;
@@ -81,8 +83,10 @@ export class ReactivePrimitive<T> {
   /**
    * Forces an update event to be dispatched.
    */
-  update () {
+  update (): this {
     this.set(this.#value);
+
+    return this;
   }
   
   /**
@@ -91,9 +95,9 @@ export class ReactivePrimitive<T> {
    * @param noUpdate One or more callback methods you don't want to be called on this update. This can be useful for example when responding to DOM events: you wouldn't want to update the DOM with the new value on the same element that caused the udpate in the first place.
    */
   set (
-  	value: T,
-    ...noUpdate: Array<(newValue: T) => any>
-  ) {
+    value: T,
+    ...noUpdate: Array<(newValue: T) => void>
+  ): this {
     if (value !== this.#value) {
       this.#value = value;
       [...this.#callbacks.values()]
@@ -109,7 +113,8 @@ export class ReactivePrimitive<T> {
   ) {
     this.set(value);
   }
-  get value() {
+
+  get value (): T {
     return this.#value;
   }
 
@@ -120,24 +125,32 @@ export class ReactivePrimitive<T> {
    */
   static from<
     TParams extends Array<ReactivePrimitive<any> | ReactiveArray<any>>,
-    TReturn
+    TReturn,
   > (
-    updater: (...values: UnwrapAll<TParams>) => TReturn,
+    updater: (...values: TUnwrapAll<TParams>) => TReturn,
     ...refs: TParams
   ): Readonly<ReactivePrimitive<TReturn>> {
-    const newRef = new ReactivePrimitive<TReturn>(
-      // @ts-ignore TS is dumb and there's seemingly no way to tell it this is OK
-      updater(...refs.map(v => v.value)),
+    type TUnwrappedParams = TUnwrapAll<TParams>;
+
+    const currentValue = () => updater(
+      ...refs.map(
+        v => (
+          // This rule is seemingly broken?
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+          v.value as TUnwrappedParams[number]
+        ),
+      ) as TUnwrappedParams,
     );
-    refs.forEach(ref => 
-      ref.bind(() => {
-        queueMicrotask(() => {
-          // @ts-ignore TS is dumb and there's seemingly no way to tell it this is OK
-          newRef.value = updater(...refs.map(v => v.value));
-        });
-      },
-      true,
-    ));
+
+    const newRef = new ReactivePrimitive(currentValue());
+    refs.forEach(
+      ref => ref.bind(
+        () => queueMicrotask(
+          () => newRef.value = currentValue(),
+        ),
+        true,
+      ),
+    );
     return newRef;
   }
 

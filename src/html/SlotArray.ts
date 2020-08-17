@@ -16,7 +16,7 @@ export class SlotArray {
   #source: ReactiveArray<DocumentFragment>;
 
   /** All the `Slot`s being tracked by this instance */
-  #domArray: Slot[] = [];
+  #domArray: Array<Slot> = [];
 
   /**
    * @param placeholderNode A `Node` which is used as a "bookmark" of where in the DOM the `SlotArray`'s content should be inserted
@@ -43,7 +43,7 @@ export class SlotArray {
   private _insertToDom (
     index: number,
     ...fragments: Array<DocumentFragment | TemplateResult>
-  ) {
+  ): void {
     fragments.forEach((fragment, i) => {
       const where = i + index;
       const slotPlaceholder = new Comment("Destiny slot placeholder");
@@ -64,13 +64,13 @@ export class SlotArray {
   private _removeFromDom (
     from: number,
     count: number,
-  ) {
+  ): void {
     const to = Math.min(
       from + count,
       this.#domArray.length,
     );
     for (let i = from; i < to; i++) {
-      this.#domArray[i].remove();
+      void this.#domArray[i].remove();
     }
     this.#domArray.splice(from, count);
   }
@@ -84,9 +84,9 @@ export class SlotArray {
   update = (
     index: number,
     deleteCount: number,
-    ...items: DocumentFragment[]
-  ) => {
+    ...items: Array<DocumentFragment>
+  ): void => {
     this._removeFromDom(index, deleteCount);
     this._insertToDom(index, ...items);
-  }
+  };
 }

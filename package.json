@@ -3,10 +3,13 @@
   "description": "A reactive UI library for JavaScript and TypeScript.",
   "version": "0.2.0",
   "main": "./dist/examples/main.js",
-  "dependencies": {
-    "typescript": "^3.9.2"
+  "dependencies": {},
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.0.0-alpha.11",
+    "@typescript-eslint/parser": "^4.0.0-alpha.11",
+    "eslint": "^7.7.0",
+    "typescript": "^4.0.0-dev.20200803"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "node ./node_modules/typescript/bin/tsc",

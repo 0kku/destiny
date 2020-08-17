@@ -1,31 +1,38 @@
 import { ReactivePrimitive } from "../../mod.js";
-import { IArrayValueType } from "../types/IArrayValueType";
-import { IReactiveArrayCallback } from "../types/IReactiveArrayCallback.js";
+import { TArrayValueType } from "../types/IArrayValueType";
+import { TReactiveArrayCallback } from "../types/IReactiveArrayCallback.js";
 import { reactiveArrayProxyConfig } from "./reactiveArrayProxyConfig.js";
 import { makeNonPrimitiveItemsReactive } from "./makeNonPrimitiveItemsReactive.js";
 import { NotImplementedError } from "../../utils/NotImplementedError.js";
+
+type TArrayUpdateArguments<T> = [
+  startEditingAt: number, 
+  deleteCount: number,
+  ...newElements: Array<T>
+];
+
 
 /**
  * `ReactiveArray`s are reactive values that contain multiple values which can be updated and whose updates can be listened to. In general, `ReactiveArray`s behave very similar to native `Array`s. The main difference is, that most primitive values are given as `ReactivePrimitive`s and any immutable methods will return a new readonly `ReactiveArray`, whose values are tied to the original `ReactiveArray`. The class also provides a few custom convenience methods.
  */
 export class ReactiveArray<InputType> {
   /** The keys are enabled by the Proxy defined in the constructor */
-  [key: number]: IArrayValueType<InputType>;
+  [key: number]: TArrayValueType<InputType>;
 
   /** An Array containing the current values of the ReactiveArray */
-  readonly #value: IArrayValueType<InputType>[];
+  readonly #value: Array<TArrayValueType<InputType>>;
 
   /** An Array containing ReactivePrimitives for each index of the ReactiveArray */
-  readonly #indices: ReactivePrimitive<number>[];
+  readonly #indices: Array<ReactivePrimitive<number>>;
 
   /** A Set containing all the callbacks to be called whenever the ReactiveArray is updated */
-  readonly #callbacks: Set<IReactiveArrayCallback<IArrayValueType<InputType>>> = new Set;
+  readonly #callbacks: Set<TReactiveArrayCallback<TArrayValueType<InputType>>> = new Set;
 
   /** Size of the ReactiveArray as a ReactivePrimitive */
   readonly #length: Readonly<ReactivePrimitive<number>>;
 
   constructor (
-    ...input: InputType[]
+    ...input: Array<InputType>
   ) {
     this.#value = makeNonPrimitiveItemsReactive(
       input,
@@ -48,15 +55,15 @@ export class ReactiveArray<InputType> {
   /**
    * Iterates over the values of the array, similar to how regular Arrays can be iterated over.
    */
-  *[Symbol.iterator]() {
+  *[Symbol.iterator] (): Iterable<TArrayValueType<InputType>> {
     yield* this.#value;
   }
 
   /**
    * Iterates over the updates to the array. Can be used with for-await-of.
    */
-  async *[Symbol.asyncIterator]() {
-    while (1) {
+  async *[Symbol.asyncIterator] (): AsyncIterable<TArrayUpdateArguments<TArrayValueType<InputType>>> {
+    while (true) {
       yield await this._nextUpdate();
     }
   }
@@ -64,12 +71,12 @@ export class ReactiveArray<InputType> {
   /**
    * Returns a promise that resolves when the next update fires, with the values the event fired with.
    */
-  private _nextUpdate () {
-    return new Promise<[number, number, ...IArrayValueType<InputType>[]]>(resolve => {
-      const cb: IReactiveArrayCallback<IArrayValueType<InputType>> = (...props) => {
+  private _nextUpdate (): Promise<TArrayUpdateArguments<TArrayValueType<InputType>>> {
+    return new Promise<[number, number, ...Array<TArrayValueType<InputType>>]>(resolve => {
+      const cb: TReactiveArrayCallback<TArrayValueType<InputType>> = (...props) => {
         resolve(props);
         this.#callbacks.delete(cb);
-      }
+      };
       this.#callbacks.add(cb);
     });
   }
@@ -77,14 +84,14 @@ export class ReactiveArray<InputType> {
   /**
    * The length of the ReactiveArray, as a ReactivePrimitive which updates as the array is modified.
    */
-  get length () {
+  get length (): Readonly<ReactivePrimitive<number>> {
     return this.#length;
   }
 
   /**
    * Returns the current values of the ReactiveArray as a regular Array.
    */
-  get value () {
+  get value (): Array<TArrayValueType<InputType>> {
     return this.#value.slice(0);
   }
 
@@ -94,13 +101,15 @@ export class ReactiveArray<InputType> {
    * @param items array of items to replace the current ones with.
    */
   setValue (
-    items: Array<InputType | IArrayValueType<InputType>>,
-  ) {
+    items: Array<InputType | TArrayValueType<InputType>>,
+  ): this {
     this.splice(
       0,
       this.#value.length,
       ...items,
     );
+
+    return this;
   }
 
   /**
@@ -109,10 +118,13 @@ export class ReactiveArray<InputType> {
    */
   get (
     index: number,
-  ) {
-    const i = index < 0
+  ): TArrayValueType<InputType> {
+    const i = (
+      index < 0
       ? this.#value.length + index
-      : index;
+      : index
+    );
+
     return this.#value[i];
   }
 
@@ -124,15 +136,16 @@ export class ReactiveArray<InputType> {
   set (
     index: number,
     value: InputType,
-  ) {
+  ): InputType {
     this.splice(index, 1, value);
+
     return value;
   }
 
   /**
    * Returns the arguments that a full, forced, update would for a callback. I.E. first item in the array is the index (`0`), second argument is delte count (current array length), and 3...n are the items currently in the array.
    */
-  private _argsForFullUpdate (): Parameters<IReactiveArrayCallback<IArrayValueType<InputType>>> {
+  private _argsForFullUpdate (): Parameters<TReactiveArrayCallback<TArrayValueType<InputType>>> {
     return [0, this.#value.length, ...this.#value];
   }
   
@@ -142,7 +155,7 @@ export class ReactiveArray<InputType> {
    * @param callback The function to be called when the array is updated. It's called with `(startIndex, deleteCount, ...addedItems)`.
    */
   pipe<
-    F extends IReactiveArrayCallback<IArrayValueType<InputType>, ReturnType<F>>,
+    F extends TReactiveArrayCallback<TArrayValueType<InputType>, ReturnType<F>>,
   > (
     callback: F,
   ): Readonly<ReactivePrimitive<ReturnType<F>>> {
@@ -159,7 +172,7 @@ export class ReactiveArray<InputType> {
    * @param noFirstRun Default: false. Determines whether the callback function should be called once when the listener is first added.
    */
   bind (
-    callback: IReactiveArrayCallback<IArrayValueType<InputType>>,
+    callback: TReactiveArrayCallback<TArrayValueType<InputType>>,
     noFirstRun = false,
   ): this {
     this.#callbacks.add(callback);
@@ -174,7 +187,7 @@ export class ReactiveArray<InputType> {
    * @param callback The callback function to be unbound (removed from the array's update callbacks). Similar to EventListeners, it needs to be a reference to the same callaback function that was previously added.
    */
   unbind (
-    callback: IReactiveArrayCallback<IArrayValueType<InputType>>,
+    callback: TReactiveArrayCallback<TArrayValueType<InputType>>,
   ): this {
     this.#callbacks.delete(callback);
     return this;
@@ -192,12 +205,12 @@ export class ReactiveArray<InputType> {
    */
   concat<
     U,
-    K extends IArrayValueType<InputType> | U,
+    K extends TArrayValueType<InputType> | U,
   > (
-    ...items: Array<K | K[] | ReactivePrimitive<K> | ReactiveArray<K>>
-  ): Readonly<ReactiveArray<U | IArrayValueType<InputType>>> {
-    const newArr = this.clone() as ReactiveArray<IArrayValueType<InputType> | U>;
-    this.bind(newArr.splice);
+    ...items: Array<K | Array<K> | ReactivePrimitive<K> | ReactiveArray<K>>
+  ): Readonly<ReactiveArray<U | TArrayValueType<InputType>>> {
+    const newArr = this.clone() as ReactiveArray<TArrayValueType<InputType> | U>;
+    this.bind(newArr.splice.bind(newArr));
     const lengthTally: Array<{value: number}> = [
       this.length,
     ];
@@ -297,7 +310,7 @@ export class ReactiveArray<InputType> {
    * @param end    index to stop filling the array at. If end is negative, it is treated as length+end.
    */
   fill (
-    value: InputType | IArrayValueType<InputType>,
+    value: InputType | TArrayValueType<InputType>,
     start = 0,
     end = this.#value.length,
   ): this {
@@ -316,11 +329,11 @@ export class ReactiveArray<InputType> {
    * @param callback The filter method calls the callback function once for each element in the array to determine if it should be removed.
    */
   mutFilter (
-    callback: (value: IArrayValueType<InputType>, index: number, array: IArrayValueType<InputType>[]) => boolean,
+    callback: (value: TArrayValueType<InputType>, index: number, array: Array<TArrayValueType<InputType>>) => boolean,
   ): this {
     this.#value
       .flatMap((v, i, a) =>  callback(v, i, a) ? [] : i)
-      .reduce(
+      .reduce<Array<[number, number]>>(
         (acc, indexToDelete) => {
           if (!acc.length || acc[0][0] + acc[0][1] !== indexToDelete) {
             acc.unshift([indexToDelete,  1]);
@@ -329,10 +342,10 @@ export class ReactiveArray<InputType> {
           }
           return acc;
         },
-        [] as [number, number][],
+        [],
       )
       .forEach(args => {
-        this.splice.apply(this, args);
+        this.splice(...args);
       });
     return this;
   }
@@ -343,7 +356,7 @@ export class ReactiveArray<InputType> {
    * @param callback The map method calls the callback function one time for each element in the array.
    */
   mutMap (
-    callback: (value: IArrayValueType<InputType>, index: number, array: IArrayValueType<InputType>[]) => IArrayValueType<InputType>,
+    callback: (value: TArrayValueType<InputType>, index: number, array: Array<TArrayValueType<InputType>>) => TArrayValueType<InputType>,
   ): this {
     this.#value
       .flatMap((v, i, a) => {
@@ -353,17 +366,17 @@ export class ReactiveArray<InputType> {
           : {index: i, value: newValue}
         ;
       })
-      .reduce(
+      .reduce<Array<[number, number, ...Array<TArrayValueType<InputType>>]>>(
         (acc, {index, value}) => {
           if (!acc.length || acc[0][0] + acc[0][1] !== index) {
-            acc.unshift([index,  1, value]);
+            acc.unshift([index, 1, value]);
           } else {
             acc[0][1]++;
             acc[0].push(value);
           }
           return acc;
         },
-        [] as [number, number, ...IArrayValueType<InputType>[]][],
+        [],
       )
       .forEach(args => {
         this.splice(...args);
@@ -374,7 +387,7 @@ export class ReactiveArray<InputType> {
   /**
    * Works just like `Array::pop()`. Removes the last element from an array and returns it.
    */
-  pop () {
+  pop (): TArrayValueType<InputType> {
     return this.splice(-1, 1)[0];
   }
 
@@ -382,24 +395,26 @@ export class ReactiveArray<InputType> {
    * Similar to `Array::push()`. Appends new element(s) to an array, and returns the new length of the array as a reactive number.
    */
   push (
-    ...items: InputType[]
-  ) {
+    ...items: Array<InputType>
+  ): Readonly<ReactivePrimitive<number>> {
     this.splice(this.#value.length, 0, ...items);
+
     return this.length;
   }
 
   /**
    * Works just like `Array::reverse()`. Reverses the elements of the array in place.
    */
-  reverse () {
+  reverse (): this {
     this.setValue(this.#value.reverse());
+
     return this;
   }
 
   /**
    * Works just like `Array.shift()`. Removes the first element from an array and returns it.
    */
-  shift () {
+  shift (): TArrayValueType<InputType> {
     return this.splice(0, 1)[0];
   }
 
@@ -409,9 +424,10 @@ export class ReactiveArray<InputType> {
    * @param compareFn  Specifies a function that defines the sort order. It is expected to return a negative value if first argument is less than second argument, zero if they're equal and a positive value otherwise. If omitted, the array elements are converted to strings, then sorted according to each character's Unicode code point value.
    */
   sort (
-    compareFn?: ((a: IArrayValueType<InputType>, b: IArrayValueType<InputType>) => number),
-  ) {
+    compareFn?: ((a: TArrayValueType<InputType>, b: TArrayValueType<InputType>) => number),
+  ): this {
     this.setValue(this.#value.sort(compareFn));
+
     return this;
   }
 
@@ -424,8 +440,8 @@ export class ReactiveArray<InputType> {
   splice (
     start: number,
     deleteCount: number = this.#value.length - start,
-    ...items: Array<InputType | IArrayValueType<InputType>>
-  ) {
+    ...items: Array<InputType | TArrayValueType<InputType>>
+  ): Array<TArrayValueType<InputType>> {
     if (start > this.#value.length) {
       throw new RangeError("Out of bounds assignment. Sparse arrays are not allowed. Consider using .push() instead.");
     }
@@ -441,8 +457,8 @@ export class ReactiveArray<InputType> {
   private _dispatchUpdateEvents (
     start: number,
     deleteCount: number,
-    newItems: IArrayValueType<InputType>[] = [],
-  ) {
+    newItems: Array<TArrayValueType<InputType>> = [],
+  ): void {
     for (const callback of this.#callbacks) {
       queueMicrotask(() => {
         callback(start, deleteCount, ...newItems);
@@ -459,8 +475,8 @@ export class ReactiveArray<InputType> {
   private _adjustIndices (
     start: number,
     deleteCount: number,
-    items: Array<InputType | IArrayValueType<InputType>>,
-  ) {
+    items: Array<InputType | TArrayValueType<InputType>>,
+  ): void {
     const shiftedBy = items.length - deleteCount;
     if (shiftedBy) {
       for (let i = start + deleteCount; i < this.#indices.length; i++) {
@@ -481,8 +497,10 @@ export class ReactiveArray<InputType> {
   /**
    * Force the the array to dispatch events to its callback. The event will simply say `0` items were removed at index `0`, with `0` items added. No equivalent on native Array prototype.
    */
-  update () {
+  update (): this {
     this._dispatchUpdateEvents(0, 0);
+
+    return this;
   }
 
   /**
@@ -490,7 +508,7 @@ export class ReactiveArray<InputType> {
    */
   unshift (
     ...items: Array<InputType>
-  ) {
+  ): Readonly<ReactivePrimitive<number>> {
     this.splice(0, 0, ...items);
     return this.length;
   }
@@ -505,10 +523,10 @@ export class ReactiveArray<InputType> {
    */
   filter (
     callback: (
-      value: IArrayValueType<InputType>,
+      value: TArrayValueType<InputType>,
       index: number,
-      array: IArrayValueType<InputType>[],
-    ) => unknown,
+      array: Array<TArrayValueType<InputType>>,
+    ) => boolean,
   ): Readonly<ReactiveArray<InputType>> {
     const newArr: ReactiveArray<InputType> = new ReactiveArray;
     this.bind(() => newArr.setValue(this.#value.filter(callback)));
@@ -518,8 +536,9 @@ export class ReactiveArray<InputType> {
 
   // TODO
   flat (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
     depth = 1,
-  ) {
+  ): never {
     throw new NotImplementedError("See https://github.com/0kku/destiny/issues/1");
     // const newArr = new ReactiveArray(
     //   ...this.#value.flat(depth),
@@ -534,12 +553,13 @@ export class ReactiveArray<InputType> {
 
   // TODO
   flatMap<U> (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
     callback: (
-      value: IArrayValueType<InputType>,
+      value: TArrayValueType<InputType>,
       index: ReactivePrimitive<number>,
-      array: IArrayValueType<InputType>[],
+      array: Array<TArrayValueType<InputType>>,
     ) => U | ReadonlyArray<U>,
-  ) {
+  ): never {
     throw new NotImplementedError("See https://github.com/0kku/destiny/issues/1");
     // const newArr = new ReactiveArray(
     //   ...this.#value.flatMap(callback)
@@ -557,13 +577,13 @@ export class ReactiveArray<InputType> {
    */
   map<U> (
     callback: (
-      value: IArrayValueType<InputType>,
+      value: TArrayValueType<InputType>,
       index: ReactivePrimitive<number>,
       array: this,
     ) => U,
   ): Readonly<ReactiveArray<U>> {
     const cb = (
-      v: IArrayValueType<InputType>,
+      v: TArrayValueType<InputType>,
       i: number
     ) => callback(
       v,
@@ -593,7 +613,7 @@ export class ReactiveArray<InputType> {
   /**
    * Returns a new reactive array with all the values of the array it's called on, without any of its callbacks. The new array is not tied to the original one in any capacity. This is a custom method, and an equivalent is not available in native Arrays.
    */
-  clone () {
+  clone (): ReactiveArray<TArrayValueType<InputType>> {
     return new ReactiveArray(...this.#value);
   }
 
@@ -605,14 +625,14 @@ export class ReactiveArray<InputType> {
   slice (
     start = 0,
     end = this.#value.length - 1,
-  ) {
+  ): Readonly<ReactiveArray<TArrayValueType<InputType>>> {
     const newArr = new ReactiveArray(
       ...this.#value.slice(start, end),
     );
     this.bind((
       index: number,
       deleteCount: number,
-      ...values: IArrayValueType<InputType>[]
+      ...values: Array<TArrayValueType<InputType>>
     ) => newArr.splice(
       index - start,
       deleteCount,
@@ -627,7 +647,7 @@ export class ReactiveArray<InputType> {
    * **NOTE:** _This method should **not** be used for checking if an array includes something: use `ReactiveArray::includes()` instead._
    */
   indexOf (
-    ...args: Parameters<Array<IArrayValueType<InputType>>["indexOf"]>
+    ...args: Parameters<Array<TArrayValueType<InputType>>["indexOf"]>
   ): Readonly<ReactivePrimitive<number>> {
     const index = this.#value.indexOf(...args);
     return index === -1
@@ -639,7 +659,7 @@ export class ReactiveArray<InputType> {
    * Similar to `Array::lastIndexOf()`, except that it returns a readonly `ReactivePrimitive<number>`, which is updated as the array changes. The array is not searched again when the array changes. If nothing is found, `Readonly<ReactivePrimitive<-1>>` is returned, and it will never change. If something _is_ found, the index of that specific item will be kept up to date even when items are added or removed in a way that changes its index. If you don't want this behavior, use `ReactiveArray.prototype.value.lastIndexOf()` instead.
    */
   lastIndexOf (
-    ...args: Parameters<Array<IArrayValueType<InputType>>["lastIndexOf"]>
+    ...args: Parameters<Array<TArrayValueType<InputType>>["lastIndexOf"]>
   ): Readonly<ReactivePrimitive<number>> {
     const index = this.#value.lastIndexOf(...args);
     return index === -1
@@ -651,7 +671,7 @@ export class ReactiveArray<InputType> {
    * Similar to `Array::join()`, except that it returns a readonly `ReactivePrimitive<string>`, which is updated as the array changes. If you don't want this behavior, use `ReactiveArray.prototype.value.join()` instead.
    */
   join (
-    ...args: Parameters<Array<IArrayValueType<InputType>>["join"]>
+    ...args: Parameters<Array<TArrayValueType<InputType>>["join"]>
   ): Readonly<ReactivePrimitive<string>> {
     return this.pipe(
       () => this.#value.join(...args),
@@ -662,7 +682,7 @@ export class ReactiveArray<InputType> {
    * Similar to `Array::every()`, except that it returns a readonly `ReactivePrimitive<boolean>`, which is updated as the array changes. If you don't want this behavior, use `ReactiveArray.prototype.value.every()` instead.
    */
   every (
-    ...args: Parameters<Array<IArrayValueType<InputType>>["every"]>
+    ...args: Parameters<Array<TArrayValueType<InputType>>["every"]>
   ): Readonly<ReactivePrimitive<boolean>> {
     return this.pipe(
       () => this.#value.every(...args),
@@ -673,7 +693,7 @@ export class ReactiveArray<InputType> {
    * Similar to `Array::some()`, except that it returns a readonly `ReactivePrimitive<boolean>`, which is updated as the array changes. If you don't want this behavior, use `ReactiveArray.prototype.value.some()` instead.
    */
   some (
-    ...args: Parameters<Array<IArrayValueType<InputType>>["some"]>
+    ...args: Parameters<Array<TArrayValueType<InputType>>["some"]>
   ): Readonly<ReactivePrimitive<boolean>> {
     return this.pipe(
       () => this.#value.some(...args),
@@ -685,9 +705,9 @@ export class ReactiveArray<InputType> {
    */
   exclusiveSome (
     cb: (
-      value: IArrayValueType<InputType>,
+      value: TArrayValueType<InputType>,
       index: number,
-      array: IArrayValueType<InputType>[],
+      array: Array<TArrayValueType<InputType>>,
     ) => boolean,
   ): Readonly<ReactivePrimitive<boolean>> {
     return this.pipe(
@@ -705,8 +725,8 @@ export class ReactiveArray<InputType> {
    * Behaves akin to `Array::forEach()`, except will call the callback on newly added items as they're added. If you don't want this behavior, use `ReactiveArray.prototype.value.forEach()` instead.
    */
   forEach (
-    ...args: Parameters<Array<IArrayValueType<InputType>>["forEach"]>
-  ) {
+    ...args: Parameters<Array<TArrayValueType<InputType>>["forEach"]>
+  ): void {
     this.#value.forEach(...args);
     this.bind(
       (
@@ -721,8 +741,8 @@ export class ReactiveArray<InputType> {
    * Similar to `Array::reduce()`, except that its return value is a readonly ReactivePrimitive and will be reevaluated every time the array changes. If you don't want this behavior, use `ReactiveArray.prototype.value.reduce()` for a non-reactive result.
    */
   reduce (
-    ...args: Parameters<Array<IArrayValueType<InputType>>["reduce"]>
-  ): Readonly<ReactivePrimitive<ReturnType<Array<IArrayValueType<InputType>>["reduce"]>>> {
+    ...args: Parameters<Array<TArrayValueType<InputType>>["reduce"]>
+  ): Readonly<ReactivePrimitive<ReturnType<Array<TArrayValueType<InputType>>["reduce"]>>> {
     return this.pipe(() => this.#value.reduce(...args));
   }
 
@@ -730,8 +750,8 @@ export class ReactiveArray<InputType> {
    * Similar to `Array::reduceRight()`, except that its return value is a readonly ReactivePrimitive and will be reevaluated every time the array changes. If you don't want this behavior, use `ReactiveArray.prototype.value.reduceRight()` for a non-reactive result.
    */
   reduceRight (
-    ...args: Parameters<Array<IArrayValueType<InputType>>["reduceRight"]>
-  ): Readonly<ReactivePrimitive<ReturnType<Array<IArrayValueType<InputType>>["reduceRight"]>>> {
+    ...args: Parameters<Array<TArrayValueType<InputType>>["reduceRight"]>
+  ): Readonly<ReactivePrimitive<ReturnType<Array<TArrayValueType<InputType>>["reduceRight"]>>> {
     return this.pipe(() => this.#value.reduceRight(...args));
   }
 
@@ -739,8 +759,8 @@ export class ReactiveArray<InputType> {
    * Works just like `Array::find()`. Doesn't return a reactive value.
    */
   find (
-    ...args: Parameters<Array<IArrayValueType<InputType>>["find"]>
-  ) {
+    ...args: Parameters<Array<TArrayValueType<InputType>>["find"]>
+  ): ReturnType<Array<TArrayValueType<InputType>>["find"]> {
     return this.#value.find(...args);
   }
 
@@ -748,8 +768,8 @@ export class ReactiveArray<InputType> {
    * Similar to `Array::findIndex`, except that it returns a `ReactivePrimitive<number>` whose value is updated if the index of the item changes as other items are added or removed from the array. The array is not searched again as it's mutated, however. If nothing is found, `Readonly<ReactivePrimitive<-1>>` is returned, and its value will never be updated. If you don't want this behavior, use `ReactiveArray.prototype.value.findIndex()` instead.
    */
   findIndex (
-    ...args: Parameters<Array<IArrayValueType<InputType>>["findIndex"]>
-  ) {
+    ...args: Parameters<Array<TArrayValueType<InputType>>["findIndex"]>
+  ): Readonly<ReactivePrimitive<ReturnType<Array<TArrayValueType<InputType>>["findIndex"]>>> {
     const index = this.#value.findIndex(...args);
 
     return index === -1
@@ -760,33 +780,39 @@ export class ReactiveArray<InputType> {
   /**
    * Works similar to `Array::entries()`. The difference is that it returns a readonly ReactiveArray containing the entries and is updated as the original array is updated. If you don't want this behavior, use `ReactiveArray.prototype.value.entries()` for a writable non-reactive array instead.
    */
-  entries () {
+  entries (): Readonly<ReactiveArray<[
+    index: number,
+    value: TArrayValueType<InputType>,
+  ]>> {
     const array = new ReactiveArray(...this.#value.entries());
     this.bind((index, deleteCount, ...addedItems) => {
       array.splice(index, deleteCount, ...addedItems.entries());
     }, true);
+
     return array as Readonly<typeof array>;
   }
 
   /**
    * Works similar to `Array::keys()`. The difference is that it returns a readonly ReactiveArray containing the keys and is updated as the original array is updated. If you don't want this behavior, use `ReactiveArray.prototype.value.keys()` for a writable non-reactive array instead.
    */
-  keys () {
+  keys (): Readonly<ReactiveArray<number>> {
     const array = new ReactiveArray(...this.#value.keys());
     this.bind((index, deleteCount, ...addedItems) => {
       array.splice(index, deleteCount, ...addedItems.keys());
     }, true);
+
     return array as Readonly<typeof array>;
   }
 
   /**
    * Works similar to `Array::values()`. The difference is that it returns a readonly ReactiveArray containing the values and is updated as the original array is updated. If you don't want this behavior, use `ReactiveArray.prototype.value.values()` for a writable non-reactive array instead.
    */
-  values () {
+  values (): Readonly<ReactiveArray<TArrayValueType<InputType>>> {
     const array = new ReactiveArray(...this.#value.values());
     this.bind((index, deleteCount, ...addedItems) => {
       array.splice(index, deleteCount, ...addedItems.values());
     }, true);
+
     return array as Readonly<typeof array>;
   }
 
@@ -794,7 +820,7 @@ export class ReactiveArray<InputType> {
    * Works similar to `Array::includes()`. The difference is that it returns a readonly `ReactivePrimitive<boolean>` containing the result and is updated as the original array is updated. If you don't want this behavior, use `ReactiveArray.prototype.value.includes()` for a plain boolean instead.
    */
   includes (
-    ...args: Parameters<Array<IArrayValueType<InputType>>["includes"]>
+    ...args: Parameters<Array<TArrayValueType<InputType>>["includes"]>
   ): Readonly<ReactivePrimitive<boolean>> {
     return this.pipe(
       () => this.#value.includes(...args),
@@ -802,4 +828,4 @@ export class ReactiveArray<InputType> {
   }
 
   //#endregion
-};
+}

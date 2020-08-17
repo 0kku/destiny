@@ -1,6 +1,6 @@
 import { ReactiveArray, ReactivePrimitive } from "../../mod.js";
 
-export type IReactiveEntity<T> =
-  ReactivePrimitive<T> |
-  ReactiveArray<T>
-;
+export type TReactiveEntity<T> = (
+  | ReactivePrimitive<T>
+  | ReactiveArray<T>
+);

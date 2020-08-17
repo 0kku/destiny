@@ -8,7 +8,7 @@ export const reactiveArrayProxyConfig = {
   deleteProperty<InputType>(
     target: ReactiveArray<InputType>,
     property: keyof ReactiveArray<InputType> | string,
-  ) {
+  ): boolean {
     const index = toNumber(property);
     if (!Number.isNaN(index)) {
       target.splice(index, 1);
@@ -21,7 +21,7 @@ export const reactiveArrayProxyConfig = {
   get<InputType>(
     target: ReactiveArray<InputType>,
     property: keyof ReactiveArray<InputType>,
-  ) {
+  ): typeof target[typeof property] {
     const index = toNumber(property);
     if (!Number.isNaN(index)) { // Was valid number key (i.e. array index)
       return target.get(index);
@@ -30,7 +30,7 @@ export const reactiveArrayProxyConfig = {
       return (typeof value === "function"
         ? value.bind(target) // Without binding, #private fields break in Proxies
         : value
-      );
+      ) as typeof target[typeof property];
     }
   },
 
@@ -38,7 +38,7 @@ export const reactiveArrayProxyConfig = {
     target: ReactiveArray<InputType>,
     property: keyof ReactiveArray<InputType> | string,
     value: InputType,
-  ) {
+  ): boolean {
     const index = toNumber(property);
     if (!Number.isNaN(index)) {
       target.splice(index, 1, value);

@@ -7,7 +7,7 @@ const nonRenderedValues = new Set<unknown>([
 
 export const shouldBeRendered = (
   input: unknown,
-) => !nonRenderedValues.has(input);
+): boolean => !nonRenderedValues.has(input);
 
 /**
  * Converts a value that is about to be rendered in DOM into a string representation. `boolean`s and _nullish_ values are not rendered by design. 
@@ -15,7 +15,7 @@ export const shouldBeRendered = (
  */
 export const stringifyValue = (
   input: unknown,
-) => (
+): string => (
   shouldBeRendered(input)
     ? String(input)
     : ""

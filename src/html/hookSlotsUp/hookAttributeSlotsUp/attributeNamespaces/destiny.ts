@@ -1,4 +1,5 @@
-import { IValueProps } from "../../_hookSlotsUp.js";
+/* eslint-disable @typescript-eslint/brace-style */
+import { TValueProps } from "../../_hookSlotsUp.js";
 import { ReactivePrimitive } from "../../../../mod.js";
 import { deferredElements } from "../../../deferredElements.js";
 
@@ -7,8 +8,8 @@ export const destiny = (
     element,
     attributeName,
     valueSlot,
-  }: IValueProps,
-) => {
+  }: TValueProps,
+): void => {
   /**
    * `destiny:ref` prop allows you to to give a `ReactivePrimitive` to
    * the templater, which will then store the created element into
@@ -54,7 +55,7 @@ export const destiny = (
     }
     queueMicrotask( // wait for stack to clear
       () => queueMicrotask( // let other microtasks run first
-        () => valueSlot(element),
+        () => void valueSlot(element),
       ),
     );
   }
@@ -85,4 +86,4 @@ export const destiny = (
       valueSlot as () => Promise<void>,
     );
   }
-}
+};

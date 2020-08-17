@@ -1,4 +1,4 @@
-import { IValueProps } from "../../_hookSlotsUp.js";
+import { TValueProps } from "../../_hookSlotsUp.js";
 
 /**
  * `prop:<PropertyName>` takes in any property and assigns it to
@@ -19,11 +19,11 @@ export const prop = (
     valueStart,
     valueSlot,
     valueEnd,
-  }: IValueProps,
-) => {
+  }: TValueProps,
+): void => {
   const value = (
     valueStart || valueEnd
-    ? `${valueStart}${valueSlot}${valueEnd}`
+    ? `${valueStart}${String(valueSlot)}${valueEnd}`
     : valueSlot
   );
   //@ts-ignore TODO gotta figure out later if this can be resolved properly by TS lol.

@@ -1,10 +1,10 @@
-import { IReactiveValueType } from "./IReactiveValueType.js";
-import { IReactiveObjectFlag } from "./IReactiveObjectFlag.js";
+import { TReactiveValueType } from "./IReactiveValueType.js";
+import { TReactiveObjectFlag } from "./IReactiveObjectFlag.js";
 
-export type IReactiveObject<T extends object | unknown> = 
-  T extends object
+export type TReactiveObject<T extends Record<string, unknown> | unknown> = (
+  T extends Record<string, unknown>
   ? {
-      [P in keyof T]: T[P] extends Function ? T[P] : IReactiveValueType<T[P]>;
-    } & IReactiveObjectFlag
-  : IReactiveObjectFlag
-;
+      [P in keyof T]: T[P] extends (() => void) ? T[P] : TReactiveValueType<T[P]>;
+    } & TReactiveObjectFlag
+  : TReactiveObjectFlag
+);

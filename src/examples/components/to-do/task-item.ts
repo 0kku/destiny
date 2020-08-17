@@ -1,12 +1,12 @@
 import { DestinyElement, html } from "../../../mod.js";
-import { IReactiveObject } from "../../../reactive/types/IReactiveObject.js";
+import { TReactiveObject } from "../../../reactive/types/IReactiveObject.js";
 
 customElements.define("task-item", class extends DestinyElement {
   set item (
-    _: IReactiveObject<{
-        title: string;
-        done: boolean;
-        editing: boolean;
+    _: TReactiveObject<{
+        title: string,
+        done: boolean,
+        editing: boolean,
     }>,
   ) {}
   set removeItem (

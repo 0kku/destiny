@@ -1,8 +1,8 @@
 import { ReactiveArray, ReactivePrimitive } from "../../mod.js";
-import { IReactiveObject } from "./IReactiveObject.js";
+import { TReactiveObject } from "./IReactiveObject.js";
 
-export type IReactive<T> = (
-  ReactiveArray<T> |
-  ReactivePrimitive<T> |
-  IReactiveObject<T>
+export type TReactive<T> = (
+  | ReactiveArray<T>
+  | ReactivePrimitive<T>
+  | TReactiveObject<T>
 );

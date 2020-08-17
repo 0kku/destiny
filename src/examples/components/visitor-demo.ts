@@ -11,7 +11,7 @@ customElements.define("visitor-demo", class extends DestinyElement {
     clearInterval(this.#timer);
   }
 
-  render() {
+  render () {
     return html`
       <label>What's your name? <input type=text value=${this.#who}></label>
       <p>

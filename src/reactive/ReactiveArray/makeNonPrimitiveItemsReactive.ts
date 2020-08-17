@@ -1,4 +1,4 @@
-import { IArrayValueType } from "../types/IArrayValueType.js";
+import { TArrayValueType } from "../types/IArrayValueType.js";
 import { ReactiveArray } from "../../mod.js";
 import { isReactive } from "../../typeChecks/isReactive.js";
 import { isSpecialCaseObject } from "../reactiveObject/specialCaseObjects.js";
@@ -11,18 +11,17 @@ import { isObject } from "../../typeChecks/isObject.js";
  * @param parent Another reactive object to whom any reactive items created should report to when updating, so updates can correctly propagate to the highest level
  */
 export function makeNonPrimitiveItemsReactive<InputType> (
-  items: Array<InputType | IArrayValueType<InputType>>,
+  items: Array<InputType | TArrayValueType<InputType>>,
   parent: ReactiveArray<InputType>,
-): IArrayValueType<InputType>[] {
+): Array<TArrayValueType<InputType>> {
   return items.map((v: unknown) => {
     return (
-      // Without casting to unknown, TSC crashes. IDK why.
-      isReactive(v) || !isObject(v as unknown) || isSpecialCaseObject(v)
+      isReactive(v) || !isObject(v) || isSpecialCaseObject(v)
       ? v
-      : reactive(
+      : reactive<unknown>(
           v,
-          {parent},
+          {parent: parent as ReactiveArray<unknown>},
         )
-    ) as IArrayValueType<InputType>;
+    ) as TArrayValueType<InputType>;
   });
 }
