@@ -30,7 +30,7 @@ export const destiny = (
    */
   if (attributeName === "ref") {
     if (!(valueSlot instanceof ReactivePrimitive)) {
-      throw new TypeError("Ref must be a ReactivePrimitive");
+      throw new TypeError(`Ref must be a ReactivePrimitive, but it was ${typeof valueSlot}`);
     }
     valueSlot.value = element;
   }

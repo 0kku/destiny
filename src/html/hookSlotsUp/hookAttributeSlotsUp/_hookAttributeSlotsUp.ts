@@ -61,7 +61,9 @@ export function hookAttributeSlotsUp (
           })
         );
         
-        if (item instanceof ReactivePrimitive) {
+        if (namespace === "destiny") {
+          setValue(item);
+        } else if (item instanceof ReactivePrimitive) {
           const changeWatcher = matchChangeWatcher(attributeName);
           if (changeWatcher) {
             element.addEventListener(changeWatcher, e => {
