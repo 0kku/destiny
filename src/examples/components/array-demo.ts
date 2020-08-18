@@ -36,12 +36,12 @@ component(class ArrayDemo extends DestinyElement {
 
         li {
           display: block;
-          width: 32px;
-          height: 32px;
+          width: var(--l);
+          height: var(--l);
           text-align: center;
-          line-height: 32px;
-          margin: 4px;
-          border-radius: 3px;
+          line-height: var(--l);
+          margin: var(--xs);
+          border-radius: var(--border-radius);
           text-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
           box-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
           font-family: monospace;

@@ -33,10 +33,6 @@ component(class TabView extends DestinyElement {
   render () {
     return html`
       <style>
-        :host {
-          --m: 16px;
-          --s: 8px;
-        }
         nav {
           padding: 0;
           padding-left: var(--m);
@@ -45,8 +41,8 @@ component(class TabView extends DestinyElement {
         }
         a {
           padding: var(--s) var(--m);
-          border-top-left-radius: 3px;
-          border-top-right-radius: 3px;
+          border-top-left-radius: var(--border-radius);
+          border-top-right-radius: var(--border-radius);
           transition: background .2s;
           user-select: none;
           color: white;
@@ -67,7 +63,7 @@ component(class TabView extends DestinyElement {
 
         main {
           padding: var(--m);
-          border-radius: 3px;
+          border-radius: var(--border-radius);
         }
       </style>
       <nav>

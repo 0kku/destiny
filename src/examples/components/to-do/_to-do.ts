@@ -30,18 +30,19 @@ component(class ToDo extends DestinyElement {
     return html`
       <style>
         label {
-          height: 32px;
-          line-height: 32px;
+          height: var(--l);
+          line-height: var(--l);
         }
 
         label, [type=button], [type=submit] {
           cursor: pointer;
+          color: white;
         }
 
         li {
-          height: 32px;
+          height: var(--l);
           overflow: hidden;
-          font-size: 15px;
+          font-size: var(--m);
         }
 
         input:not([type=checkbox]) {
@@ -49,40 +50,45 @@ component(class ToDo extends DestinyElement {
           text-shadow: 1px 1px 1px rgba(0,0,0,.7);
           vertical-align: top;
           box-sizing: border-box;
-          width: 40px;
-          height: 30px;
-          background: #666;
-          border: none;
-          border-radius: 3px;
+          min-width: var(--xl);
+          height: var(--l);
+          padding: 0 var(--s);
+          background: var(--element-color);
+          border-radius: var(--border-radius);
           box-shadow: 0 1px 1px rgba(0,0,0,.4);
           outline: none;
           transition: all .1s;
           border: 1px solid transparent;
-          font-size: 15px;
+          font-size: var(--m);
         }
         input:not([type=checkbox]):hover {
-          background: #777;
+          background: var(--element-hover-color);
         }
         input:not([type=checkbox]):active {
           transform: translateY(1px);
         }
         input:not([type=checkbox]):focus {
-          border: 1px solid #999;
+          border: 1px solid var(--element-focus-color);
         }
 
         input[type=text] {
-          padding: 0 6px;
+          padding: 0 var(--s);
           width: 200px;
-          height: 30px;
-          background: #666;
+          height: var(--l);
+          background: var(--element-color);
           border: none;
           outline: none;
-          border-radius: 3px;
+          border-radius: var(--border-radius);
+        }
+        input[type=text]::placeholder {
+          font-style: italic;
+          color: #333;
+          text-shadow: none;
         }
 
         task-item {
           display: block;
-          height: 32px;
+          height: var(--l);
           overflow: hidden;
         }
       </style>
@@ -117,7 +123,13 @@ component(class ToDo extends DestinyElement {
               this.#newValue.value = "";
             }}
           >
-            <input type=text prop:value=${this.#newValue} required>
+            <input
+              type=text
+              prop:value=${this.#newValue}
+              required
+              placeholder="Add an item..."
+              aria-label="Add an item"
+            >
             <input type=submit value=➕>
           </form>
         </li>
@@ -139,7 +151,6 @@ component(class ToDo extends DestinyElement {
       <input
         type=button
         value="Clear done"
-        style="width: auto"
         on:click=${() => this.#items.mutFilter(v => !v.done.value)}
       >
     `;

@@ -4,7 +4,7 @@ export function animateIn (
   element.animate(
     [
       {height: "0px"},
-      {height: "32px"},
+      {height: "var(--l)"},
     ],
     {duration: 300, easing: "ease"},
   ).play();
@@ -15,7 +15,7 @@ export async function animateOut (
 ): Promise<void> {
   const animation = element.animate(
     [
-      {height: "32px"},
+      {height: "var(--l)"},
       {height: "0px"},
     ],
     {duration: 300, easing: "ease", fill: "forwards"},
