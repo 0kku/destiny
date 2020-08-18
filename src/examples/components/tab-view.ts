@@ -1,4 +1,4 @@
-import { DestinyElement, html, expression, component } from "../../mod.js";
+import { DestinyElement, expression, component, xml } from "../../mod.js";
 import { route } from "./hash-router.js";
 import "./to-do/_to-do.js";
 import "./visitor-demo.js";
@@ -11,27 +11,27 @@ component(class TabView extends DestinyElement {
     {
       path: "/",
       title: "Visitor demo",
-      content: html`<visitor-demo></visitor-demo>`,
+      content: xml`<visitor-demo />`,
     },
     {
       path: "/todo",
       title: "Todo",
-      content: html`<to-do></to-do>`,
+      content: xml`<to-do />`,
     },
     {
       path: "/array-demo",
       title: "Array demo",
-      content: html`<array-demo></array-demo>`,
+      content: xml`<array-demo />`,
     },
     {
       path: "/time-diff",
       title: "Time difference",
-      content: html`<time-diff></time-diff>`,
+      content: xml`<time-diff />`,
     },
   ];
 
   render () {
-    return html`
+    return xml/*html*/`
       <style>
         nav {
           padding: 0;
@@ -67,10 +67,10 @@ component(class TabView extends DestinyElement {
         }
       </style>
       <nav>
-        ${this.#tabs.map(({path, title}) => html`
+        ${this.#tabs.map(({path, title}) => xml`
           <a
             href="#${path}"
-            class=${expression`${path} === ${route} && "selected"`}
+            class="${expression`${path} === ${route} && "selected"`}"
           >
             ${title}
           </a>
@@ -78,13 +78,13 @@ component(class TabView extends DestinyElement {
       </nav>
 
       <hash-router>
-        ${this.#tabs.map(value => html`
-          <main slot=${value.path}>
+        ${this.#tabs.map(value => xml`
+          <main slot="${value.path}">
             ${value.content}
           </main>
         `)}
-        <main slot=404>
-          Couldn't find resource "${route}". <br>
+        <main slot="404">
+          Couldn't find resource "${route}". <br />
           Please check your spelling.
         </main>
       </hash-router>

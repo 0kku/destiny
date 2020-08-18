@@ -1,4 +1,5 @@
 export {html} from "./html/_html.js";
+export {xml} from "./html/_xml.js";
 export {DestinyElement} from "./DestinyElement.js";
 export {reactive} from "./reactive/reactive.js";
 export {ReactivePrimitive} from "./reactive/ReactivePrimitive.js";

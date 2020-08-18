@@ -1,20 +1,21 @@
+import { parseString } from "./parseString.js";
 import { resolveSlots } from "./resolveSlots.js";
 
 /**
  * Parses and processes a `TemplateStringsArray` into a `DocumentFragment`.
  * @param param0 The template strings to parse and process
  */
-export function createTemplateObject (
+export function createTemplate (
   [first, ...strings]: TemplateStringsArray,
+  parser: "html" | "xml",
 ): HTMLTemplateElement {
-  const temp = document.createElement("template");
   let string = first;
   for (const [i, fragment] of strings.entries()) {
     string += `__internal_${i}_${fragment}`;
   }
-  temp.innerHTML = string;
+  const templateElement = parseString(string, parser);
 
-  resolveSlots(temp);
+  resolveSlots(templateElement);
 
-  return temp;
+  return templateElement;
 }
