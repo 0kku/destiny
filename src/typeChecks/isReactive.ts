@@ -1,6 +1,6 @@
-import { TReactive } from "../reactive/types/IReactive.js";
 import { ReactiveArray, ReactivePrimitive } from "../mod.js";
 import { reactiveObjectFlag } from "../reactive/reactiveObject/reactiveObjectFlag.js";
+import type { TReactive } from "../reactive/types/IReactive.js";
 
 /**
  * Checks if a given value is a reactive value; I.E. an instance of `ReactivePrimitive` or `ReactiveArray`, or a `reactiveObject` which is flagged by the `reacativeObjecetFlag` symbol.

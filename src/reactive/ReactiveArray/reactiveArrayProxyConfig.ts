@@ -1,5 +1,5 @@
+import { ReactiveArray } from "../../mod.js";
 import { toNumber } from "../../utils/toNumber.js";
-import { ReactiveArray } from "./_ReactiveArray.js";
 
 /**
  * Configuration object for the `Proxy` created by `ReactiveArray`. The proxy is used for enabling dynamic index access using the bracket notation (ex: `arr[0] = "foo"`). 

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { TValueProps } from "../../_hookSlotsUp.js";
+import type { TValueProps } from "../../_hookSlotsUp.js";
 
 /**
  * `call:<ElementMethod>` takes an array of arguments to be passed to

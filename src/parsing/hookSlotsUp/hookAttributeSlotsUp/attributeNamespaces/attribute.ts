@@ -1,5 +1,5 @@
-import { TValueProps } from "../../_hookSlotsUp.js";
 import { stringifyValue } from "../../stringifyValue.js";
+import type { TValueProps } from "../../_hookSlotsUp.js";
 
 /**
  * Handler for normal non-namespaced attributes. Behaves like normal HTML.

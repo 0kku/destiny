@@ -1,4 +1,4 @@
-import { TValueProps } from "../../_hookSlotsUp.js";
+import type { TValueProps } from "../../_hookSlotsUp.js";
 
 /**
  * `on:<EventName>` adds an event listener. It either takes a

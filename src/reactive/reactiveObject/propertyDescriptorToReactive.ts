@@ -1,6 +1,5 @@
-import { reactive } from "../reactive.js";
-import { TReactiveEntity } from "../types/IReactiveEntity.js";
-import { ReactivePrimitive } from "../../mod.js";
+import { reactive, ReactivePrimitive } from "../../mod.js";
+import type { TReactiveEntity } from "../types/IReactiveEntity.js";
 
 type TPropertyDescriptorEntry = [
   key: string,

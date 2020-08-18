@@ -1,5 +1,5 @@
 import { DestinyElement, html, component } from "../../../mod.js";
-import { TReactiveObject } from "../../../reactive/types/IReactiveObject.js";
+import type { TReactiveObject } from "../../../reactive/types/IReactiveObject.js";
 
 component(class TaskItem extends DestinyElement {
   set item (

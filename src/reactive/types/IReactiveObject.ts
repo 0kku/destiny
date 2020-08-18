@@ -1,5 +1,5 @@
-import { TReactiveValueType } from "./IReactiveValueType.js";
-import { TReactiveObjectFlag } from "./IReactiveObjectFlag.js";
+import type { TReactiveObjectFlag } from "./IReactiveObjectFlag.js";
+import type { TReactiveValueType } from "./IReactiveValueType.js";
 
 export type TReactiveObject<T extends Record<string, unknown> | unknown> = (
   T extends Record<string, unknown>

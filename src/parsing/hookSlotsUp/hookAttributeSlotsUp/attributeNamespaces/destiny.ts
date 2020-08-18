@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/brace-style */
-import { TValueProps } from "../../_hookSlotsUp.js";
 import { ReactivePrimitive } from "../../../../mod.js";
 import { deferredElements } from "../../../deferredElements.js";
+import type { TValueProps } from "../../_hookSlotsUp.js";
 
 export const destiny = (
   {

@@ -1,16 +1,15 @@
 import { ReactivePrimitive } from "../../mod.js";
-import { TArrayValueType } from "../types/IArrayValueType";
-import { TReactiveArrayCallback } from "../types/IReactiveArrayCallback.js";
 import { reactiveArrayProxyConfig } from "./reactiveArrayProxyConfig.js";
 import { makeNonPrimitiveItemsReactive } from "./makeNonPrimitiveItemsReactive.js";
 import { NotImplementedError } from "../../utils/NotImplementedError.js";
+import type { TReactiveArrayCallback } from "../types/IReactiveArrayCallback.js";
+import type { TArrayValueType } from "../types/IArrayValueType.js";
 
 type TArrayUpdateArguments<T> = [
   startEditingAt: number, 
   deleteCount: number,
   ...newElements: Array<T>
 ];
-
 
 /**
  * `ReactiveArray`s are reactive values that contain multiple values which can be updated and whose updates can be listened to. In general, `ReactiveArray`s behave very similar to native `Array`s. The main difference is, that most primitive values are given as `ReactivePrimitive`s and any immutable methods will return a new readonly `ReactiveArray`, whose values are tied to the original `ReactiveArray`. The class also provides a few custom convenience methods.

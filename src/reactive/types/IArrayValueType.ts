@@ -1,6 +1,6 @@
-import { TPrimitive } from "./IPrimitive.js";
-import { TSpecialCaseObject } from "../reactiveObject/specialCaseObjects.js";
-import { TReactiveValueType } from "./IReactiveValueType.js";
+import type { TSpecialCaseObject } from "../reactiveObject/specialCaseObjects.js";
+import type { TReactiveValueType } from "./IReactiveValueType.js";
+import type { TPrimitive } from "./IPrimitive.js";
 
 export type TArrayValueType<T> = (
   T extends TPrimitive | TSpecialCaseObject

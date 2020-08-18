@@ -1,4 +1,4 @@
-import { ReactiveArray } from "./ReactiveArray/_ReactiveArray.js";
+import { ReactiveArray } from "../mod.js";
 
 type TUnwrap<T> = 
   T extends ReactivePrimitive<infer U> ? U :

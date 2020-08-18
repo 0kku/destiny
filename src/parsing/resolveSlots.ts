@@ -1,7 +1,7 @@
-import isTextNode from "../typeChecks/isTextNode.js";
-import isElement from "../typeChecks/isElement.js";
+import { isTextNode } from "../typeChecks/isTextNode.js";
+import { isElement } from "../typeChecks/isElement.js";
 import { prepareContentSlots } from "./prepareContentSlots.js";
-import { TUnpreparedContentSlot } from "./interfaces.js";
+import type { TUnpreparedContentSlot } from "./interfaces.js";
 
 /**
  * Figures out from a freshly parsed `HTMLTemplate` where slots are located so they can be quickly hooked up with values.

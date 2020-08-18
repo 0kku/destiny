@@ -1,4 +1,4 @@
-import { TValueProps } from "../../_hookSlotsUp.js";
+import type { TValueProps } from "../../_hookSlotsUp.js";
 
 /**
  * `prop:<PropertyName>` takes in any property and assigns it to

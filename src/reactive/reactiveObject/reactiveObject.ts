@@ -1,7 +1,7 @@
-import { TReactiveEntity } from "../types/IReactiveEntity";
-import { TReactiveObject } from "../types/IReactiveObject.js";
 import { propertyDescriptorToReactive } from "./propertyDescriptorToReactive.js";
 import { reactiveObjectFlag } from "./reactiveObjectFlag.js";
+import type { TReactiveEntity } from "../types/IReactiveEntity.js";
+import type { TReactiveObject } from "../types/IReactiveObject.js";
 
 /**
  * Takes an object, and passes each of its non-function properties to `reactive()`, which makes the entire structure reactive recursively.

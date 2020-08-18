@@ -1,6 +1,6 @@
-import { deferredElements } from "./html/deferredElements.js";
-import type { Renderable } from "./html/Renderable";
-import { html } from "./mod.js";
+import { deferredElements } from "./parsing/deferredElements.js";
+import type { Renderable } from "./parsing/Renderable";
+import { xml } from "./mod.js";
 
 /**
  * A class for creating new custom elements in Destiny UI.
@@ -33,8 +33,6 @@ export abstract class DestinyElement extends HTMLElement {
   }
 
   render (): Renderable {
-    return html`
-      <slot></slot>
-    `;
+    return xml`<slot />`;
   }
 }
