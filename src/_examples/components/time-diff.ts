@@ -1,5 +1,5 @@
-import { DestinyElement, html, reactive, expression } from "../../mod.js";
-import { TemplateResult } from "../../mod.js";
+import { DestinyElement, html, reactive, expression } from "/dist/mod.js";
+import type { TemplateResult } from "/dist/mod.js";
 
 function formatTimeFragment (
   input: number,

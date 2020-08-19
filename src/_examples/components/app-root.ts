@@ -1,5 +1,6 @@
-import { DestinyElement, xml } from "../../mod.js";
-import type { TemplateResult } from "../../mod.js";
+import { DestinyElement, xml } from "/dist/mod.js";
+import type { TemplateResult } from "/dist/mod.js";
+
 import { TabView } from "./tab-view.js";
 
 export class AppRoot extends DestinyElement {

@@ -1,11 +1,12 @@
-import { DestinyElement, expression, xml } from "../../mod.js";
+import { DestinyElement, expression, xml } from "/dist/mod.js";
+import type { TemplateResult } from "/dist/mod.js";
+
 import { route } from "./hash-router.js";
 import { ToDo } from "./to-do/_to-do.js";
 import { VisitorDemo } from "./visitor-demo.js";
 import { ArrayDemo } from "./array-demo.js";
 import { TimeDiff } from "./time-diff.js";
 import { HashRouter } from "./hash-router.js";
-import { TemplateResult } from "../../mod.js";
 
 export class TabView extends DestinyElement {
   #tabs = [

@@ -1,5 +1,5 @@
-import { DestinyElement, html } from "../../../mod.js";
-import type { TemplateResult, TReactiveObject } from "../../../mod.js";
+import { DestinyElement, html } from "/dist/mod.js";
+import type { TemplateResult, TReactiveObject } from "/dist/mod.js";
 
 export class TaskItem extends DestinyElement {
   set item (

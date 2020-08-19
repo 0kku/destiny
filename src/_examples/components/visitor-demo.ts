@@ -1,5 +1,5 @@
-import { DestinyElement, html, reactive } from "../../mod.js";
-import { TemplateResult } from "../../mod.js";
+import { DestinyElement, html, reactive } from "/dist/mod.js";
+import type { TemplateResult } from "/dist/mod.js";
 
 export class VisitorDemo extends DestinyElement {
   #who = reactive("visitor");
