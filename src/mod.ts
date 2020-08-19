@@ -1,5 +1,6 @@
 export { DestinyElement    } from "./elementLogic/DestinyElement.js";
 export { register          } from "./elementLogic/register.js";
+export { Ref               } from "./elementLogic/Ref.js";
 export { ReactivePrimitive } from "./reactive/ReactivePrimitive.js";
 export { reactiveObject    } from "./reactive/reactiveObject/reactiveObject.js";
 export { ReactiveArray     } from "./reactive/ReactiveArray/_ReactiveArray.js";

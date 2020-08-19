@@ -5,6 +5,6 @@
  */
 export function isObject (
   input: unknown,
-): input is Record<string, unknown> {
+): input is Record<string, unknown> & {constructor: {name: string}} {
   return input && typeof input === "object";
 }

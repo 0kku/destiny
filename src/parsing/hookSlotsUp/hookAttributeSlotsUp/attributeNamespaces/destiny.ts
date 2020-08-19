@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/brace-style */
-import { ReactivePrimitive } from "../../../../mod.js";
+import { Ref } from "../../../../mod.js";
 import { deferredElements } from "../../../deferredElements.js";
+import { isObject } from "../../../../typeChecks/isObject.js";
 import type { TValueProps } from "../../_hookSlotsUp.js";
 
 export const destiny = (
@@ -29,8 +30,12 @@ export const destiny = (
    * ```
    */
   if (attributeName === "ref") {
-    if (!(valueSlot instanceof ReactivePrimitive)) {
-      throw new TypeError(`Ref must be a ReactivePrimitive, but it was ${typeof valueSlot}`);
+    if (!(valueSlot instanceof Ref)) {
+      throw new TypeError(`Attribute value for destiny:ref must be a Ref, but it was [${
+        isObject(valueSlot)
+        ? `${valueSlot.constructor.name} (Object)`
+        : `${String(valueSlot)} (${typeof valueSlot})`
+      }] in \n${element.outerHTML}`);
     }
     valueSlot.value = element;
   }

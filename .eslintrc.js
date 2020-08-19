@@ -120,7 +120,9 @@ module.exports = {
     "no-invalid-this": "off",
     // Rule is buggy with instance fields.
     // "@typescript-eslint/no-invalid-this": ["error"],
-    "@typescript-eslint/no-invalid-void-type": ["error"],
+    "@typescript-eslint/no-invalid-void-type": ["error", {
+      "allowInGenericTypeArguments": true,
+    }],
     "no-loss-of-precision": "off",
     "@typescript-eslint/no-loss-of-precision": ["error"],
     "@typescript-eslint/no-misused-new": ["error"],
