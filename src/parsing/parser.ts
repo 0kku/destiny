@@ -17,7 +17,7 @@ export function parser (
   if (!template) {
     templateCache.set(
       strings,
-      template = createTemplate(strings, parser),
+      template = createTemplate(strings, props, parser),
     );
   }
 

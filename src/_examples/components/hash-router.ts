@@ -1,4 +1,5 @@
-import { DestinyElement, html, reactive, component } from "../../mod.js";
+import { DestinyElement, html, reactive } from "../../mod.js";
+import { TemplateResult } from "../../mod.js";
 
 function getHashRoute (
   url: string,
@@ -12,8 +13,8 @@ window.addEventListener("hashchange", e => {
   route.value = getHashRoute(e.newURL);
 });
 
-component(class HashRouter extends DestinyElement {
-  render () {
+export class HashRouter extends DestinyElement {
+  render (): TemplateResult {
     return html`
       <slot name=${route}>
         <slot name=404>
@@ -22,4 +23,4 @@ component(class HashRouter extends DestinyElement {
       </slot>
     `;
   }
-});
+}

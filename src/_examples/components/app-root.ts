@@ -1,9 +1,10 @@
-import { DestinyElement, html, component } from "../../mod.js";
-import "./tab-view.js";
+import { DestinyElement, xml } from "../../mod.js";
+import type { TemplateResult } from "../../mod.js";
+import { TabView } from "./tab-view.js";
 
-component(class AppRoot extends DestinyElement {
-  render () {
-    return html`
+export class AppRoot extends DestinyElement {
+  render (): TemplateResult {
+    return xml/*html*/`
       <style>
         :host {
           --element-color: #777;
@@ -17,7 +18,7 @@ component(class AppRoot extends DestinyElement {
           --border-radius: 3px;
         }
       </style>
-      <tab-view></tab-view>
+      <${TabView} />
     `;
   }
-});
+}

@@ -1,17 +1,18 @@
 import { DestinyElement, html, reactive } from "../../mod.js";
+import { TemplateResult } from "../../mod.js";
 
-customElements.define("visitor-demo", class extends DestinyElement {
+export class VisitorDemo extends DestinyElement {
   #who = reactive("visitor");
   #count = reactive(0);
   #timer = setInterval(() => {
     this.#count.value++;
   }, 1e3);
 
-  disconnectedCallback () {
+  disconnectedCallback (): void {
     clearInterval(this.#timer);
   }
 
-  render () {
+  render (): TemplateResult {
     return html`
       <label>What's your name? <input type=text value=${this.#who}></label>
       <p>
@@ -19,4 +20,4 @@ customElements.define("visitor-demo", class extends DestinyElement {
       </p>
     `;
   }
-});
+}

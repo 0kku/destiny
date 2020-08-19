@@ -1,6 +1,6 @@
-import { deferredElements } from "./parsing/deferredElements.js";
-import type { Renderable } from "./parsing/Renderable";
-import { xml } from "./mod.js";
+import { deferredElements } from "../parsing/deferredElements.js";
+import type { Renderable } from "../parsing/Renderable";
+import { xml } from "../mod.js";
 
 /**
  * A class for creating new custom elements in Destiny UI.

@@ -1,5 +1,7 @@
+import { register } from "../elementLogic/register.js";
 import { parseString } from "./parseString.js";
 import { resolveSlots } from "./resolveSlots.js";
+import { isDestinyElement } from "../elementLogic/isDestinyElement.js";
 
 /**
  * Parses and processes a `TemplateStringsArray` into a `DocumentFragment`.
@@ -7,12 +9,19 @@ import { resolveSlots } from "./resolveSlots.js";
  */
 export function createTemplate (
   [first, ...strings]: TemplateStringsArray,
+  props: Array<unknown>,
   parser: "html" | "xml",
 ): HTMLTemplateElement {
   let string = first;
   for (const [i, fragment] of strings.entries()) {
-    string += `__internal_${i}_${fragment}`;
+    const prop = props[i];
+    string += (
+      isDestinyElement(prop)
+      ? `${register(prop)}${fragment}`
+      : `__internal_${i}_${fragment}`
+    );
   }
+  
   const templateElement = parseString(string, parser);
 
   resolveSlots(templateElement);

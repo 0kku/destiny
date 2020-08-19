@@ -1,36 +1,37 @@
-import { DestinyElement, expression, component, xml } from "../../mod.js";
+import { DestinyElement, expression, xml } from "../../mod.js";
 import { route } from "./hash-router.js";
-import "./to-do/_to-do.js";
-import "./visitor-demo.js";
-import "./array-demo.js";
-import "./time-diff.js";
-import "./hash-router.js";
+import { ToDo } from "./to-do/_to-do.js";
+import { VisitorDemo } from "./visitor-demo.js";
+import { ArrayDemo } from "./array-demo.js";
+import { TimeDiff } from "./time-diff.js";
+import { HashRouter } from "./hash-router.js";
+import { TemplateResult } from "../../mod.js";
 
-component(class TabView extends DestinyElement {
+export class TabView extends DestinyElement {
   #tabs = [
     {
       path: "/",
       title: "Visitor demo",
-      content: xml`<visitor-demo />`,
+      content: xml`<${VisitorDemo} />`,
     },
     {
       path: "/todo",
       title: "Todo",
-      content: xml`<to-do />`,
+      content: xml`<${ToDo} />`,
     },
     {
       path: "/array-demo",
       title: "Array demo",
-      content: xml`<array-demo />`,
+      content: xml`<${ArrayDemo} />`,
     },
     {
       path: "/time-diff",
       title: "Time difference",
-      content: xml`<time-diff />`,
+      content: xml`<${TimeDiff} />`,
     },
   ];
 
-  render () {
+  render (): TemplateResult {
     return xml/*html*/`
       <style>
         nav {
@@ -77,7 +78,7 @@ component(class TabView extends DestinyElement {
         `)}
       </nav>
 
-      <hash-router>
+      <${HashRouter}>
         ${this.#tabs.map(value => xml`
           <main slot="${value.path}">
             ${value.content}
@@ -87,7 +88,7 @@ component(class TabView extends DestinyElement {
           Couldn't find resource "${route}". <br />
           Please check your spelling.
         </main>
-      </hash-router>
+      </${HashRouter}>
     `;
   }
-});
+}

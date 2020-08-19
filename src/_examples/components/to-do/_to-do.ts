@@ -1,12 +1,13 @@
-import { DestinyElement, html, reactive, component } from "../../../mod.js";
+import { DestinyElement, html, reactive } from "../../../mod.js";
 import { animateIn, animateOut } from "./animations.js";
-import "./task-item.js";
+import { TaskItem } from "./task-item.js";
+import type { TemplateResult } from "../../../mod.js";
 
 type TInputChangeEvent = InputEvent & {
   currentTarget: HTMLInputElement,
 };
 
-component(class ToDo extends DestinyElement {
+export class ToDo extends DestinyElement {
   #newValue = reactive("");
   #items = reactive([
     {
@@ -26,7 +27,7 @@ component(class ToDo extends DestinyElement {
     },
   ]);
 
-  render () {
+  render (): TemplateResult {
     return html`
       <style>
         label {
@@ -86,7 +87,7 @@ component(class ToDo extends DestinyElement {
           text-shadow: none;
         }
 
-        task-item {
+        ${TaskItem} {
           display: block;
           height: var(--l);
           overflow: hidden;
@@ -95,12 +96,12 @@ component(class ToDo extends DestinyElement {
       <h1>${this.#items.filter(v => v.done.value).length}/${this.#items.length} tasks compelete</h1>
       <ul>
         ${this.#items.map((item, i) => html`
-          <task-item
+          <${TaskItem}
             prop:item=${item}
             prop:remove-item=${() => this.#items.splice(i.value, 1)}
             destiny:in=${animateIn}
             destiny:out=${animateOut}
-          ></task-item>
+          ></${TaskItem}>
         `)}
         ${this.#items.length.falsy(html`
           <li
@@ -155,4 +156,4 @@ component(class ToDo extends DestinyElement {
       >
     `;
   }
-});
+}

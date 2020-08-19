@@ -1,4 +1,5 @@
-import { component, DestinyElement, html, reactive } from "../../mod.js";
+import { DestinyElement, html, reactive } from "../../mod.js";
+import type { TemplateResult } from "../../mod.js";
 
 const randomColor = () => (
   "#" + 
@@ -8,9 +9,9 @@ const randomColor = () => (
   .padStart(6, "0")
 );
 
-component(class ArrayDemo extends DestinyElement {
+export class ArrayDemo extends DestinyElement {
   #items = reactive(Array.from({length: 256}, randomColor));
-  frame = () => {
+  frame = (): void => {
     const randomIndex = Math.floor(
       Math.random() * this.#items.length.value,
     );
@@ -19,11 +20,11 @@ component(class ArrayDemo extends DestinyElement {
   };
   #timer = requestAnimationFrame(this.frame);
 
-  disconnectedCallback () {
+  disconnectedCallback (): void {
     cancelAnimationFrame(this.#timer);
   }
 
-  render () {
+  render (): TemplateResult {
     return html`
       <style>
         ul {
@@ -54,4 +55,4 @@ component(class ArrayDemo extends DestinyElement {
       </ul>
     `;
   }
-});
+}

@@ -1,7 +1,7 @@
-import { DestinyElement, html, component } from "../../../mod.js";
-import type { TReactiveObject } from "../../../reactive/types/IReactiveObject.js";
+import { DestinyElement, html } from "../../../mod.js";
+import type { TemplateResult, TReactiveObject } from "../../../mod.js";
 
-component(class TaskItem extends DestinyElement {
+export class TaskItem extends DestinyElement {
   set item (
     _: TReactiveObject<{
       title: string,
@@ -13,7 +13,7 @@ component(class TaskItem extends DestinyElement {
     _: () => void,
   ) {}
 
-  render () {
+  render (): TemplateResult {
     this.setAttribute("role", "listitem");
     return html`
       <style>
@@ -127,4 +127,4 @@ component(class TaskItem extends DestinyElement {
       </form>
     `;
   }
-});
+}

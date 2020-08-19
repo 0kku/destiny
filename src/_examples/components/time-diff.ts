@@ -1,4 +1,5 @@
-import { DestinyElement, html, reactive, expression, component } from "../../mod.js";
+import { DestinyElement, html, reactive, expression } from "../../mod.js";
+import { TemplateResult } from "../../mod.js";
 
 function formatTimeFragment (
   input: number,
@@ -20,18 +21,18 @@ function formatTime (
   return [daysString, hoursString, minutesString, secondsString].join("");
 }
 
-component(class TimeDiff extends DestinyElement {
-  #tasks = reactive([this.createTask()]); //initialize an array of tasks, with one task in it
+function createTask () {
+  return {
+    start: new Date(0),
+    end: new Date(0),
+    name: "new task",
+  };
+}
 
-  createTask () {
-    return {
-      start: new Date(0),
-      end: new Date(0),
-      name: "new task",
-    };
-  }
+export class TimeDiff extends DestinyElement {
+  #tasks = reactive([createTask()]); //initialize an array of tasks, with one task in it
 
-  render () {
+  render (): TemplateResult {
     return html`
       ${this.#tasks.map(task => html`
         <div>
@@ -64,9 +65,9 @@ component(class TimeDiff extends DestinyElement {
       )}
       <input
         type=button
-        on:click=${() => this.#tasks.push(this.createTask())}
+        on:click=${() => this.#tasks.push(createTask())}
         value="New task"
       >
     `;
   }
-});
+}
