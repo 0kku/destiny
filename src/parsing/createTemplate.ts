@@ -18,7 +18,11 @@ export function createTemplate (
     const last = string.substring(string.length - 1);
     string += (
       isDestinyElement(prop)
-      ? `${register(prop)}${last === "<" && prop.captureProps ? " data-capture-props=\"true\"" : ""}${fragment}`
+      ? `${register(prop, false)}${
+          last === "<" && prop.captureProps
+          ? " data-capture-props=\"true\""
+          : ""
+        }${fragment}`
       : `__internal_${i}_${fragment}`
     );
   }

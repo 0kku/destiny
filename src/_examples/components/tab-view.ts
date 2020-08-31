@@ -2,7 +2,7 @@ import { DestinyElement, expression, xml } from "/dist/mod.js";
 import type { TemplateResult } from "/dist/mod.js";
 
 import { route } from "./hash-router.js";
-import { ToDo } from "./to-do/_to-do.js";
+import { Todo } from "./to-do/_to-do.js";
 import { VisitorDemo } from "./visitor-demo.js";
 import { ArrayDemo } from "./array-demo.js";
 import { TimeDiff } from "./time-diff.js";
@@ -18,7 +18,7 @@ export class TabView extends DestinyElement {
     {
       path: "/todo",
       title: "Todo",
-      content: xml`<${ToDo} />`,
+      content: xml`<${Todo} />`,
     },
     {
       path: "/array-demo",

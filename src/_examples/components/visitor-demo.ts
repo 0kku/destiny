@@ -24,7 +24,7 @@ export class VisitorDemo extends DestinyElement {
         foo="${this.#count}"
         prop:value="${"Test"}"
         on:input="${(e: Event) => console.log("Changed!", e)}"
-      ></${TextField}>
+      />
     `;
   }
 }

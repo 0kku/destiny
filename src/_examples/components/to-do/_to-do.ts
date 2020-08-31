@@ -8,7 +8,7 @@ type TInputChangeEvent = InputEvent & {
   currentTarget: HTMLInputElement,
 };
 
-export class ToDo extends DestinyElement {
+export class Todo extends DestinyElement {
   #newValue = reactive("");
   #items = reactive([
     {
