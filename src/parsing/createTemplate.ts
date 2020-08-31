@@ -15,9 +15,10 @@ export function createTemplate (
   let string = first;
   for (const [i, fragment] of strings.entries()) {
     const prop = props[i];
+    const last = string.substring(string.length - 1);
     string += (
       isDestinyElement(prop)
-      ? `${register(prop)}${fragment}`
+      ? `${register(prop)}${last === "<" && prop.captureProps ? " data-capture-props='true'" : ""}${fragment}`
       : `__internal_${i}_${fragment}`
     );
   }

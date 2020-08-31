@@ -8,7 +8,7 @@ export class AppRoot extends DestinyElement {
     return xml/*html*/`
       <style>
         :host {
-          --element-color: #777;
+          --element-color:       #777;
           --element-hover-color: #888;
           --element-focus-color: #999;
           --xl: 48px;

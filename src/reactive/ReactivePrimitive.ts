@@ -1,12 +1,13 @@
 import { ReactiveArray } from "../mod.js";
 
-type TUnwrap<T> = 
+type TUnwrap<T> = (
   T extends ReactivePrimitive<infer U> ? U :
-  T extends ReactiveArray<infer U> ? U :
-  never;
-type TUnwrapAll<T> = {
-  [K in keyof T]: TUnwrap<T[K]>
-};
+  T extends ReactiveArray<infer U>     ? U :
+  never
+);
+// type TUnwrapAll<T> = {
+//   [K in keyof T]: TUnwrap<T[K]>
+// };
 
 /**
  * `ReactivePrimitive`s are reactive values that contain a single value which can be updated and whose updates can be listened to.
@@ -127,18 +128,18 @@ export class ReactivePrimitive<T> {
     TParams extends Array<ReactivePrimitive<any> | ReactiveArray<any>>,
     TReturn,
   > (
-    updater: (...values: TUnwrapAll<TParams>) => TReturn,
+    updater: (...values: {
+      [K in keyof TParams]: TUnwrap<TParams[K]>;
+    }) => TReturn,
     ...refs: TParams
   ): Readonly<ReactivePrimitive<TReturn>> {
-    type TUnwrappedParams = TUnwrapAll<TParams>;
+    type TUnwrappedParams = Parameters<typeof updater>;
 
     const currentValue = () => updater(
       ...refs.map(
-        v => (
-          // This rule is seemingly broken?
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-          v.value as TUnwrappedParams[number]
-        ),
+        // This is fine. The type is not known and isn't a concern at this step.
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        v => v.value,
       ) as TUnwrappedParams,
     );
 

@@ -1,7 +1,9 @@
-import { ReactivePrimitive } from "../../../mod.js";
-import { attributeNamespaces } from "./attributeNamespaces/_attributeNamespaces.js";
-import { matchChangeWatcher, TWatchedAttribute } from "./matchChangeWatcher.js";
-import { kebabToCamel } from "../../../utils/kebabToCamel.js";
+import { resolveSlotPositions } from "./resolveSlotPositions.js";
+import { resolveAttributeValue } from "./resolveAttributeValue.js";
+import { parseAttributeName } from "./parseAttributeName.js";
+import { assignElementData } from "./elementData/_assignElementData.js";
+import type { DestinyElement } from "../../../elementLogic/DestinyElement.js";
+import type { TElementData } from "./TElementData.js";
 
 /**
  * Goes through all the elements in a template that are flagged with the `destiny::attr` attribute and figures out what events need to be listened to, and how the DOM needs to be updated if any of the given props are reactive.
@@ -17,69 +19,37 @@ export function hookAttributeSlotsUp (
   ) as unknown as Array<HTMLElement & ChildNode>;
 
   for (const element of attributeSlots) {
+    const { captureProps } = element.dataset;
+    const values: TElementData = {
+      prop:      new Map<string, unknown>(),
+      on:        new Map<string, unknown>(),
+      call:      new Map<string, unknown>(),
+      destiny:   new Map<string, unknown>(),
+      attribute: new Map<string, unknown>(),
+    } as const;
     for (const {name, value} of element.attributes) {
-      const {
-        valueStart = "",
-        index,
-        valueEnd = "",
-      } = (
-        /(?<valueStart>.+)?__internal_(?<index>[0-9]+)_(?<valueEnd>.+)?/u
-        .exec(value)
-        ?.groups
-        ?? {}
-      );
+      const val = resolveSlotPositions(value);
 
-      if (index) {
-        const item = props[Number(index)];
-        const {
-          namespace = "",
-          attributeNameRaw,
-        } = (
-          /(?:(?<namespace>[a-z]+):)?(?<attributeNameRaw>.+)/
-          .exec(name)
-          ?.groups
-          ?? {}
-        );
-        const attributeName = (
-          namespace
-          ? kebabToCamel(attributeNameRaw)
-          : attributeNameRaw
-        );
-
-        const setValue = (
-          valueSlot: unknown,
-        ) => (
-          attributeNamespaces
-          .get(
-            namespace as "" | "prop" | "call" | "on" | "destiny",
-          )?.({
-            element,
-            attributeName,
-            valueSlot,
-            valueStart,
-            valueEnd,
-          })
-        );
-        
-        if (namespace === "destiny") {
-          setValue(item);
-        } else if (item instanceof ReactivePrimitive) {
-          const changeWatcher = matchChangeWatcher(attributeName);
-          if (changeWatcher) {
-            element.addEventListener(changeWatcher, e => {
-              // Sets the value whilst excluding itself of callbacks to call after the change
-              item.set(
-                (e.currentTarget as HTMLInputElement | null)
-                ?.[attributeName as TWatchedAttribute],
-                setValue,
-              );
-            });
-          }
-          item.bind(setValue);
-        } else {
-          setValue(item);
+      //if no slots, skip
+      if (!val.length) {
+        if (captureProps && name !== "destiny:attr") {
+          const [namespace, attributeName] = parseAttributeName(name);
+          values[namespace].set(attributeName, value);
         }
+        continue;
       }
+
+      const attrVal = resolveAttributeValue(val, props);
+      const [namespace, attributeName] = parseAttributeName(name);
+      values[namespace].set(attributeName, attrVal);
+    }
+    
+    if (captureProps) {
+      queueMicrotask(() => {
+        (element as DestinyElement).assignedData = values;
+      });
+    } else {
+      assignElementData(element, values);
     }
   }
 }

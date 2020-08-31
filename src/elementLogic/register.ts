@@ -1,12 +1,13 @@
 import { pascalToKebab } from "../utils/pascalToKebab.js";
+import { DestinyElement } from "./DestinyElement.js";
 
 const registeredComponents = new Map<
-  new () => HTMLElement,
+  typeof DestinyElement,
   string
 >();
 
 export function register (
-  componentConstructor: new () => HTMLElement,
+  componentConstructor: typeof DestinyElement & (new () => DestinyElement),
 ): string {
   const registeredName = registeredComponents.get(componentConstructor);
   if (registeredName) {

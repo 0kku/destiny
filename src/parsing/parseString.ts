@@ -13,8 +13,9 @@ export function parseString (
   if (parser === "html") {
     templateElement.innerHTML = string;
   } else {
+    console.log(string.trim());
     templateElement.content.append(
-      xmlRange.createContextualFragment(string),
+      xmlRange.createContextualFragment(string.trim()),
     );  
   }
 

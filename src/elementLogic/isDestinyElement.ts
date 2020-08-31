@@ -2,9 +2,9 @@ import { DestinyElement } from "./DestinyElement.js";
 
 export function isDestinyElement (
   input: unknown,
-): input is new () => DestinyElement {
+): input is typeof DestinyElement & (new () => DestinyElement) {
   return (
-    input &&
+    Boolean(input) &&
     typeof input === "function" &&
     Object.prototype.isPrototypeOf.call(DestinyElement, input)
   );

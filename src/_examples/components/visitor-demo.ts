@@ -1,6 +1,8 @@
 import { DestinyElement, html, reactive } from "/dist/mod.js";
 import type { TemplateResult } from "/dist/mod.js";
 
+import { TextField } from "./forms/text-field.js";
+
 export class VisitorDemo extends DestinyElement {
   #who = reactive("visitor");
   #count = reactive(0);
@@ -18,6 +20,11 @@ export class VisitorDemo extends DestinyElement {
       <p>
         Hello, ${this.#who}! You arrived ${this.#count} seconds ago.
       </p>
+      <${TextField} 
+        foo=${this.#count}
+        prop:value=${"Test"}
+        on:input=${(e: Event) => console.log("Changed!", e)}
+      ></${TextField}>
     `;
   }
 }
