@@ -1,9 +1,17 @@
-const xmlRange = (
-  document
-  .implementation
-  .createDocument(null, "xml", null)
-  .createRange()
+const xmlDocument = new DOMParser().parseFromString(
+  `<xml
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:on="p:u"
+    xmlns:prop="p:u"
+    xmlns:call="p:u"
+    xmlns:destiny="p:u"
+  />`,
+  "application/xhtml+xml",
 );
+const xmlRange = xmlDocument.createRange();
+const xmlRoot = xmlDocument.querySelector("xml")!;
+xmlRange.setStart(xmlRoot, 0);
+xmlRange.setEnd(xmlRoot, 0);
 
 export function parseString (
   string: string,
@@ -13,9 +21,8 @@ export function parseString (
   if (parser === "html") {
     templateElement.innerHTML = string;
   } else {
-    console.log(string.trim());
     templateElement.content.append(
-      xmlRange.createContextualFragment(string.trim()),
+      xmlRange.createContextualFragment(string),
     );  
   }
 

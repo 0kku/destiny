@@ -1,4 +1,4 @@
-import { DestinyElement, html, reactive } from "/dist/mod.js";
+import { DestinyElement, xml, reactive } from "/dist/mod.js";
 import type { TemplateResult } from "/dist/mod.js";
 
 import { TextField } from "./forms/text-field.js";
@@ -15,15 +15,15 @@ export class VisitorDemo extends DestinyElement {
   }
 
   render (): TemplateResult {
-    return html`
-      <label>What's your name? <input type=text value=${this.#who}></label>
+    return xml/*html*/`
+      <label>What's your name? <input type="text" value="${this.#who}" /></label>
       <p>
         Hello, ${this.#who}! You arrived ${this.#count} seconds ago.
       </p>
       <${TextField} 
-        foo=${this.#count}
-        prop:value=${"Test"}
-        on:input=${(e: Event) => console.log("Changed!", e)}
+        foo="${this.#count}"
+        prop:value="${"Test"}"
+        on:input="${(e: Event) => console.log("Changed!", e)}"
       ></${TextField}>
     `;
   }
