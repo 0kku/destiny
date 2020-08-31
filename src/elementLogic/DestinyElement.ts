@@ -38,11 +38,12 @@ export abstract class DestinyElement extends HTMLElement {
       );
     });
 
-    try {
-      this.attachInternals();
-    } catch (e) {
-      console.error("Element internals couldn't be attached due to lack of browser support. If you're using Firefox, the feature can be enabled in about:config by toggling the dom.webcomponents.elementInternals.enabled flag on. If you're using something other than Firefox or a Chromium based browser, consider switching to a better browser. Error message: ", e);
-    }
+    // Disabled for now due to lack of vendor support
+    // try {
+    //   this.attachInternals();
+    // } catch (e) {
+    //   console.error("Element internals couldn't be attached due to lack of browser support. If you're using Firefox, the feature can be enabled in about:config by toggling the dom.webcomponents.elementInternals.enabled flag on. If you're using something other than Firefox or a Chromium based browser, consider switching to a better browser. Error message: ", e);
+    // }
   }
 
   out (
