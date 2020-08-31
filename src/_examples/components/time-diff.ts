@@ -1,5 +1,4 @@
 import { DestinyElement, html, reactive, expression } from "/dist/mod.js";
-import type { TemplateResult } from "/dist/mod.js";
 
 function formatTimeFragment (
   input: number,
@@ -32,42 +31,40 @@ function createTask () {
 export class TimeDiff extends DestinyElement {
   #tasks = reactive([createTask()]); //initialize an array of tasks, with one task in it
 
-  render (): TemplateResult {
-    return html`
-      ${this.#tasks.map(task => html`
-        <div>
-          <label>
-            Start:
-            <input
-              type=time
-              prop:value-as-date=${task.start}
-            >
-          </label>
-          <label>
-            End: 
-            <input
-              type=time
-              prop:value-as-date=${task.end}
-            >
-          </label>
-          <label>
-            Name:
-            <input
-              type="text"
-              prop:value=${task.name}
-            >
-          </label>
-          <br>
-          Duration of "${task.name}": ${expression`
-            ${formatTime}(Number(${task.end}) - Number(${task.start}))
-          `}
-        </div>`
-      )}
-      <input
-        type=button
-        on:click=${() => this.#tasks.push(createTask())}
-        value="New task"
-      >
-    `;
-  }
+  template = html`
+    ${this.#tasks.map(task => html`
+      <div>
+        <label>
+          Start:
+          <input
+            type=time
+            prop:value-as-date=${task.start}
+          >
+        </label>
+        <label>
+          End: 
+          <input
+            type=time
+            prop:value-as-date=${task.end}
+          >
+        </label>
+        <label>
+          Name:
+          <input
+            type="text"
+            prop:value=${task.name}
+          >
+        </label>
+        <br>
+        Duration of "${task.name}": ${expression`
+          ${formatTime}(Number(${task.end}) - Number(${task.start}))
+        `}
+      </div>`
+    )}
+    <input
+      type=button
+      on:click=${() => this.#tasks.push(createTask())}
+      value="New task"
+    >
+  `;
 }

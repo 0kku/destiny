@@ -1,5 +1,4 @@
 import { DestinyElement, html, reactive } from "/dist/mod.js";
-import type { TemplateResult } from "/dist/mod.js";
 
 function getHashRoute (
   url: string,
@@ -14,13 +13,11 @@ window.addEventListener("hashchange", e => {
 });
 
 export class HashRouter extends DestinyElement {
-  render (): TemplateResult {
-    return html`
-      <slot name=${route}>
-        <slot name=404>
-          404 — route "${route}" not found
-        </slot>
+  template = html`
+    <slot name=${route}>
+      <slot name=404>
+        404 — route "${route}" not found
       </slot>
-    `;
-  }
+    </slot>
+  `;
 }

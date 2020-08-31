@@ -1,5 +1,4 @@
 import { DestinyElement, html, reactive } from "/dist/mod.js";
-import type { TemplateResult } from "/dist/mod.js";
 
 const randomColor = () => (
   "#" + 
@@ -24,35 +23,33 @@ export class ArrayDemo extends DestinyElement {
     cancelAnimationFrame(this.#timer);
   }
 
-  render (): TemplateResult {
-    return html`
-      <style>
-        ul {
-          list-style: none;
-          padding: 0;
-          display: flex;
-          flex-direction: row;
-          flex-wrap: wrap;
-        }
+  template = html`
+    <style>
+      ul {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
 
-        li {
-          display: block;
-          width: var(--l);
-          height: var(--l);
-          text-align: center;
-          line-height: var(--l);
-          margin: var(--xs);
-          border-radius: var(--border-radius);
-          text-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
-          box-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
-          font-family: monospace;
-        }
-      </style>
-      <ul>
-        ${this.#items.map((text, i) => html`
-          <li style="background-color: ${text};">${i}</li>
-        `)}
-      </ul>
-    `;
-  }
+      li {
+        display: block;
+        width: var(--l);
+        height: var(--l);
+        text-align: center;
+        line-height: var(--l);
+        margin: var(--xs);
+        border-radius: var(--border-radius);
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
+        box-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
+        font-family: monospace;
+      }
+    </style>
+    <ul>
+      ${this.#items.map((text, i) => html`
+        <li style="background-color: ${text};">${i}</li>
+      `)}
+    </ul>
+  `;
 }

@@ -1,11 +1,8 @@
-import { deferredElements } from "../parsing/deferredElements.js";
-import type { Renderable } from "../parsing/Renderable";
 import { xml } from "../mod.js";
-import { Ref, RefPromise } from "./Ref.js";
+import { deferredElements } from "../parsing/deferredElements.js";
 import { assignElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/elementData/_assignElementData.js";
-// import { attributeNamespaces } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/attributeNamespaces/_attributeNamespaces.js";
-
-// export const forwardedElements = new Map<HTMLElement, Ref<HTMLElement> | RefPromise<any>>();
+import type { Ref, RefPromise } from "./Ref.js";
+import type { Renderable } from "../parsing/Renderable";
 
 /**
  * A class for creating new custom elements in Destiny UI.
@@ -20,6 +17,7 @@ export abstract class DestinyElement extends HTMLElement {
     destiny: new Map<string, unknown>(),
     attribute: new Map<string, unknown>(),
   } as const;
+  template: Renderable = xml`<slot />`;
 
   constructor () {
     super();
@@ -34,7 +32,7 @@ export abstract class DestinyElement extends HTMLElement {
         });
       }
       shadow.appendChild(
-        this.render().content,
+        this.template.content,
       );
     });
 
@@ -55,9 +53,5 @@ export abstract class DestinyElement extends HTMLElement {
     );
 
     return this;
-  }
-
-  render (): Renderable {
-    return xml`<slot />`;
   }
 }
