@@ -20,9 +20,14 @@ export class TabView extends DestinyElement {
       content: new URL("./array-demo.js", import.meta.url).href,
     },
     {
-      path: "/time-diff",
+      path: "/time-difference",
       title: "Time difference",
       content: new URL("./time-diff.js", import.meta.url).href,
+    },
+    {
+      path: "/async",
+      title: "Async",
+      content: new URL("./async-demo.js", import.meta.url).href,
     },
   ];
 
