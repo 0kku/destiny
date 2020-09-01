@@ -40,9 +40,9 @@ The `html` template tag will parse the content as HTML and returns an TempalteRe
 In the below example, two reactive items `#who` and `#count` are defined. `#who` is set as the value of an input element: the value of `#who` is updated whenever the text field in question receives input. `#who` is also rendered as text below, so as the user types, the text below will update in real time. `#count` on the other hand is just a number which is incremented once a second; the seconds counter is automatically rerendered every time the count changes.
 
 ```js
-import { DestinyElement, html, reactive } from "https://code.okku.dev/destiny-ui/0.3.0/dist/mod.js";
+import { DestinyElement, html, reactive, register } from "https://code.okku.dev/destiny-ui/0.4.1/dist/mod.js";
 
-customElements.define("example-component", class extends DestinyElement {
+register(class ExampleComponent extends DestinyElement {
   #who = reactive("visitor");
   #count = reactive(0);
   #timer = setInterval(() => {
@@ -53,15 +53,13 @@ customElements.define("example-component", class extends DestinyElement {
     clearInterval(this.#timer);
   }
 
-  render() {
-    return html`
-      <label>What's your name? <input type=text value=${this.#who}></label>
-      <p>
-        Hello, ${this.#who}!
-        You arrived ${this.#count} seconds ago.
-      </p>
-    `;
-  }
+  template = html`
+    <label>What's your name? <input type=text value=${this.#who}></label>
+    <p>
+      Hello, ${this.#who}!
+      You arrived ${this.#count} seconds ago.
+    </p>
+  `;
 });
 ```
 [👉 View on codepen.io](https://codepen.io/okku/pen/MWKXMVK?editors=1010)
@@ -71,7 +69,7 @@ The library figures out what the appropriate DOM operation for each slot is from
 You can also make arrays reactive. ReactiveArrays will behave generally akin to normal arrays, except that they will give you reactive properties instead of normal ones. You can manipulate the array like you would normal arrays and the DOM and other dependents will update with it; forget immutability! Here's an example of using a reactive array:
 
 ```js
-import { html, reactive } from "https://code.okku.dev/destiny-ui/0.3.0/dist/mod.js";
+import { html, reactive } from "https://code.okku.dev/destiny-ui/0.4.1/dist/mod.js";
 
 const thingsILike = reactive(["cats", "JavaScript", "sleep"]);
 
