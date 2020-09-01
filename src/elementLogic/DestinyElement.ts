@@ -3,6 +3,7 @@ import { deferredElements } from "../parsing/deferredElements.js";
 import { assignElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/elementData/_assignElementData.js";
 import type { Ref, RefPromise } from "./Ref.js";
 import type { Renderable } from "../parsing/Renderable";
+import type { Slot } from "../parsing/Slot.js";
 
 /**
  * A class for creating new custom elements in Destiny UI.
@@ -18,6 +19,9 @@ export abstract class DestinyElement extends HTMLElement {
     attribute: new Map<string, unknown>(),
   } as const;
   template: Renderable = xml`<slot />`;
+  set destinySlot (
+    _: Slot | undefined,
+  ) {}
 
   constructor () {
     super();
@@ -42,6 +46,16 @@ export abstract class DestinyElement extends HTMLElement {
     // } catch (e) {
     //   console.error("Element internals couldn't be attached due to lack of browser support. If you're using Firefox, the feature can be enabled in about:config by toggling the dom.webcomponents.elementInternals.enabled flag on. If you're using something other than Firefox or a Chromium based browser, consider switching to a better browser. Error message: ", e);
     // }
+  }
+
+  replaceWith (
+    ...nodes: Array<string | Node>
+  ): void {
+    if (this.destinySlot) {
+      this.destinySlot.replaceItem(this, ...nodes);
+    } else {
+      super.replaceWith(...nodes);
+    }
   }
 
   out (

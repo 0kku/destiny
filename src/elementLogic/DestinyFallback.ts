@@ -4,7 +4,7 @@ import { xml, Ref, DestinyElement } from "../mod.js";
 export class DestinyFallback extends DestinyElement {
   static captureProps = true;
   forwardProps = new Ref();
-
+  
   declare assignedData: {
     readonly prop: Map<"for", Promise<Record<string, typeof DestinyElement>>>,
   } & typeof DestinyElement.prototype.assignedData;
@@ -17,14 +17,14 @@ export class DestinyFallback extends DestinyElement {
       if (!component || !isDestinyElement(component)) {
         throw new Error(`Invalid component constructor ${String(component)}`);
       }
-      const fragment = xml`
-        <${component}
-          destiny:ref="${this.forwardProps}"
-          call:append="${[...this.childNodes]}"
-        />
-      `.content;
-
-      this.replaceWith(fragment);
+      this.replaceWith(
+        xml`
+          <${component}
+            destiny:ref="${this.forwardProps}"
+            call:append="${[...this.childNodes]}"
+          />
+        `.content,
+      );
     });
   }
 

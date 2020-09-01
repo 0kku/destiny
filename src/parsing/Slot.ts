@@ -1,3 +1,4 @@
+import { DestinyElement } from "../elementLogic/DestinyElement.js";
 import { deferredElements } from "./deferredElements.js";
 import { TemplateResult } from "./TemplateResult.js";
 
@@ -32,6 +33,37 @@ export class Slot {
     }
   }
 
+  replaceItem (
+    whatToReplace: ChildNode,
+    ...nodes: Array<string | Node>
+  ): void {
+    const location = this.#nodes.indexOf(whatToReplace);
+    if (location < 0) throw new Error("Can't replace an item that isn't here.");
+    const newNodes = nodes.flatMap(
+      v => (
+        typeof v === "string" ? new Text(v) :
+        v instanceof DocumentFragment ? [...v.childNodes] :
+        v
+      ),
+    ) as Array<ChildNode>;
+    this._brandNodes(newNodes);
+    whatToReplace.before(...newNodes);
+    void this._disposeNodes([whatToReplace]);
+    
+    this.#nodes.splice(
+      location,
+      1,
+      ...newNodes,
+    );
+  }
+
+  private _brandNodes (
+    nodes: Array<ChildNode>,
+  ): void {
+    (nodes as Array<DestinyElement>)
+    .forEach(node => node.destinySlot = this);
+  }
+
   /**
    * Updates the content of the slot with new content
    * @param fragment New content for the slot
@@ -44,27 +76,33 @@ export class Slot {
       : input;
     void this._disposeCurrentNodes();
     this.#nodes = Object.values(fragment.childNodes);
+    this._brandNodes(this.#nodes);
     this.#endAnchor.before(fragment);
+  }
+
+  private async _disposeNodes (
+    nodesToDisposeOf: Array<ChildNode>,
+  ): Promise<void> {
+    await Promise.all(
+      (nodesToDisposeOf as Array<HTMLElement>).map(
+        node => deferredElements.get(node)?.(node),
+      ),
+    );
+    for (const node of nodesToDisposeOf) {
+      node.remove();
+    }
   }
 
   /**
    * First removes all the current nodes from this Slot's list of tracked nodes, then waits for any exit tasks (such as animations) these nodes might have, and removes each node once all the tasks have finished running.
    */
   private async _disposeCurrentNodes (): Promise<void> {
-    const nodesToDisposeOf = this.#nodes.splice(
-      0,
-      this.#nodes.length,
-    ) as Array<HTMLElement>;
-
-    await Promise.all(
-      nodesToDisposeOf.map(
-        node => deferredElements.get(node)?.(node),
+    await this._disposeNodes(
+      this.#nodes.splice(
+        0,
+        this.#nodes.length,
       ),
     );
-
-    for (const node of nodesToDisposeOf) {
-      node.remove();
-    }
   }
 
   /**
