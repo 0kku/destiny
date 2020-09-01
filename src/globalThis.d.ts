@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 
+declare function queueMicrotask (callback: VoidFunction | (() => Promise<void>)): void;
+
 interface HTMLElement {
   attachInternals(): ElementInternals,
 }
