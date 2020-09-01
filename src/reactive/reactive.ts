@@ -16,7 +16,7 @@ import type { TReactive } from "./types/IReactive.js";
 function reactive<T extends Promise<unknown>, K = unknown> (
   initialValue: T,
   options: {
-    fallback: T,
+    fallback: T extends Promise<infer V> ? V : never,
     parent?: ReactivePrimitive<K> | ReactiveArray<K>,
   },
 ): ReactivePrimitive<T extends Promise<infer V> ? V : never>;
