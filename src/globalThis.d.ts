@@ -1,5 +1,9 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 
+interface ImportMeta {
+  url: string,
+}
+
 declare function queueMicrotask (callback: VoidFunction | (() => Promise<void>)): void;
 
 interface HTMLElement {

@@ -1,4 +1,4 @@
-import { DestinyElement, html, reactive } from "/dist/mod.js";
+import { DestinyElement, reactive, xml, ReactivePrimitive } from "/dist/mod.js";
 
 function getHashRoute (
   url: string,
@@ -13,11 +13,33 @@ window.addEventListener("hashchange", e => {
 });
 
 export class HashRouter extends DestinyElement {
-  template = html`
-    <slot name=${route}>
-      <slot name=404>
-        404 — route "${route}" not found
-      </slot>
+  set routes (
+    _: Array<{
+      path: string,
+      content: string,
+    }>,
+  ) {}
+
+  #error404 = xml/*html*/`
+    <slot name="404">
+      404 — route "${route}" not found
     </slot>
+  `.content.firstElementChild!;
+  #view = new ReactivePrimitive(this.#error404);
+
+  constructor () {
+    super();
+    route.bind(currentRoute => {
+      const routeInfo = this.routes.find(({path}) => path === currentRoute);
+      if (routeInfo) {
+        this.#view.value = xml`<${import(routeInfo.content)} />`.content.firstElementChild!;
+      } else {
+        this.#view.value = this.#error404;
+      }
+    });
+  }
+
+  template = xml`
+    ${this.#view}
   `;
 }

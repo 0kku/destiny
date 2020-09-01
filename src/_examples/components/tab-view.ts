@@ -1,33 +1,28 @@
 import { DestinyElement, expression, xml } from "/dist/mod.js";
 
-import { route } from "./hash-router.js";
-import { Todo } from "./to-do/_to-do.js";
-import { VisitorDemo } from "./visitor-demo.js";
-import { ArrayDemo } from "./array-demo.js";
-import { TimeDiff } from "./time-diff.js";
-import { HashRouter } from "./hash-router.js";
+import { route, HashRouter } from "./hash-router.js";
 
 export class TabView extends DestinyElement {
   #tabs = [
     {
       path: "/",
       title: "Visitor demo",
-      content: xml`<${VisitorDemo} />`,
+      content: new URL("./visitor-demo.js", import.meta.url).href,
     },
     {
       path: "/todo",
       title: "Todo",
-      content: xml`<${Todo} />`,
+      content: new URL("./to-do/_to-do.js", import.meta.url).href,
     },
     {
       path: "/array-demo",
       title: "Array demo",
-      content: xml`<${ArrayDemo} />`,
+      content: new URL("./array-demo.js", import.meta.url).href,
     },
     {
       path: "/time-diff",
       title: "Time difference",
-      content: xml`<${TimeDiff} />`,
+      content: new URL("./time-diff.js", import.meta.url).href,
     },
   ];
 
@@ -77,16 +72,13 @@ export class TabView extends DestinyElement {
       `)}
     </nav>
 
-    <${HashRouter}>
-      ${this.#tabs.map(value => xml`
-        <main slot="${value.path}">
-          ${value.content}
-        </main>
-      `)}
-      <main slot="404">
-        Couldn't find resource "${route}". <br />
-        Please check your spelling.
-      </main>
-    </${HashRouter}>
+    <main>
+      <${HashRouter} prop:routes="${this.#tabs}">
+        <div slot="404">
+          Couldn't find resource "${route}". <br />
+          Please check your spelling.
+        </div>
+      </${HashRouter}>
+    </main>
   `;
 }
