@@ -15,7 +15,7 @@ export function hookAttributeSlotsUp (
   props: Array<unknown>,
 ): void {
   const attributeSlots = Object.values(
-    templ.querySelectorAll("[destiny\\:attr]"),
+    templ.querySelectorAll("[destiny\\:attr],[data-capture-props]"),
   ) as unknown as Array<HTMLElement & ChildNode>;
 
   for (const element of attributeSlots) {
