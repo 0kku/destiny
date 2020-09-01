@@ -38,11 +38,11 @@ export function call (
           if (Array.isArray(value)) {
             //@ts-ignore TODO gotta figure out later if this can be resolved properly by TS
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-            element[value](...value);
+            element[key](...value);
           } else {
             //@ts-ignore TODO gotta figure out later if this can be resolved properly by TS
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-            element[value](value);
+            element[key](value);
           }
         }
       }
