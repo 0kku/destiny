@@ -1,14 +1,14 @@
 {
   "name": "destiny",
   "description": "A reactive UI library for JavaScript and TypeScript.",
-  "version": "0.2.0",
+  "version": "0.4.0",
   "main": "./dist/examples/main.js",
   "dependencies": {},
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.0.0-alpha.11",
-    "@typescript-eslint/parser": "^4.0.0-alpha.11",
-    "eslint": "^7.7.0",
-    "typescript": "^4.0.1-rc"
+    "@typescript-eslint/eslint-plugin": "^4.0.1",
+    "@typescript-eslint/parser": "^4.0.1",
+    "eslint": "^7.8.0",
+    "typescript": "^4.0.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
