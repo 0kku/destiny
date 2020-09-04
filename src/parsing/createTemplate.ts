@@ -1,4 +1,3 @@
-import { register } from "../elementLogic/register.js";
 import { parseString } from "./parseString.js";
 import { resolveSlots } from "./resolveSlots.js";
 import { isDestinyElement } from "../elementLogic/isDestinyElement.js";
@@ -21,23 +20,17 @@ export function createTemplate (
 
     if (string.endsWith("<")) {
       tagProps.set(i, prop);
-      if (isDestinyElement(prop)) {
-        string += register(prop, false);
-        if (prop.captureProps) {
-          string += " data-capture-props=\"true\"";
-        }
-        string += fragment;
+      if (isDestinyElement(prop) && prop.captureProps) {
+        string += `${prop.register()} data-capture-props="true"${fragment}`;
       } else if (prop instanceof Promise) {
-        string += `${register(DestinyFallback, false)} prop:for="__internal_${i}_" data-capture-props="true"${fragment}`;
+        string += `${DestinyFallback.register()} prop:for="__internal_${i}_" data-capture-props="true"${fragment}`;
       } else {
         string += String(prop) + fragment;
       }
     } else if (string.endsWith("</")) {
       tagProps.set(i, prop);
-      if (isDestinyElement(prop)) {
-        string += register(prop, false) + fragment;
-      } else if (prop instanceof Promise) {
-        string += register(DestinyFallback, false) + fragment;
+      if (prop instanceof Promise) {
+        string += DestinyFallback.register() + fragment;
       } else {
         string += String(prop) + fragment;
       }

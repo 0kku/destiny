@@ -1,4 +1,4 @@
-import { xml } from "../mod.js";
+import { register, xml } from "../mod.js";
 import { deferredElements } from "../parsing/deferredElements.js";
 import { assignElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/elementData/_assignElementData.js";
 import type { Ref, RefPromise } from "./Ref.js";
@@ -67,5 +67,20 @@ export abstract class DestinyElement extends HTMLElement {
     );
 
     return this;
+  }
+
+  static register (): string {
+    return register(
+      this as typeof DestinyElement & (new () => DestinyElement),
+      false,
+    );
+  }
+
+  static get tagName (): string {
+    return this.register();
+  }
+
+  static [Symbol.toPrimitive] (): string {
+    return this.tagName;
   }
 }
