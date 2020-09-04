@@ -31,6 +31,13 @@ export class TabView extends DestinyElement {
     },
   ];
 
+  connectedCallback (): void {
+    const original = document.title;
+    route.bind(path => {
+      document.title = this.#tabs.find(v => v.path === path)?.title ?? original;
+    });
+  }
+
   template = xml/*html*/`
     <style>
       nav {
