@@ -29,6 +29,11 @@ export class TabView extends DestinyElement {
       title: "Async",
       content: new URL("./async-demo.js", import.meta.url).href,
     },
+    {
+      path: "/window-manager",
+      title: "Windowing demo",
+      content: new URL("./window-manager/_window-manager.js", import.meta.url).href,
+    },
   ];
 
   connectedCallback (): void {
