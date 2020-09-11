@@ -12,7 +12,7 @@ export interface DestinyElement<TProperties extends Record<string, unknown> = {}
 /**
  * A class for creating new custom elements in Destiny UI.
  */
-export abstract class DestinyElement extends HTMLElement {
+export class DestinyElement extends HTMLElement {
   static captureProps = false;
   forwardProps?: Ref<HTMLElement> | RefPromise<HTMLElement>;
   assignedData = {

@@ -5,7 +5,7 @@ import { DestinyElement } from "./DestinyElement.js";
 const pseudoRandomId = pseudoRandomIdGenerator();
 
 const registeredComponents = new Map<
-  typeof DestinyElement,
+  new () => DestinyElement,
   string
 >();
 
@@ -15,7 +15,7 @@ const registeredComponents = new Map<
  * @param noHash               Opt out of adding a unique hash to the name
  */
 export function register (
-  componentConstructor: typeof DestinyElement & (new () => DestinyElement),
+  componentConstructor: new () => DestinyElement,
   noHash = true,
 ): string {
   const registeredName = registeredComponents.get(componentConstructor);
