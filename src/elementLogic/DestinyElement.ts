@@ -5,6 +5,10 @@ import type { Ref, RefPromise } from "./Ref.js";
 import type { Renderable } from "../parsing/Renderable";
 import type { Slot } from "../parsing/Slot.js";
 
+// @ts-ignore I don't know how to describe this type correctly
+// eslint-disable-next-line
+export interface DestinyElement<TProperties extends Record<string, unknown> = {}> extends TProperties {}
+
 /**
  * A class for creating new custom elements in Destiny UI.
  */

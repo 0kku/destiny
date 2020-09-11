@@ -1,18 +1,14 @@
 import { DestinyElement, html } from "/dist/mod.js";
 import type { TReactiveObject } from "/dist/mod.js";
 
-export class TaskItem extends DestinyElement {
-  set item (
-    _: TReactiveObject<{
-      title: string,
-      done: boolean,
-      editing: boolean,
-    }>,
-  ) {}
-  set removeItem (
-    _: () => void,
-  ) {}
-
+export class TaskItem extends DestinyElement<{
+  item: TReactiveObject<{
+    title: string,
+    done: boolean,
+    editing: boolean,
+  }>,
+  removeItem: () => void,
+}> {
   constructor () {
     super();
     this.setAttribute("role", "listitem");

@@ -2,12 +2,9 @@ import { DestinyElement, xml } from "/dist/mod.js";
 
 import type { TWindow } from "./TWindow";
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-export interface Window {
+export class Window extends DestinyElement<{
   props: TWindow,
-}
-
-export class Window extends DestinyElement {
+}> {
   template = xml/*html*/`
     <style>
       :host {

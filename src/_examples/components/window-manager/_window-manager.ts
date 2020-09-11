@@ -125,9 +125,7 @@ export class WindowManager extends DestinyElement {
       }
     });
 
-    window.addEventListener("mouseup", () => {
-      this.#dragging.type.value = "";
-    });
+    window.addEventListener("mouseup", () => this.#dragging.type.value = "");
   }
 
   template = xml/*html*/`
