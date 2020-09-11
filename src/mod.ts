@@ -6,7 +6,6 @@ export { reactiveObject    } from "./reactive/reactiveObject/reactiveObject.js";
 export { ReactiveArray     } from "./reactive/ReactiveArray/_ReactiveArray.js";
 export { expression        } from "./reactive/reactiveExpression.js";
 export { reactive          } from "./reactive/reactive.js";
-export { html              } from "./parsing/_html.js";
 export { xml               } from "./parsing/_xml.js";
 
 export type { TReactiveValueType } from "./reactive/types/IReactiveValueType.js";

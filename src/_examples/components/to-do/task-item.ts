@@ -1,4 +1,4 @@
-import { DestinyElement, html } from "/dist/mod.js";
+import { DestinyElement, xml } from "/dist/mod.js";
 import type { TReactiveObject } from "/dist/mod.js";
 
 export class TaskItem extends DestinyElement<{
@@ -14,7 +14,7 @@ export class TaskItem extends DestinyElement<{
     this.setAttribute("role", "listitem");
   }
 
-  template = html`
+  template = xml/*html*/`
     <style>
       :host {
         padding-bottom: var(--xs);
@@ -77,52 +77,52 @@ export class TaskItem extends DestinyElement<{
       }
     </style>
     <form
-      class=edit-task
-      on:submit=${(e: Event) => {
+      class="edit-task"
+      on:submit="${(e: Event) => {
         e.preventDefault();
         this.item.editing.value = false;
-      }}
+      }}"
     >
       ${this.item.editing.pipe(editing => !editing
-        ? html`
+        ? xml`
           <label>
             <input
-              type=checkbox
-              prop:checked=${this.item.done}
-            >
+              type="checkbox"
+              prop:checked="${this.item.done}"
+            />
             <span
-              class=task-name
-              style=${this.item.done.truthy("text-decoration: line-through")}
+              class="task-name"
+              style="${this.item.done.truthy("text-decoration: line-through")}"
             >
               ${this.item.title}
             </span>
           </label>
           <input
-            type=button
-            value=📝
-            title=Edit
-            on:click=${() => this.item.editing.value = true}
-          >
-        ` : html`
+            type="button"
+            value="📝"
+            title="Edit"
+            on:click="${() => this.item.editing.value = true}"
+          />
+        ` : xml`
           <input
-            type=text
-            value=${this.item.title}
-            required
-            destiny:in=${(e: HTMLInputElement) => e.focus()}
-          >
+            type="text"
+            value="${this.item.title}"
+            required=""
+            destiny:in="${(e: HTMLInputElement) => e.focus()}"
+          />
           <input
-            type=submit
-            value=💾
-            title=Save
-          >
+            type="submit"
+            value="💾"
+            title="Save"
+          />
         `
       )}
       <input
-        type=button
-        value=🚮
-        title=Delete
-        on:click=${this.removeItem}
-      >
+        type="button"
+        value="🚮"
+        title="Delete"
+        on:click="${this.removeItem}"
+      />
     </form>
   `;
 }

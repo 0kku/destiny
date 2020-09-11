@@ -1,4 +1,4 @@
-import { DestinyElement, html, reactive } from "/dist/mod.js";
+import { DestinyElement, xml, reactive } from "/dist/mod.js";
 
 const randomColor = () => (
   "#" + 
@@ -23,7 +23,7 @@ export class ArrayDemo extends DestinyElement {
     cancelAnimationFrame(this.#timer);
   }
 
-  template = html`
+  template = xml/*html*/`
     <style>
       ul {
         list-style: none;
@@ -47,7 +47,7 @@ export class ArrayDemo extends DestinyElement {
       }
     </style>
     <ul>
-      ${this.#items.map((text, i) => html`
+      ${this.#items.map((text, i) => xml`
         <li style="background-color: ${text};">${i}</li>
       `)}
     </ul>

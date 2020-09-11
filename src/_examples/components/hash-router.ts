@@ -20,7 +20,7 @@ export class HashRouter extends DestinyElement {
     }>,
   ) {}
 
-  #error404 = xml/*html*/`
+  #error404 = xml`
     <slot name="404">
       404 — route "${route}" not found
     </slot>

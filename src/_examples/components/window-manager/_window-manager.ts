@@ -159,7 +159,7 @@ export class WindowManager extends DestinyElement {
         })}
       }
     </style>
-    ${this.#windows.map(win => xml/*html*/`
+    ${this.#windows.map(win => xml`
       <${Window} prop:props="${win}" />
     `)}
   `;

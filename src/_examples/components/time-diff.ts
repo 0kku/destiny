@@ -1,4 +1,4 @@
-import { DestinyElement, html, reactive, expression } from "/dist/mod.js";
+import { DestinyElement, xml, reactive, expression } from "/dist/mod.js";
 
 function formatTimeFragment (
   input: number,
@@ -31,40 +31,40 @@ function createTask () {
 export class TimeDiff extends DestinyElement {
   #tasks = reactive([createTask()]); //initialize an array of tasks, with one task in it
 
-  template = html`
-    ${this.#tasks.map(task => html`
+  template = xml`
+    ${this.#tasks.map(task => xml`
       <div>
         <label>
           Start:
           <input
-            type=time
-            prop:value-as-date=${task.start}
-          >
+            type="time"
+            prop:value-as-date="${task.start}"
+          />
         </label>
         <label>
           End: 
           <input
-            type=time
-            prop:value-as-date=${task.end}
-          >
+            type="time"
+            prop:value-as-date="${task.end}"
+          />
         </label>
         <label>
           Name:
           <input
             type="text"
-            prop:value=${task.name}
-          >
+            prop:value="${task.name}"
+          />
         </label>
-        <br>
+        <br />
         Duration of "${task.name}": ${expression`
           ${formatTime}(Number(${task.end}) - Number(${task.start}))
         `}
       </div>`
     )}
     <input
-      type=button
-      on:click=${() => this.#tasks.push(createTask())}
+      type="button"
+      on:click="${() => this.#tasks.push(createTask())}"
       value="New task"
-    >
+    />
   `;
 }

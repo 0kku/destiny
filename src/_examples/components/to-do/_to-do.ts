@@ -1,4 +1,4 @@
-import { DestinyElement, html, reactive } from "/dist/mod.js";
+import { DestinyElement, xml, reactive } from "/dist/mod.js";
 
 import { animateIn, animateOut } from "./animations.js";
 import { TaskItem } from "./task-item.js";
@@ -27,7 +27,7 @@ export class Todo extends DestinyElement {
     },
   ]);
 
-  template = html`
+  template = xml/*html*/`
     <style>
       label {
         height: var(--l);
@@ -94,26 +94,26 @@ export class Todo extends DestinyElement {
     </style>
     <h1>${this.#items.filter(v => v.done.value).length}/${this.#items.length} tasks compelete</h1>
     <ul>
-      ${this.#items.map((item, i) => html`
+      ${this.#items.map((item, i) => xml`
         <${TaskItem}
-          prop:item=${item}
-          prop:remove-item=${() => this.#items.splice(i.value, 1)}
-          destiny:in=${animateIn}
-          destiny:out=${animateOut}
-        ></${TaskItem}>
+          prop:item="${item}"
+          prop:remove-item="${() => this.#items.splice(i.value, 1)}"
+          destiny:in="${animateIn}"
+          destiny:out="${animateOut}"
+        />
       `)}
-      ${this.#items.length.falsy(html`
+      ${this.#items.length.falsy(xml`
         <li
-          destiny:in=${animateIn}
-          destiny:out=${animateOut}
+          destiny:in="${animateIn}"
+          destiny:out="${animateOut}"
         >
           <i>No items to show</i>
         </li>
       `)}
       <li>
         <form
-          id=add-task
-          on:submit=${(e: Event) => {
+          id="add-task"
+          on:submit="${(e: Event) => {
             e.preventDefault();
             this.#items.push({
               title: this.#newValue.value,
@@ -121,37 +121,37 @@ export class Todo extends DestinyElement {
               editing: false,
             });
             this.#newValue.value = "";
-          }}
+          }}"
         >
           <input
-            type=text
-            prop:value=${this.#newValue}
-            required
+            type="text"
+            prop:value="${this.#newValue}"
+            required=""
             placeholder="Add an item..."
             aria-label="Add an item"
-          >
-          <input type=submit value=➕>
+          />
+          <input type="submit" value="➕" />
         </form>
       </li>
     </ul>
     <label>
       <input
-        type=checkbox
-        class=check-all
-        prop:checked=${this.#items.every(item => item.done.value)}
-        prop:indeterminate=${this.#items.exclusiveSome(item => item.done.value)}
-        on:change=${(e: TInputChangeEvent) => {
+        type="checkbox"
+        class="check-all"
+        prop:checked="${this.#items.every(item => item.done.value)}"
+        prop:indeterminate="${this.#items.exclusiveSome(item => item.done.value)}"
+        on:change="${(e: TInputChangeEvent) => {
           this.#items.value.forEach(item => {
             item.done.value = e.currentTarget.checked;
           });
-        }}
-      >
+        }}"
+      />
       Check all
     </label>
     <input
-      type=button
+      type="button"
       value="Clear done"
-      on:click=${() => this.#items.mutFilter(v => !v.done.value)}
-    >
+      on:click="${() => this.#items.mutFilter(v => !v.done.value)}"
+    />
   `;
 }
