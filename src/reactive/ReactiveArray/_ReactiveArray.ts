@@ -4,12 +4,21 @@ import { makeNonPrimitiveItemsReactive } from "./makeNonPrimitiveItemsReactive.j
 import { NotImplementedError } from "../../utils/NotImplementedError.js";
 import type { TReactiveArrayCallback } from "../types/IReactiveArrayCallback.js";
 import type { TArrayValueType } from "../types/IArrayValueType.js";
+import type { TReactiveEntity } from "../types/IReactiveEntity.js";
+import { updateFilteredArray } from "./updateFilteredArray.js";
 
 type TArrayUpdateArguments<T> = [
   startEditingAt: number, 
   deleteCount: number,
   ...newElements: Array<T>
 ];
+
+export type TMaskEntry = {
+  index: number,
+  show: boolean,
+};
+
+export type TMask = Array<TMaskEntry>;
 
 /**
  * `ReactiveArray`s are reactive values that contain multiple values which can be updated and whose updates can be listened to. In general, `ReactiveArray`s behave very similar to native `Array`s. The main difference is, that most primitive values are given as `ReactivePrimitive`s and any immutable methods will return a new readonly `ReactiveArray`, whose values are tied to the original `ReactiveArray`. The class also provides a few custom convenience methods.
@@ -442,7 +451,7 @@ export class ReactiveArray<InputType> {
     ...items: Array<InputType | TArrayValueType<InputType>>
   ): Array<TArrayValueType<InputType>> {
     if (start > this.#value.length) {
-      throw new RangeError("Out of bounds assignment. Sparse arrays are not allowed. Consider using .push() instead.");
+      throw new RangeError(`Out of bounds assignment: tried to assign to index ${start}, but array length was only ${this.#value.length}. Sparse arrays are not allowed. Consider using .push() instead.`);
     }
     
     this._adjustIndices(start, deleteCount, items);
@@ -526,11 +535,64 @@ export class ReactiveArray<InputType> {
       index: number,
       array: Array<TArrayValueType<InputType>>,
     ) => boolean,
-  ): Readonly<ReactiveArray<InputType>> {
-    const newArr: ReactiveArray<InputType> = new ReactiveArray;
-    this.bind(() => newArr.setValue(this.#value.filter(callback)));
+    dependencies: ReadonlyArray<TReactiveEntity<any>> = [],
+  ): Readonly<ReactiveArray<TArrayValueType<InputType>>> {
     
-    return newArr;
+    const filteredArray: ReactiveArray<TArrayValueType<InputType>> = new ReactiveArray;
+
+    const maskArray: TMask = [];
+
+    dependencies.forEach(dependency => {
+      dependency.bind(() => updateFilteredArray(
+        callback,
+        this.#value,
+        filteredArray,
+        maskArray,
+      ), true);
+    });
+
+    this.bind((start, deletes, ...items) => {
+      const lastInMask = maskArray.slice(0, start).reverse().find(v => v.show);
+      const newItems: Array<TArrayValueType<InputType>> = [];
+      let currentIndex = (lastInMask?.index ?? -1);
+      const deletedMaskEntries =
+        deletes
+        ? maskArray.splice(start, deletes)
+        : []
+      ;
+      for (const [i, item] of items.entries()) {
+        const sourceIndex = start + i;
+        const showThis = callback(item, sourceIndex, this.#value);
+        if (showThis) {
+          currentIndex++;
+        }
+        const current = {
+          index: currentIndex,
+          show: showThis,
+        };
+        maskArray.splice(sourceIndex, 0, current);
+        if (showThis) {
+          newItems.push(item);
+        }
+      }
+
+      const deletedItemCount = deletedMaskEntries.filter(v => v.show).length;
+      if (newItems.length || deletedItemCount) {
+        filteredArray.splice(
+          (lastInMask?.index ?? -1) + 1,
+          deletedItemCount,
+          ...newItems,
+        );
+      }
+      const shiftTailBy = newItems.length - deletedItemCount;
+      if (shiftTailBy) {
+        for (let i = start + items.length; i < maskArray.length; i++) {
+          maskArray[i].index += shiftTailBy;
+        }
+      }
+    });
+    
+    return filteredArray;
   }
 
   // TODO
