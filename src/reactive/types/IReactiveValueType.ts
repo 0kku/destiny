@@ -1,4 +1,4 @@
-import { ReactiveArray, ReactivePrimitive } from "../../mod.js";
+import type { ReactiveArray, ReactivePrimitive } from "../../mod.js";
 import type { TSpecialCaseObject } from "../reactiveObject/specialCaseObjects.js";
 import type { TReactiveObject } from "./IReactiveObject.js";
 import type { TReactive } from "./IReactive.js";

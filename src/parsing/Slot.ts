@@ -1,6 +1,6 @@
-import { DestinyElement } from "../elementLogic/DestinyElement.js";
 import { deferredElements } from "./deferredElements.js";
 import { TemplateResult } from "./TemplateResult.js";
+import type { DestinyElement } from "../elementLogic/DestinyElement.js";
 
 /** A counter for labling `Comment`s for `Slot`s. */
 let counter = 0;

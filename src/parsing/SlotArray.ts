@@ -1,5 +1,5 @@
-import { ReactiveArray } from "../mod.js";
 import { Slot } from "./Slot.js";
+import type { ReactiveArray } from "../mod.js";
 import type { TemplateResult } from "./TemplateResult.js";
 
 /**

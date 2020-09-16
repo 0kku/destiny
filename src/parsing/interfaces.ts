@@ -1,4 +1,4 @@
-import { ReactivePrimitive } from "../mod.js";
+import type { ReactivePrimitive } from "../mod.js";
 
 export type TUnpreparedContentSlot = {
   node: Text,
