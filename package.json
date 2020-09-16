@@ -5,9 +5,9 @@
   "main": "./dist/examples/main.js",
   "dependencies": {},
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.0.1",
-    "@typescript-eslint/parser": "^4.0.1",
-    "eslint": "^7.8.0",
+    "@typescript-eslint/eslint-plugin": "^4.1.1",
+    "@typescript-eslint/parser": "^4.1.1",
+    "eslint": "^7.9.0",
     "typescript": "^4.0.2"
   },
   "scripts": {
