@@ -14,8 +14,8 @@ export function isReactive (
     ReactiveArray,
     ReactivePrimitive,
   ].some(constr => input instanceof constr) || (
-    input &&
+    !!input &&
     typeof input === "object" &&
-    reactiveObjectFlag in input
+    reactiveObjectFlag in input!
   );
 }
