@@ -439,6 +439,11 @@ export class ReactiveArray<InputType> {
     return this;
   }
 
+  #description = "";
+  setDescription (input: string): void {
+    this.#description = input;
+  }
+
   /**
    * Similar to `Array::splice()`. Added items are implicitly made recursively reactive.
    * @param start        Where to start modifying the array
@@ -450,8 +455,9 @@ export class ReactiveArray<InputType> {
     deleteCount: number = this.#value.length - start,
     ...items: Array<InputType | TArrayValueType<InputType>>
   ): Array<TArrayValueType<InputType>> {
-    console.log("Splice being dispatched, callbacks: ", [...this.#callbacks]);
-    console.log({start, deleteCount, items});
+        //@ts-ignore temp
+    console.log("Splice being dispatched, callbacks: ", [...this.#callbacks], "on array type: ", this.#description);
+    console.log({start, deleteCount, items: JSON.stringify(items)});
     console.log({currentArray: JSON.stringify(this.#value)});
     if (start > this.#value.length) {
       throw new RangeError(`Out of bounds assignment: tried to assign to index ${start}, but array length was only ${this.#value.length}. Sparse arrays are not allowed. Consider using .push() instead.`);
@@ -503,7 +509,7 @@ export class ReactiveArray<InputType> {
     const shiftedBy = items.length - deleteCount;
     if (shiftedBy) {
       for (let i = start + deleteCount; i < this.#indices.length; i++) {
-        console.log(this.#indices, i, this.length.value);
+        // console.log(this.#indices, i, this.length.value);
         this.#indices[i].value += shiftedBy;
       }
     }
@@ -709,6 +715,8 @@ export class ReactiveArray<InputType> {
     start: number | Readonly<ReactivePrimitive<number>> = 0,
     end: number | Readonly<ReactivePrimitive<number>> = this.length,
   ): Readonly<ReactiveArray<TArrayValueType<InputType>>> {
+    console.log("Adding slice to ", [...this.value]);
+    this.#description = "source";
     //TODO: move this out
     const reactiveOrPrimitiveNumberToPrimitive = (
       input: number | Readonly<ReactivePrimitive<number>>,
@@ -729,6 +737,7 @@ export class ReactiveArray<InputType> {
       //   ...range,
       // ),
     );
+    slicedArray.setDescription("sliced");
 
     // Works, I'm pretty sure
     if (typeof start !== "number") {
@@ -786,7 +795,7 @@ export class ReactiveArray<InputType> {
       deleteCount: number,
       ...values: Array<TArrayValueType<InputType>>
     ) => {
-      console.warn("slice received update", {index, deleteCount, values});
+      console.warn("slice received update", {index, deleteCount, values: JSON.stringify(values)});
       const [start, end] = range;
       const targetLength = end - start;
       console.log({start, end, targetLength});

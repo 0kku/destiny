@@ -1,62 +1,62 @@
 import { DestinyElement, xml, reactive } from "/dist/mod.js";
 
 export class SliceTests extends DestinyElement {
-  #originalArray = reactive([1, 2, 3, 4]);
+  #originalArray = [1, 2, 3, 4] as const;
 
   #slices = [
     [0],
-    [0, 2],
-    [2, 3],
-    [2, 4],
-    [3, 2],
-    [2],
-    [-2],
-    [-1, -2],
-    [-2, -1],
-    [0, -100],
-    [-100, 0],
-    [-100, -100],
-    [0, 100],
-    [100, 0],
-    [100, 100],
+    // [0, 2],
+    // [2, 3],
+    // [2, 4],
+    // [3, 2],
+    // [2],
+    // [-2],
+    // [-1, -2],
+    // [-2, -1],
+    // [0, -100],
+    // [-100, 0],
+    // [-100, -100],
+    // [0, 100],
+    // [100, 0],
+    // [100, 100],
   ] as const;
 
   #splices = [
-    undefined,
-    [0, 0],
+    // undefined,
+    // [0, 0],
     [0, 0, 5],
-    [0, 2, 5],
-    [0, 5, 5],
-    [0, 10, 5],
-    [0, 2],
-    [0, 5],
-    [0, 10],
-    [1, 0, 5],
-    [1, 2, 5],
-    [1, 5, 5],
-    [1, 10, 5],
-    [1, 2],
-    [1, 5],
-    [1, 10],
-    [-1, 0, 5],
-    [-1, 2, 5],
-    [-1, 5, 5],
-    [-1, 10, 5],
-    [-1, 2],
-    [-1, 5],
-    [-1, 10],
-    [4, 0, 5],
-    [4, 2, 5],
-    [4, 5, 5],
-    [4, 10, 5],
-    [4, 2],
-    [4, 5],
-    [4, 10],
-    [0],
-    [2],
-    [-2],
-    [4],
-  ];
+    // [0, 2, 5],
+    // [0, 5, 5],
+    // [0, 10, 5],
+    // [0, 2],
+    // [0, 5],
+    // [0, 10],
+    // [1, 0, 5],
+    // [1, 2, 5],
+    // [1, 5, 5],
+    // [1, 10, 5],
+    // [1, 2],
+    // [1, 5],
+    // [1, 10],
+    // [-1, 0, 5],
+    // [-1, 2, 5],
+    // [-1, 5, 5],
+    // [-1, 10, 5],
+    // [-1, 2],
+    // [-1, 5],
+    // [-1, 10],
+    // [4, 0, 5],
+    // [4, 2, 5],
+    // [4, 5, 5],
+    // [4, 10, 5],
+    // [4, 2],
+    // [4, 5],
+    // [4, 10],
+    // [0],
+    // [2],
+    // [-2],
+    // [4],
+  ] as unknown as Array<undefined | [number]>;
   
   template = xml`
     <style>
@@ -71,22 +71,22 @@ export class SliceTests extends DestinyElement {
       }
     </style>
     <p>
-      <code>const source = reactive(${JSON.stringify(this.#originalArray.value)});</code>
+      <code>const source = reactive(${JSON.stringify(this.#originalArray)});</code>
     </p>
 
     ${this.#splices.map(splice => {
       const tests = this.#slices.map(slice => {
-        const nativeSourceArray = this.#originalArray.value.slice(0);
+        const nativeSourceArray = this.#originalArray.slice(0);
         if (splice) {
-          nativeSourceArray.splice(...splice as [number]);
+          nativeSourceArray.splice(...splice);
         }
         const nativeSlicedArray = nativeSourceArray.slice(...slice);
 
-        const reactiveSourceArray = this.#originalArray.clone();
+        const reactiveSourceArray = reactive(this.#originalArray as unknown as Array<number>);
         const reactiveSlicedArray = reactiveSourceArray.slice(...slice);
         if (splice) {
           console.log("reactiveSlicedArray before splice", JSON.stringify(reactiveSlicedArray.value));
-          reactiveSourceArray.splice(...splice as [number]);
+          reactiveSourceArray.splice(...splice);
           console.log("reactiveSlicedArray after splice", JSON.stringify(reactiveSlicedArray.value));
         }
 
