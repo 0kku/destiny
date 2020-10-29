@@ -713,7 +713,7 @@ export class ReactiveArray<InputType> {
    */
   slice (
     start: number | Readonly<ReactivePrimitive<number>> = 0,
-    end: number | Readonly<ReactivePrimitive<number>> = this.length,
+    end: number | Readonly<ReactivePrimitive<number>> = Infinity,
   ): Readonly<ReactiveArray<TArrayValueType<InputType>>> {
     console.log("Adding slice to ", [...this.value]);
     this.#description = "source";
@@ -723,8 +723,9 @@ export class ReactiveArray<InputType> {
     ): number => {
       let value = Number(typeof input === "number" ? input : input.value);
       if (value < 0) {
-        value = Math.max(0, this.length.value + value);
+        value = Math.max(0, this.length.value + value + 1);
       }
+      // return Math.min(value, this.length.value + 1);
       return value;
     };
 
@@ -796,40 +797,80 @@ export class ReactiveArray<InputType> {
       ...values: Array<TArrayValueType<InputType>>
     ) => {
       console.warn("slice received update", {index, deleteCount, values: JSON.stringify(values)});
+      console.log("sliced array at start", JSON.stringify(slicedArray.value));
       const [start, end] = range;
-      const targetLength = end - start;
+      const targetLength = Math.min(end, this.length.value) - start;
       console.log({start, end, targetLength});
       console.log({oldLength: slicedArray.length.value});
 
       if (index >= end) return;
-      if (index + Math.max(deleteCount, values.length) < start) return;
-
-      const relativeStart = index - start;
-      const adjustment = Math.max(start - index, 0);
-      const adjustedIndex = Math.max(
-        0,
-        relativeStart,
-      );
-      const adjustedDeleteCount = Math.max(0, deleteCount - adjustment);
-      const insertedItems = values.slice(adjustment);
-      const newLength = slicedArray.value.length - adjustedDeleteCount + insertedItems.length;
-      const lengthDifference = newLength - targetLength;
-      if (newLength > targetLength) {
-        console.log("removing", -lengthDifference, lengthDifference);
-        insertedItems.splice(-lengthDifference, lengthDifference);
-      } else if (newLength < targetLength) {
-        console.log({start, newLength, lengthDifference});
-        console.log("adding in", start + newLength, start + newLength - lengthDifference);
-        insertedItems.push(...this.#value.slice(start + newLength, start + newLength - lengthDifference));
+      if (deleteCount === values.length && index + deleteCount < start) return;
+      if (end < start) {
+        if (slicedArray.length.value) {
+          slicedArray.splice(0, Infinity);
+        }
+        return;
       }
-      console.log({newLength, targetLength});
-      console.log(adjustedIndex, adjustedDeleteCount, insertedItems);
-      slicedArray.splice(
-        adjustedIndex,
-        adjustedDeleteCount,
-        ...insertedItems,
-      );
-      console.log("done");
+      if (index < start) {
+        const adjustedDeleteCount = deleteCount - values.length;
+        if (deleteCount > 0) {
+          slicedArray.splice(0, adjustedDeleteCount);
+        } else {
+          console.log("adding", start + adjustedDeleteCount, start, "::", ...this.value.slice(start + adjustedDeleteCount, start));
+          slicedArray.splice(0, 0, ...this.value.slice(start + adjustedDeleteCount + 1, start + 1));
+        }
+      } else {
+        slicedArray.splice(index - start, deleteCount, ...values);
+      }
+
+      // const relativeStart = index - start;
+      // const adjustment = Math.max(start - index, 0);
+      // const adjustedIndex = Math.max(
+      //   0,
+      //   relativeStart,
+      // );
+      // const adjustedDeleteCount = (index + deleteCount) < start
+      //   ? values.length - deleteCount
+      //   : Math.max(0, deleteCount - adjustment);
+      // const insertedItems = values.slice(adjustment);
+      // const newLength = slicedArray.value.length - adjustedDeleteCount + insertedItems.length;
+      // // const lengthDifference = newLength - targetLength;
+      // // if (newLength > targetLength) {
+      // //   console.log("Had", JSON.stringify(insertedItems), "removing", -lengthDifference, lengthDifference);
+      // //   insertedItems.splice(-lengthDifference, lengthDifference);
+      // // } else if (newLength < targetLength) {
+      // //   console.log({start, newLength, lengthDifference});
+      // //   console.log("adding in", start + newLength, start + newLength - lengthDifference);
+      // //   insertedItems.push(...this.#value.slice(start + newLength, start + newLength - lengthDifference));
+      // // }
+      // console.log({newLength, targetLength});
+      // console.log({adjustedIndex, adjustedDeleteCount, insertedItems});
+      // slicedArray.splice(
+      //   adjustedIndex,
+      //   adjustedDeleteCount,
+      //   ...insertedItems,
+      // );
+
+      const length = slicedArray.length.value;
+      const lengthDifference = length - targetLength;
+      if (lengthDifference > 0) {
+        slicedArray.splice(
+          -lengthDifference,
+          lengthDifference,
+        );
+      } else if (lengthDifference < 0) {
+        const endPosition = start + length;
+        slicedArray.splice(
+          length,
+          0,
+          ...this.value.slice(
+            endPosition, 
+            endPosition - lengthDifference,
+          ),
+        );
+      }
+      console.log("sliced array at end", JSON.stringify(slicedArray.value));
+      console.log("Done with updating sliced array after event received");
 
       // console.log(index < end, index, end, index + Math.max(deleteCount, values.length) > start, values.length);
       // if (index < end && index + Math.max(deleteCount, values.length) > start) { // If change is not outside range of interest
