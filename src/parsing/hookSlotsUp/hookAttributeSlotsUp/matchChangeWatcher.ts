@@ -1,8 +1,8 @@
 const propToWatcherMap = {
   value: "input",
   checked: "change",
-  valueAsDate: "change",
-  valueAsNumber: "change",
+  valueAsDate: "input",
+  valueAsNumber: "input",
 } as const;
 
 export type TWatchedAttribute = keyof typeof propToWatcherMap;
