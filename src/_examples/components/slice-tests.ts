@@ -65,44 +65,103 @@ export class SliceTests extends DestinyElement {
         padding: 1px 3px;
         border-radius: 2px;
       }
+
+      details {
+        margin: 12px 0;
+      }
     </style>
     <p>
-      <code>const source = ${JSON.stringify(this.#originalArray.value)};</code>
+      <code>const source = reactive(${JSON.stringify(this.#originalArray.value)});</code>
     </p>
 
     ${this.#splices.map(splice => {
       const source = this.#originalArray.clone();
 
-      return xml`
-        <p>
-          <code>const source = reactive(${JSON.stringify(this.#originalArray.value)});</code> <br/>
-          ${splice
-            ? xml`Value of sliced array after <code>source.splice(${splice.join(", ")});</code>:`
-            : "Value of sliced array with no splicing"
-          }
-          ${this.#slices.map(slice => {
-            const native = source.value.slice(0);
-            const reacativeSplicedArray = source.clone();
+      const tests = this.#slices.map(slice => {
+        const nativeSourceArray = source.value.slice(0);
+        if (splice) {
+          nativeSourceArray.splice(...splice as [number]);
+        }
+        const nativeSlicedArray = nativeSourceArray.slice(...slice);
 
-            if (splice) {
-              [native, reacativeSplicedArray].forEach(a => {
-                a.splice(...splice as [number, number]);
-              });
+        const reactiveSourceArray = source.clone();
+        const reactiveSlicedArray = source.slice(...slice);
+        if (splice) {
+          reactiveSourceArray.splice(...splice as [number]);
+        }
+
+        try {
+          const results = [
+            reactiveSlicedArray.value,
+            nativeSlicedArray,
+          ].map(v => JSON.stringify(v));
+
+          const passed = results[0] === results[1];
+          if (!passed) {
+            console.error(`source.slice(${slice.join(", ")}) with splice(${(splice ?? []).join(", ")}): got ${results[0]}, expected ${results[1]}`);
+          }
+
+          return [
+            passed,
+            xml`
+              <div style="color: ${passed ? "green": "red"};">
+                <code>source.slice(${slice.join(", ")})</code> got <code>${results[0]}</code>, expected <code>${results[1]}</code>
+              </div>
+            `,
+          ] as const;
+        } catch (e) {
+          console.error(e);
+          return [false, xml`
+            <div style="color: red">
+              <code>source.slice(${slice.join(", ")})</code> threw ${e}
+            </div>
+          `] as const;
+        }
+      });
+
+      const allTestsPassed = tests.every(([passed]) => passed);
+
+      return xml`
+        <hr />
+        <details prop:open="${!allTestsPassed}">
+          <summary>
+            ${allTestsPassed ? "✅" : "❌"}
+            ${splice
+              ? xml`Value of sliced array after <code>source.splice(${splice.join(", ")})</code>:`
+              : "Value of sliced array with no splicing"
             }
-            return {slice, native, reacativeSplicedArray};
-          }).map(({slice, native, reacativeSplicedArray}) => {
+          </summary>
+          ${this.#slices.map(slice => {
+            const nativeSourceArray = source.value.slice(0);
+            if (splice) {
+              nativeSourceArray.splice(...splice as [number]);
+            }
+            const nativeSlicedArray = nativeSourceArray.slice(...slice);
+
+            const reactiveSourceArray = source.clone();
+            const reactiveSlicedArray = source.slice(...slice);
+            if (splice) {
+              reactiveSourceArray.splice(...splice as [number]);
+            }
+
             try {
               const results = [
-                reacativeSplicedArray.slice(...slice).value,
-                native.slice(...slice),
+                reactiveSlicedArray.value,
+                nativeSlicedArray,
               ].map(v => JSON.stringify(v));
 
+              const passed = results[0] === results[1];
+              if (!passed) {
+                console.error(`source.slice(${slice.join(", ")}) with splice(${(splice ?? []).join(", ")}): got ${results[0]}, expected ${results[1]}`);
+              }
+
               return xml`
-                <div style="color: ${results[0] === results[1] ? "green": "red"};">
+                <div style="color: ${passed ? "green": "red"};">
                   <code>source.slice(${slice.join(", ")})</code> got <code>${results[0]}</code>, expected <code>${results[1]}</code>
                 </div>
               `;
             } catch (e) {
+              console.error(e);
               return xml`
                 <div style="color: red">
                   <code>source.slice(${slice.join(", ")})</code> threw ${e}
@@ -110,7 +169,7 @@ export class SliceTests extends DestinyElement {
               `;
             }
           })}
-        </p>
+        </details>
       `;
     })}
   `;

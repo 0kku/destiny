@@ -459,7 +459,7 @@ export class ReactiveArray<InputType> {
       throw new RangeError(`Tried to delete ${deleteCount} items.`);
     }
     if (start < 0) {
-      start = this.length.value - start;
+      start = this.length.value + start;
     }
     
     this._adjustIndices(start, deleteCount, items);
@@ -470,6 +470,12 @@ export class ReactiveArray<InputType> {
     return deletedItems;
   }
 
+  /**
+   * Calls each bound callback with same splice arguments.
+   * @param start       Index at which array was modified
+   * @param deleteCount Number of items that got removed
+   * @param newItems    Array of inserted items
+   */
   private _dispatchUpdateEvents (
     start: number,
     deleteCount: number,
@@ -708,8 +714,9 @@ export class ReactiveArray<InputType> {
     ): number => {
       let value = Number(typeof input === "number" ? input : input.value);
       if (value < 0) {
-        value = this.length.value + value;
+        value = Math.max(0, this.length.value + value);
       }
+      // console.log("VAL", this.length.value, value)
       return value;
     };
 
@@ -779,7 +786,7 @@ export class ReactiveArray<InputType> {
       deleteCount: number,
       ...values: Array<TArrayValueType<InputType>>
     ) => {
-      console.log("slice received update", {index, deleteCount, values});
+      console.warn("slice received update", {index, deleteCount, values});
       const [start, end] = range;
       const targetLength = end - start;
       console.log({start, end, targetLength});
