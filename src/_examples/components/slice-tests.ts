@@ -75,19 +75,19 @@ export class SliceTests extends DestinyElement {
     </p>
 
     ${this.#splices.map(splice => {
-      const source = this.#originalArray.clone();
-
       const tests = this.#slices.map(slice => {
-        const nativeSourceArray = source.value.slice(0);
+        const nativeSourceArray = this.#originalArray.value.slice(0);
         if (splice) {
           nativeSourceArray.splice(...splice as [number]);
         }
         const nativeSlicedArray = nativeSourceArray.slice(...slice);
 
-        const reactiveSourceArray = source.clone();
-        const reactiveSlicedArray = source.slice(...slice);
+        const reactiveSourceArray = this.#originalArray.clone();
+        const reactiveSlicedArray = reactiveSourceArray.slice(...slice);
         if (splice) {
+          console.log("reactiveSlicedArray before splice", JSON.stringify(reactiveSlicedArray.value));
           reactiveSourceArray.splice(...splice as [number]);
+          console.log("reactiveSlicedArray after splice", JSON.stringify(reactiveSlicedArray.value));
         }
 
         try {

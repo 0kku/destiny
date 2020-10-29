@@ -450,6 +450,7 @@ export class ReactiveArray<InputType> {
     deleteCount: number = this.#value.length - start,
     ...items: Array<InputType | TArrayValueType<InputType>>
   ): Array<TArrayValueType<InputType>> {
+    console.log("Splice being dispatched, callbacks: ", [...this.#callbacks]);
     console.log({start, deleteCount, items});
     console.log({currentArray: JSON.stringify(this.#value)});
     if (start > this.#value.length) {
@@ -716,7 +717,6 @@ export class ReactiveArray<InputType> {
       if (value < 0) {
         value = Math.max(0, this.length.value + value);
       }
-      // console.log("VAL", this.length.value, value)
       return value;
     };
 
@@ -866,6 +866,8 @@ export class ReactiveArray<InputType> {
 
       // }
     });
+    
+    console.log("Slice added, callbacks: ", [...this.#callbacks]);
   
     return slicedArray as Readonly<typeof slicedArray>;
   }
