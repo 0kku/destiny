@@ -12,13 +12,12 @@ window.addEventListener("hashchange", e => {
   route.value = getHashRoute(e.newURL);
 });
 
-export class HashRouter extends DestinyElement {
-  set routes (
-    _: Array<{
-      path: string,
-      content: string,
-    }>,
-  ) {}
+export class HashRouter extends DestinyElement<{
+  routes: Array<{
+    path: string,
+    content: string,
+  }>,
+}> {
 
   #error404 = xml`
     <slot name="404">

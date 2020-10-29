@@ -7,7 +7,9 @@ import type { Slot } from "../parsing/Slot.js";
 
 // @ts-ignore I don't know how to describe this type correctly
 // eslint-disable-next-line
-export interface DestinyElement<TProperties extends Record<string, unknown> = {}> extends TProperties {}
+export interface DestinyElement<TProperties extends Record<string, unknown> = {}> extends TProperties {
+  destinySlot?: Slot,
+}
 
 /**
  * A class for creating new custom elements in Destiny UI.
@@ -23,9 +25,6 @@ export class DestinyElement extends HTMLElement {
     attribute: new Map<string, unknown>(),
   } as const;
   template: Renderable = xml`<slot />`;
-  set destinySlot (
-    _: Slot | undefined,
-  ) {}
 
   constructor () {
     super();
