@@ -458,6 +458,9 @@ export class ReactiveArray<InputType> {
     if (deleteCount < 0) {
       throw new RangeError(`Tried to delete ${deleteCount} items.`);
     }
+    if (start < 0) {
+      start = this.length.value - start;
+    }
     
     this._adjustIndices(start, deleteCount, items);
     const reactiveItems = makeNonPrimitiveItemsReactive(items, this);
@@ -493,6 +496,7 @@ export class ReactiveArray<InputType> {
     const shiftedBy = items.length - deleteCount;
     if (shiftedBy) {
       for (let i = start + deleteCount; i < this.#indices.length; i++) {
+        console.log(this.#indices, i, this.length.value);
         this.#indices[i].value += shiftedBy;
       }
     }

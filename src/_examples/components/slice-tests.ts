@@ -56,7 +56,7 @@ export class SliceTests extends DestinyElement {
     [2],
     [-2],
     [4],
-  ] as const;
+  ];
   
   template = xml`
     <style>
@@ -82,19 +82,33 @@ export class SliceTests extends DestinyElement {
           }
           ${this.#slices.map(slice => {
             const native = source.value.slice(0);
-            if (splice) {
-              native.splice(...splice as [number, number]);
-            }
-            const results = [
-              source.slice(...slice).value,
-              native.slice(...slice),
-            ].map(v => JSON.stringify(v));
+            const reacativeSplicedArray = source.clone();
 
-            return xml`
-              <div style="color: ${results[0] === results[1] ? "green": "red"};">
-                <code>source.slice(${slice.join(", ")})</code> got <code>${results[0]}</code>, expected <code>${results[1]}</code>
-              </div>
-            `;
+            if (splice) {
+              [native, reacativeSplicedArray].forEach(a => {
+                a.splice(...splice as [number, number]);
+              });
+            }
+            return {slice, native, reacativeSplicedArray};
+          }).map(({slice, native, reacativeSplicedArray}) => {
+            try {
+              const results = [
+                reacativeSplicedArray.slice(...slice).value,
+                native.slice(...slice),
+              ].map(v => JSON.stringify(v));
+
+              return xml`
+                <div style="color: ${results[0] === results[1] ? "green": "red"};">
+                  <code>source.slice(${slice.join(", ")})</code> got <code>${results[0]}</code>, expected <code>${results[1]}</code>
+                </div>
+              `;
+            } catch (e) {
+              return xml`
+                <div style="color: red">
+                  <code>source.slice(${slice.join(", ")})</code> threw ${e}
+                </div>
+              `;
+            }
           })}
         </p>
       `;
