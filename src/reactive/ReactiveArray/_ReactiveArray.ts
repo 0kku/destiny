@@ -450,8 +450,13 @@ export class ReactiveArray<InputType> {
     deleteCount: number = this.#value.length - start,
     ...items: Array<InputType | TArrayValueType<InputType>>
   ): Array<TArrayValueType<InputType>> {
+    console.log({start, deleteCount, items});
+    console.log({currentArray: JSON.stringify(this.#value)});
     if (start > this.#value.length) {
       throw new RangeError(`Out of bounds assignment: tried to assign to index ${start}, but array length was only ${this.#value.length}. Sparse arrays are not allowed. Consider using .push() instead.`);
+    }
+    if (deleteCount < 0) {
+      throw new RangeError(`Tried to delete ${deleteCount} items.`);
     }
     
     this._adjustIndices(start, deleteCount, items);
@@ -468,9 +473,9 @@ export class ReactiveArray<InputType> {
     newItems: Array<TArrayValueType<InputType>> = [],
   ): void {
     for (const callback of this.#callbacks) {
-      queueMicrotask(() => {
+      // queueMicrotask(() => {
         callback(start, deleteCount, ...newItems);
-      });
+      // });
     }
   }
 
@@ -678,28 +683,180 @@ export class ReactiveArray<InputType> {
     return new ReactiveArray(...this.#value);
   }
 
+  // private static _reactiveNumberToPrimitive (
+  //   input: number | Readonly<ReactivePrimitive<number>>,
+  // ): number {
+  //   return Number(typeof input === "number" ? input : input.value);
+  // }
+
   /**
    * Similar to `Array::slice()`, except that it returns a readonly ReactiveArray, whose values are bound to the orignating array. Furthermore, if the orignating array gets items inserted or removed in the range of the spliced section (inclusive), those items will get inserted to the returned array as well. If you don't want this behavior, use `ReactiveArray.prototype.value.slice()` instead.
    * 
    * **Note:** `ReactiveArray::slice(0)` is not a suitable way to clone a reactive array. The output array is readonly, and values from the original array are piped into it. Use `ReactiveArray::clone()` instead.
    */
   slice (
-    start = 0,
-    end = this.#value.length - 1,
+    start: number | Readonly<ReactivePrimitive<number>> = 0,
+    end: number | Readonly<ReactivePrimitive<number>> = this.length,
   ): Readonly<ReactiveArray<TArrayValueType<InputType>>> {
-    const newArr = new ReactiveArray(
-      ...this.#value.slice(start, end),
+    //TODO: move this out
+    const reactiveOrPrimitiveNumberToPrimitive = (
+      input: number | Readonly<ReactivePrimitive<number>>,
+    ): number => {
+      let value = Number(typeof input === "number" ? input : input.value);
+      if (value < 0) {
+        value = this.length.value + value;
+      }
+      return value;
+    };
+
+    const range = [
+      reactiveOrPrimitiveNumberToPrimitive(start),
+      reactiveOrPrimitiveNumberToPrimitive(end),
+    ];
+    const slicedArray = new ReactiveArray<TArrayValueType<InputType>>(
+      // ...this.#value.slice(
+      //   ...range,
+      // ),
     );
+
+    // Works, I'm pretty sure
+    if (typeof start !== "number") {
+      start.bind(() => {
+        const [oldStart] = range;
+        const newStart = reactiveOrPrimitiveNumberToPrimitive(start);
+
+        if (newStart < oldStart) {
+          slicedArray.splice(
+            0,
+            0,
+            ...this.#value.slice(newStart, oldStart),
+          );
+        } else if (newStart > oldStart) {
+          console.log(`deleting ${newStart - oldStart}`);
+          slicedArray.splice(
+            0,
+            newStart - oldStart,
+          );
+        }
+  
+        range[0] = newStart;
+      });
+    }
+
+    // Works, I'm pretty sure
+    if (typeof end !== "number") {
+      end.bind(() => {
+        const [oldStart, oldEnd] = range;
+        const newEnd = reactiveOrPrimitiveNumberToPrimitive(end);
+  
+        if (newEnd < oldEnd && newEnd < this.length.value) {
+          console.log(`Soplicing (${newEnd - oldStart}, Infinity)`);
+          slicedArray.splice(
+            newEnd - oldStart,
+            Infinity,
+          );
+        } else if (newEnd > oldEnd) {
+          console.log(`splicing (${slicedArray.length.value}, 0, ${JSON.stringify(this.#value.slice(oldEnd, newEnd))})`);
+          slicedArray.splice(
+            slicedArray.length.value,
+            0,
+            ...this.#value.slice(oldEnd, newEnd),
+          );
+        }
+
+        range[1] = newEnd;
+      });
+    }
+
+    // This block is run when the parent array receives changes. Every change to the array is reported with the same parameters array::splice() would be called. So if something is changed from the parent array, it should be reflected in the child array, while keeping the range clamped to [start, end].
+    // Something is wrong with it.
     this.bind((
       index: number,
       deleteCount: number,
       ...values: Array<TArrayValueType<InputType>>
-    ) => newArr.splice(
-      index - start,
-      deleteCount,
-      ...values.slice(0, end - start - index),
-    ));
-    return newArr as Readonly<typeof newArr>;
+    ) => {
+      console.log("slice received update", {index, deleteCount, values});
+      const [start, end] = range;
+      const targetLength = end - start;
+      console.log({start, end, targetLength});
+      console.log({oldLength: slicedArray.length.value});
+
+      if (index >= end) return;
+      if (index + Math.max(deleteCount, values.length) < start) return;
+
+      const relativeStart = index - start;
+      const adjustment = Math.max(start - index, 0);
+      const adjustedIndex = Math.max(
+        0,
+        relativeStart,
+      );
+      const adjustedDeleteCount = Math.max(0, deleteCount - adjustment);
+      const insertedItems = values.slice(adjustment);
+      const newLength = slicedArray.value.length - adjustedDeleteCount + insertedItems.length;
+      const lengthDifference = newLength - targetLength;
+      if (newLength > targetLength) {
+        console.log("removing", -lengthDifference, lengthDifference);
+        insertedItems.splice(-lengthDifference, lengthDifference);
+      } else if (newLength < targetLength) {
+        console.log({start, newLength, lengthDifference});
+        console.log("adding in", start + newLength, start + newLength - lengthDifference);
+        insertedItems.push(...this.#value.slice(start + newLength, start + newLength - lengthDifference));
+      }
+      console.log({newLength, targetLength});
+      console.log(adjustedIndex, adjustedDeleteCount, insertedItems);
+      slicedArray.splice(
+        adjustedIndex,
+        adjustedDeleteCount,
+        ...insertedItems,
+      );
+      console.log("done");
+
+      // console.log(index < end, index, end, index + Math.max(deleteCount, values.length) > start, values.length);
+      // if (index < end && index + Math.max(deleteCount, values.length) > start) { // If change is not outside range of interest
+      //   const relativeStart = index - start;
+      //   const adjustedIndex = Math.min(
+      //     slicedArray.length.value,
+      //     Math.max(
+      //       0,
+      //       relativeStart,
+      //     ),
+      //   );
+      //   const adjustedDeleteCount = Math.max(0, deleteCount + relativeStart);
+      //   const oldLength = end - start;
+      //   // console.log(values);
+      //   console.log({
+      //     index,
+      //     start,
+      //     end,
+      //     relativeStart,
+      //     adjustedIndex,
+      //     values,
+      //     parentArrayLength: this.#value.length,
+      //     slicedArrayLength: slicedArray.length.value,
+      //     slicedArrayItems: JSON.stringify(slicedArray.value),
+      //     parentArrayItems: JSON.stringify(this.value),
+      //   });
+      //   const insertedItems = values.slice(Math.max(0, -relativeStart));
+      //   console.log(JSON.stringify(insertedItems));
+      //   const newLength = slicedArray.length.value - adjustedDeleteCount + insertedItems.length;
+      //   const deltaLength = newLength - oldLength;
+      //   if (deltaLength > 0) { // Too many items, remove some
+      //     console.log(`Too many items, removing ${-deltaLength}, because ${newLength} - ${oldLength}`);
+      //     insertedItems.splice(-deltaLength, Infinity);
+      //   } else if (deltaLength < 0 && end < this.#value.length) { // Too few items, add some if there are any to add
+      //     insertedItems.push(...this.#value.slice(end + deltaLength, end));
+      //   }
+      //   console.log(JSON.stringify(insertedItems));
+      //   slicedArray.splice(
+      //     adjustedIndex,
+      //     adjustedDeleteCount,
+      //     ...insertedItems,
+      //   );
+
+      // }
+    });
+  
+    return slicedArray as Readonly<typeof slicedArray>;
   }
 
   /**

@@ -34,6 +34,16 @@ export class TabView extends DestinyElement {
       title: "Windowing demo",
       content: new URL("./window-manager/_window-manager.js", import.meta.url).href,
     },
+    {
+      path: "/filter-demo",
+      title: "Filter demo",
+      content: new URL("./filter-demo.js", import.meta.url).href,
+    },
+    {
+      path: "/slice-tests",
+      title: "Slice tests",
+      content: new URL("./slice-tests.js", import.meta.url).href,
+    },
   ];
 
   connectedCallback (): void {

@@ -146,9 +146,9 @@ export class ReactivePrimitive<T> {
     const newRef = new ReactivePrimitive(currentValue());
     refs.forEach(
       ref => ref.bind(
-        () => queueMicrotask(
+        // () => queueMicrotask(
           () => newRef.value = currentValue(),
-        ),
+        // ),
         true,
       ),
     );
