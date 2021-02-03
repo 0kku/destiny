@@ -64,8 +64,10 @@ async function compileFileOrDir (fileOrDir: string): Promise<void> {
       console.info(`mkdir ${dir}`)
     }
   } catch (err) {
-    // most likely the dir already exists. if so, thats ok.
-    // TODO :: Check instance of error. If it's file already exists error then thats ok, we can pass. Else throw an error because we aren't expecting anything else
+    // most likely the dir already exists. if so, thats ok. Otherwise, it's an unexpected error
+    if (err instanceof Deno.errors.AlreadyExists === false) {
+      throw err
+    }
   }
 }
 
