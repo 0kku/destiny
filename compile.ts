@@ -1,4 +1,4 @@
-import { walkSync } from "./deps.ts"
+import { walkSync, existsSync } from "./deps.ts"
 const rootDir = "src"
 const outDir = "dist"
 const encoder = new TextEncoder()
@@ -43,8 +43,9 @@ async function compileFileOrDir (fileOrDir: string): Promise<void> {
   console.info(`create ${prettyPath}`)
 }
 
-// get dirs we need to create, and create them so they exist when we bundle the files from `src` into `dist`
+// Keep variables out of scope
 {
+  // get dirs we need to create, and create them so they exist when we bundle the files from `src` into `dist`
   const dirs: string[] = []
   for (const entry of walkSync(rootDir)) {
     if (entry.isDirectory) {
@@ -68,19 +69,19 @@ async function compileFileOrDir (fileOrDir: string): Promise<void> {
   }
 }
 
-{
 // Bundle the files
-  for (const entry of walkSync(rootDir)) {
-    if (entry.isFile === false) {
-      continue // We only want to compile files
-    }
-    // TODO :: We could probably move this out of the loop, and just use `rootDir` instead of `entry.path` right? Im assuming this will return every file in the src dir
-
-    // TODO :: Check if that file already exists, if it does the we dont nneed to compile it again
-    //await compileFileOrDir(entry.path)
+for (const entry of walkSync(rootDir)) {
+  if (entry.isFile === false) {
+    continue // We only want to compile files
+  }
+  const outPath = entry.path.replace(rootDir, outDir).replace(".ts", ".ts.js")
+  // Only compile the file if it isn't already compiled
+  if (existsSync(outPath) === false) {
+    await compileFileOrDir(entry.path)
   }
 }
 
+// --watch support
 const args = Deno.args
 if (args.includes("--watch")) {
   console.info("Watching...\n")
