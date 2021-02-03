@@ -3,16 +3,18 @@
   "description": "A reactive UI library for JavaScript and TypeScript.",
   "version": "0.4.0",
   "main": "./dist/examples/main.js",
-  "dependencies": {},
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.4.1",
     "@typescript-eslint/parser": "^4.4.1",
-    "eslint": "^7.11.0"
+    "eslint": "^7.11.0",
+    "typescript": "^4.1.0-dev.20201016"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "deno run --allow-read --allow-write --unstable compile.ts",
-    "watch": "deno run --allow-read --allow-write --unstable compile.ts --watch"
+    "watch": "deno run --allow-read --allow-write --unstable compile.ts --watch",
+    "lint:check": "node_modules/.bin/eslint .",
+    "lint:fix": "node_modules/.bin/eslint --fix ."
   },
   "keywords": [],
   "repository": "https://github.com/0kku/destiny",
