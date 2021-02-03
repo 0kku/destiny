@@ -2,38 +2,38 @@ import { walkSync } from "./deps.ts"
 const rootDir = "src"
 const outDir = "dist"
 
-// get dirs we need to create
-const dirs: string[] = []
-for (const entry of walkSync(rootDir)) {
-  if (entry.isDirectory) {
-    if (entry.name === rootDir) {
-      continue
+// get dirs we need to create, and create them so they exist when we bundle the files from `src` into `dist`
+{
+  const dirs: string[] = []
+  for (const entry of walkSync(rootDir)) {
+    if (entry.isDirectory) {
+      if (entry.name === rootDir) {
+        continue
+      }
+      const dir = entry.path.replace(rootDir, outDir)
+      dirs.push(dir)
     }
-    const dir = entry.path.replace(rootDir, outDir)
-    dirs.push(dir)
   }
-}
-
-// Make those dirs so we can move the bundled files across
-try {
-  Deno.mkdirSync(outDir)
-  console.info(`mkdir ${outDir}`)
-} catch (e) {
-  // ...
-}
-for (const dir of dirs) {
   try {
-    Deno.mkdirSync(dir)
-    console.info(`mkdir ${dir}`)
-  } catch (e) {
-    // ...
+    Deno.mkdirSync(outDir)
+    console.info(`mkdir ${outDir}`)
+    for (const dir of dirs) {
+      Deno.mkdirSync(dir)
+      console.info(`mkdir ${dir}`)
+    }
+  } catch (err) {
+    // most likely the dir already exists. if so, thats ok.
+    // TODO :: Check instance of error. If it's file already exists error then thats ok, we can pass. Else throw an error because we aren't expecting anything else
   }
 }
 
+{
 // Bundle the files
-const cwd = Deno.cwd()
-for (const entry of walkSync(rootDir)) {
-  if (entry.isFile === true) {
+  const cwd = Deno.cwd()
+  for (const entry of walkSync(rootDir)) {
+    if (entry.isFile === false) {
+      continue // We only want to compile files
+    }
     const {files} = await Deno.emit(entry.path, {
       compilerOptions: {
         declaration: true,
