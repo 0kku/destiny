@@ -456,11 +456,12 @@ export class ReactiveArray<InputType> {
     ...items: Array<InputType | TArrayValueType<InputType>>
   ): Array<TArrayValueType<InputType>> {
         //@ts-ignore temp
-    console.log("Splice being dispatched, callbacks: ", [...this.#callbacks], "on array type: ", this.#description);
-    console.log({start, deleteCount, items: JSON.stringify(items)});
-    console.log({currentArray: JSON.stringify(this.#value)});
+    // console.log("Splice being dispatched, callbacks: ", [...this.#callbacks], "on array type: ", this.#description);
+    // console.log({start, deleteCount, items: JSON.stringify(items)});
+    // console.log({currentArray: JSON.stringify(this.#value)});
     if (start > this.#value.length) {
-      throw new RangeError(`Out of bounds assignment: tried to assign to index ${start}, but array length was only ${this.#value.length}. Sparse arrays are not allowed. Consider using .push() instead.`);
+      start = this.#value.length;
+      // throw new RangeError(`Out of bounds assignment: tried to assign to index ${start}, but array length was only ${this.#value.length}. Sparse arrays are not allowed. Consider using .push() instead.`);
     }
     if (deleteCount < 0) {
       throw new RangeError(`Tried to delete ${deleteCount} items.`);
@@ -715,18 +716,25 @@ export class ReactiveArray<InputType> {
     start: number | Readonly<ReactivePrimitive<number>> = 0,
     end: number | Readonly<ReactivePrimitive<number>> = Infinity,
   ): Readonly<ReactiveArray<TArrayValueType<InputType>>> {
-    console.log("Adding slice to ", [...this.value]);
+    // console.log("Adding slice to ", [...this.value]);
     this.#description = "source";
     //TODO: move this out
     const reactiveOrPrimitiveNumberToPrimitive = (
       input: number | Readonly<ReactivePrimitive<number>>,
     ): number => {
-      let value = Number(typeof input === "number" ? input : input.value);
-      if (value < 0) {
-        value = Math.max(0, this.length.value + value + 1);
-      }
+      const value = Number(typeof input === "number" ? input : input.value);
+      // if (value < 0) {
+      //   value = Math.max(0, this.length.value + value + 1);
+      // }
       // return Math.min(value, this.length.value + 1);
       return value;
+    };
+
+    const normalizeNumber = (
+      input: number,
+    ): number => {
+      console.log("normalized", this.length.value, input, "result", input < 0 ? this.length.value + input : input);
+      return input < 0 ? this.length.value + input : input;
     };
 
     const range = [
@@ -743,8 +751,8 @@ export class ReactiveArray<InputType> {
     // Works, I'm pretty sure
     if (typeof start !== "number") {
       start.bind(() => {
-        const [oldStart] = range;
-        const newStart = reactiveOrPrimitiveNumberToPrimitive(start);
+        const oldStart = normalizeNumber(range[0]);
+        const newStart = normalizeNumber(reactiveOrPrimitiveNumberToPrimitive(start));
 
         if (newStart < oldStart) {
           slicedArray.splice(
@@ -767,8 +775,8 @@ export class ReactiveArray<InputType> {
     // Works, I'm pretty sure
     if (typeof end !== "number") {
       end.bind(() => {
-        const [oldStart, oldEnd] = range;
-        const newEnd = reactiveOrPrimitiveNumberToPrimitive(end);
+        const [oldStart, oldEnd] = range.map(normalizeNumber);
+        const newEnd = normalizeNumber(reactiveOrPrimitiveNumberToPrimitive(end));
   
         if (newEnd < oldEnd && newEnd < this.length.value) {
           console.log(`Soplicing (${newEnd - oldStart}, Infinity)`);
@@ -796,32 +804,255 @@ export class ReactiveArray<InputType> {
       deleteCount: number,
       ...values: Array<TArrayValueType<InputType>>
     ) => {
-      console.warn("slice received update", {index, deleteCount, values: JSON.stringify(values)});
-      console.log("sliced array at start", JSON.stringify(slicedArray.value));
-      const [start, end] = range;
+      // console.warn("slice received update", {index, deleteCount, values: JSON.stringify(values)});
+      // console.log("sliced array at start", JSON.stringify(slicedArray.value));
+      console.warn(
+        "Received event", index, deleteCount, values.length,
+        "len", this.length.value, JSON.stringify(range), JSON.stringify(range.map(normalizeNumber))
+      );
+      const [origStart, origEnd] = range;
+      const movement = values.length - deleteCount;
+      const startChange = origStart < 0 ? movement : 0;
+      const endChange = origEnd < 0 ? movement : 0;
+      const [start, end] = range.map(normalizeNumber);
       const targetLength = Math.min(end, this.length.value) - start;
-      console.log({start, end, targetLength});
-      console.log({oldLength: slicedArray.length.value});
-
+      // console.log({start, end, targetLength});
+      // console.log({oldLength: slicedArray.length.value});
+      //<OK>
+      // console.log("END", end, index);
       if (index >= end) return;
       if (deleteCount === values.length && index + deleteCount < start) return;
-      if (end < start) {
+      if (end <= start || this.length.value === 0 || end <= 0) {
         if (slicedArray.length.value) {
           slicedArray.splice(0, Infinity);
         }
         return;
       }
-      if (index < start) {
-        const adjustedDeleteCount = deleteCount - values.length;
-        if (deleteCount > 0) {
-          slicedArray.splice(0, adjustedDeleteCount);
-        } else {
-          console.log("adding", start + adjustedDeleteCount, start, "::", ...this.value.slice(start + adjustedDeleteCount, start));
-          slicedArray.splice(0, 0, ...this.value.slice(start + adjustedDeleteCount + 1, start + 1));
+      //</OK>
+
+      if (startChange > 0) {
+        slicedArray.splice(0, movement);
+        // slicedArray.splice() FIX END
+      } else if (startChange < 0) {
+        if (this.length.value - movement > slicedArray.length.value) {
+          slicedArray.splice(
+            0,
+            0,
+            ...this.value.slice(start, start + movement),
+          );
         }
-      } else {
-        slicedArray.splice(index - start, deleteCount, ...values);
       }
+
+
+
+
+
+
+
+
+
+
+      if (origStart < 0 && origEnd < 0) { // Both negative
+        console.log("Both negative");
+        //
+        const thisLength = this.value.length;
+        const adjustedStart = thisLength - origStart; // convert negative index to positive
+        const adjustedEnd = thisLength - origEnd;     // convert negative index to positive
+        const targetLength = adjustedEnd - adjustedStart;
+        const deltaLength = values.length - deleteCount;
+        console.log(index, adjustedEnd);
+        if (index < adjustedEnd) { // change started 
+          console.log("index < adjustedEnd");
+          if (deltaLength < 0) { // length didn't change
+            console.log("shrank");
+            slicedArray.splice(
+              deltaLength,
+              Infinity,
+            );
+            if ( // ?
+              slicedArray.value.length < targetLength // currently too short
+              && this.#value.length + origEnd > slicedArray.length.value
+            ) {
+              slicedArray.splice(
+                0,
+                0,
+                ...this.value.slice(
+                  -(slicedArray.length.value - origEnd) - (targetLength - slicedArray.length.value),
+                  -(slicedArray.length.value - origEnd),
+                ),
+              );
+            } else { // ? 
+              // TODO
+            }
+          } else { // length did change
+
+          }
+        } else {
+          // change was outside the range, nothing needs to be done
+        }
+      } else if (origStart < 0) { // (-1, 1)
+        const thisLength = this.value.length;
+        const deltaLength = values.length - deleteCount;
+        const adjustedStart = thisLength + origStart;
+        const adjustedEnd = Math.min(origEnd, thisLength);
+        const targetLength = adjustedEnd - adjustedStart;
+        console.log({
+          thisLength,
+          adjustedStart,
+          adjustedEnd,
+          targetLength,
+          deltaLength,
+        });
+        
+        if (index < adjustedStart) {
+          slicedArray.splice(
+            0,
+            Math.max(0, deleteCount - adjustedStart),
+            ...this.value.slice(
+              adjustedStart, 
+              adjustedStart + (targetLength - slicedArray.value.length),
+            ),
+          );
+        } else { // change after start 
+          // TODO: (-1, 1) change after start
+        }
+      } else if (origEnd < 0) { // (1, -1)
+        //
+      } else { // (1, 1)
+        console.log("both positive");
+        const targetLength = origEnd - origStart;
+        const deltaLength = values.length - deleteCount;
+        console.table({origStart, origEnd, index, targetLength, deltaLength, values, deleteCount});
+        if (index < origStart) {
+          if (deltaLength < 0) { // shrank
+            slicedArray.splice(0, -1 * deltaLength);
+            const slicedArrayLength = slicedArray.value.length;
+            if (
+              slicedArrayLength < targetLength // too short
+              && this.value.length - index > slicedArrayLength // we have something we can add
+            ) {
+              const slicedArrayEndPositionRelativeToOriginal = origStart + slicedArrayLength;
+              slicedArray.splice(
+                Infinity,
+                0,
+                ...this.value.slice(
+                  slicedArrayEndPositionRelativeToOriginal,
+                  slicedArrayEndPositionRelativeToOriginal + (targetLength - slicedArrayLength),
+                ),
+              );
+            }
+          } else if (deltaLength > 0) { // expanded
+            console.log("expanded!");
+            const slicedArrayStartPositionRelativeToOriginal = origStart - index;
+            // console.log(
+            //   slicedArrayStartPositionRelativeToOriginal,
+            //   slicedArrayStartPositionRelativeToOriginal + (deltaLength - slicedArrayStartPositionRelativeToOriginal),
+            // );
+            slicedArray.splice(
+              0,
+              0, 
+              ...this.value.slice(
+                slicedArrayStartPositionRelativeToOriginal,
+                slicedArrayStartPositionRelativeToOriginal + deltaLength,
+              ),
+            );
+
+            const slicedArrayLength = slicedArray.value.length;
+            if (slicedArrayLength > targetLength) {
+              slicedArray.splice(
+                targetLength,
+                Infinity,
+              );
+            }
+          } else { // length remained unaffected
+            // Change didn't affect target array 
+          }
+        } else if (index >= origStart && index < origEnd) {
+          const editAt = index - origStart;
+          const addedItems = (
+            (editAt + values.length <= targetLength)
+            ? values
+            : values.slice(0, targetLength - editAt)
+          );
+          const deletedItems = (
+            (editAt + values.length >= targetLength)
+            ? Infinity
+            : deleteCount
+          );
+          slicedArray.splice(
+            editAt,
+            deletedItems,
+            ...addedItems,
+          );
+        } else {
+          // Change didn't affect target array
+        }
+      }
+
+
+
+
+
+
+
+
+
+
+
+      // console.log("i", index, "s", start, "e", end, origStart, origEnd);
+      // if (index < start) {
+      //   const movement = values.length - deleteCount;
+      //   if (movement < 0) {
+      //     slicedArray.splice(0, -movement);
+      //   } else {
+      //     slicedArray.splice(
+      //       0,
+      //       0,
+      //       ...this.value.slice(start, start + movement),
+      //     );
+      //   }
+      // } else {
+      //   // const adjustedDeleteCount = deleteCount + 
+      //   slicedArray.splice(index - start, deleteCount, ...values);
+          
+      //   const length = slicedArray.length.value;
+      //   const lengthDifference = length - targetLength;
+      //   console.log(lengthDifference);
+      //   if (lengthDifference < 0) {
+      //     console.log("LENGTH ADJUSTED");
+      //     // const endPosition = start + length;
+      //     slicedArray.splice(
+      //       length,
+      //       0,
+      //       ...this.value.slice(
+      //         start, 
+      //         start - lengthDifference,
+      //       ),
+      //     );
+      //   }
+      // }
+
+      // const length = slicedArray.length.value;
+      // const lengthDifference = length - targetLength;
+      // if (lengthDifference > 0) {
+      //   slicedArray.splice(
+      //     -lengthDifference,
+      //     lengthDifference,
+      //   );
+      // } else if (lengthDifference < 0) {
+      //   const endPosition = start + length;
+      //   slicedArray.splice(
+      //     length,
+      //     0,
+      //     ...this.value.slice(
+      //       endPosition, 
+      //       endPosition - lengthDifference,
+      //     ),
+      //   );
+      // }
+      console.warn("DONE");
+      // console.log("sliced array at end", JSON.stringify(slicedArray.value));
+      // console.log("Done with updating sliced array after event received");
 
       // const relativeStart = index - start;
       // const adjustment = Math.max(start - index, 0);
@@ -850,27 +1081,6 @@ export class ReactiveArray<InputType> {
       //   adjustedDeleteCount,
       //   ...insertedItems,
       // );
-
-      const length = slicedArray.length.value;
-      const lengthDifference = length - targetLength;
-      if (lengthDifference > 0) {
-        slicedArray.splice(
-          -lengthDifference,
-          lengthDifference,
-        );
-      } else if (lengthDifference < 0) {
-        const endPosition = start + length;
-        slicedArray.splice(
-          length,
-          0,
-          ...this.value.slice(
-            endPosition, 
-            endPosition - lengthDifference,
-          ),
-        );
-      }
-      console.log("sliced array at end", JSON.stringify(slicedArray.value));
-      console.log("Done with updating sliced array after event received");
 
       // console.log(index < end, index, end, index + Math.max(deleteCount, values.length) > start, values.length);
       // if (index < end && index + Math.max(deleteCount, values.length) > start) { // If change is not outside range of interest
@@ -917,7 +1127,7 @@ export class ReactiveArray<InputType> {
       // }
     });
     
-    console.log("Slice added, callbacks: ", [...this.#callbacks]);
+    // console.log("Slice added, callbacks: ", [...this.#callbacks]);
   
     return slicedArray as Readonly<typeof slicedArray>;
   }

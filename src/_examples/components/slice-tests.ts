@@ -4,28 +4,39 @@ export class SliceTests extends DestinyElement {
   #originalArray = [1, 2, 3, 4] as const;
 
   #slices = [
-    [0],
-    [0, 2],
-    [2, 3],
-    [2, 4],
-    [3, 2],
-    [2],
-    [3],
-    [-2],
-    [-1, -2],
-    [-2, -1],
-    [0, -100],
-    [-100, 0],
-    [-100, -100],
-    [0, 100],
-    [100, 0],
-    [100, 100],
+    // // positive positive
+    // [0],
+    // [0, 2],
+    // [2, 3],
+    // [2, 4],
+    // [3, 2],
+    // [2],
+    // [3],
+    // [0, 100],
+    // [100, 0],
+    // [100, 100],
+    // // negative positive
+    // [-2],
+    // [-1],
+    // [-100, 0],
+    // // positive negative
+    // [1, -1]
+    // [0, -3]
+    // [0, -100],
+    // // negative negative
+    // [-1, -2],
+    // [-1, -3],
+    // [-2, -1],
+    [-3, -1],
+    // [-100, -100],
   ] as const;
 
   #splices = [
     undefined,
-    [0, 0],
-    [0, 0, 5],
+    // [0, 0],
+    // [0, 0, 5],
+    // [0, 0, 5, 6],
+    // [0, 0, 5, 6, 7, 8],
     // [0, 2, 5],
     // [0, 5, 5],
     // [0, 10, 5],
@@ -86,9 +97,9 @@ export class SliceTests extends DestinyElement {
         const reactiveSourceArray = reactive(this.#originalArray as unknown as Array<number>);
         const reactiveSlicedArray = reactiveSourceArray.slice(...slice);
         if (splice) {
-          console.log("reactiveSlicedArray before splice", JSON.stringify(reactiveSlicedArray.value));
+          // console.log("reactiveSlicedArray before splice", JSON.stringify(reactiveSlicedArray.value));
           reactiveSourceArray.splice(...splice);
-          console.log("reactiveSlicedArray after splice", JSON.stringify(reactiveSlicedArray.value));
+          // console.log("reactiveSlicedArray after splice", JSON.stringify(reactiveSlicedArray.value));
         }
 
         try {
