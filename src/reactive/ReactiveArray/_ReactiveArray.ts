@@ -1,11 +1,11 @@
 import { ReactivePrimitive } from "../../mod.js";
-import { reactiveArrayProxyConfig } from "./reactiveArrayProxyConfig.js";
 import { makeNonPrimitiveItemsReactive } from "./makeNonPrimitiveItemsReactive.js";
 import { NotImplementedError } from "../../utils/NotImplementedError.js";
+import { updateFilteredArray } from "./updateFilteredArray.js";
+import { Indexable } from "./Indexable.js";
 import type { TReactiveArrayCallback } from "../types/IReactiveArrayCallback.js";
 import type { TArrayValueType } from "../types/IArrayValueType.js";
 import type { TReactiveEntity } from "../types/IReactiveEntity.js";
-import { updateFilteredArray } from "./updateFilteredArray.js";
 
 type TArrayUpdateArguments<T> = [
   startEditingAt: number, 
@@ -23,10 +23,7 @@ export type TMask = Array<TMaskEntry>;
 /**
  * `ReactiveArray`s are reactive values that contain multiple values which can be updated and whose updates can be listened to. In general, `ReactiveArray`s behave very similar to native `Array`s. The main difference is, that most primitive values are given as `ReactivePrimitive`s and any immutable methods will return a new readonly `ReactiveArray`, whose values are tied to the original `ReactiveArray`. The class also provides a few custom convenience methods.
  */
-export class ReactiveArray<InputType> {
-  /** The keys are enabled by the Proxy defined in the constructor */
-  [key: number]: TArrayValueType<InputType>;
-
+export class ReactiveArray<InputType> extends Indexable<InputType> {
   /** An Array containing the current values of the ReactiveArray */
   readonly #value: Array<TArrayValueType<InputType>>;
 
@@ -42,6 +39,8 @@ export class ReactiveArray<InputType> {
   constructor (
     ...input: Array<InputType>
   ) {
+    super();
+
     this.#value = makeNonPrimitiveItemsReactive(
       input,
       this,
@@ -52,11 +51,6 @@ export class ReactiveArray<InputType> {
     );
     this.#indices = input.map(
       (_, i) => new ReactivePrimitive(i),
-    );
-
-    return new Proxy(
-      this,
-      reactiveArrayProxyConfig,
     );
   }
 
@@ -144,10 +138,10 @@ export class ReactiveArray<InputType> {
   set (
     index: number,
     value: InputType,
-  ): InputType {
+  ): this {
     this.splice(index, 1, value);
 
-    return value;
+    return this;
   }
 
   /**
@@ -467,6 +461,7 @@ export class ReactiveArray<InputType> {
     deleteCount: number,
     newItems: Array<TArrayValueType<InputType>> = [],
   ): void {
+    console.log("update event", start, deleteCount, newItems);
     for (const callback of this.#callbacks) {
       queueMicrotask(() => {
         callback(start, deleteCount, ...newItems);
