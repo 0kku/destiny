@@ -463,9 +463,7 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
   ): void {
     console.log("update event", start, deleteCount, newItems);
     for (const callback of this.#callbacks) {
-      queueMicrotask(() => {
-        callback(start, deleteCount, ...newItems);
-      });
+      callback(start, deleteCount, ...newItems);
     }
   }
 
@@ -547,6 +545,16 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
     });
 
     this.bind((start, deletes, ...items) => {
+      console.log("Change", start, deletes, ...items);
+      if (deletes === 0 && items.length === 0) {
+        updateFilteredArray(
+          callback,
+          this.#value,
+          filteredArray,
+          maskArray,
+        );
+      }
+
       const lastInMask = maskArray.slice(0, start).reverse().find(v => v.show);
       const newItems: Array<TArrayValueType<InputType>> = [];
       let currentIndex = (lastInMask?.index ?? -1);
