@@ -1,4 +1,5 @@
 import { ReactivePrimitive } from "../../../mod.js";
+import { computed } from "/dist/reactive/computed.js";
 
 export function resolveAttributeValue (
   val: Array<{
@@ -34,11 +35,10 @@ export function resolveAttributeValue (
     });
 
     if (resolvedValue.items.length) {
-      attrVal = ReactivePrimitive.from(
-        (...args) => resolvedValue.trailings.reduce(
-          (a, v, i) => a + String(args[i]) + v,
+      attrVal = computed(
+        () => resolvedValue.trailings.reduce(
+          (a, v, i) => a + String(resolvedValue.items[i].value) + v,
         ),
-        ...resolvedValue.items,
       );
     } else {
       attrVal = resolvedValue.trailings[0];

@@ -6,6 +6,7 @@ import { Indexable } from "./Indexable.js";
 import type { TReactiveArrayCallback } from "../types/IReactiveArrayCallback.js";
 import type { TArrayValueType } from "../types/IArrayValueType.js";
 import type { TReactiveEntity } from "../types/IReactiveEntity.js";
+import { computed, computeFunction } from "../computed.js";
 
 type TArrayUpdateArguments<T> = [
   startEditingAt: number, 
@@ -25,7 +26,15 @@ export type TMask = Array<TMaskEntry>;
  */
 export class ReactiveArray<InputType> extends Indexable<InputType> {
   /** An Array containing the current values of the ReactiveArray */
-  readonly #value: Array<TArrayValueType<InputType>>;
+  // readonly #value: Array<TArrayValueType<InputType>>;
+  readonly #__value: Array<TArrayValueType<InputType>>;
+  get #value (): Array<TArrayValueType<InputType>> {
+    if (computeFunction.current) {
+      this.#callbacks.add(computeFunction.current);
+    }
+
+    return this.#__value;
+  }
 
   /** An Array containing ReactivePrimitives for each index of the ReactiveArray */
   readonly #indices: Array<ReactivePrimitive<number>>;
@@ -41,14 +50,11 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
   ) {
     super();
 
-    this.#value = makeNonPrimitiveItemsReactive(
+    this.#__value = makeNonPrimitiveItemsReactive(
       input,
       this,
     );
-    this.#length = ReactivePrimitive.from(
-      () => this.#value.length,
-      this,
-    );
+    this.#length = computed(() => this.#value.length);
     this.#indices = input.map(
       (_, i) => new ReactivePrimitive(i),
     );

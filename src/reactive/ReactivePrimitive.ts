@@ -1,13 +1,4 @@
-import type { ReactiveArray } from "../mod.js";
-
-type TUnwrap<T> = (
-  T extends ReactivePrimitive<infer U> ? U :
-  T extends ReactiveArray<infer U>     ? U :
-  never
-);
-// type TUnwrapAll<T> = {
-//   [K in keyof T]: TUnwrap<T[K]>
-// };
+import { computed, computeFunction } from "./computed.js";
 
 /**
  * `ReactivePrimitive`s are reactive values that contain a single value which can be updated and whose updates can be listened to.
@@ -43,7 +34,7 @@ export class ReactivePrimitive<T> {
   }
 
   get [Symbol.toStringTag] (): string {
-    return `Destiny<${typeof this.#value}>`;
+    return `ReactivePrimitive<${typeof this.#value}>`;
   }
 
   /**
@@ -77,7 +68,7 @@ export class ReactivePrimitive<T> {
     noFirstCall = false,
   ): this {
     this.#callbacks.add(callback);
-    if (!noFirstCall) callback(this.#value);
+    if (!noFirstCall) callback(this.value);
     return this;
   }
 
@@ -116,41 +107,11 @@ export class ReactivePrimitive<T> {
   }
 
   get value (): T {
+    if (computeFunction.current) {
+      this.#callbacks.add(computeFunction.current);
+    }
+
     return this.#value;
-  }
-
-  /**
-   * Creates a new `ReactivePrimitive` from a callback and n other ReactivePrimitive(s) and/or ReactiveArray(s).
-   * @param updater A callback function that is called when any of the reactive input items are updated. The return value of this function determines the value of the returned `ReactivePrimitive`.
-   * @param refs One or more `ReactivePrimitive`s or `ReactiveArray`s which are to be piped into a new one.
-   */
-  static from<
-    TParams extends Array<ReactivePrimitive<any> | ReactiveArray<any>>,
-    TReturn,
-  > (
-    updater: (...values: {
-      [K in keyof TParams]: TUnwrap<TParams[K]>;
-    }) => TReturn,
-    ...refs: TParams
-  ): Readonly<ReactivePrimitive<TReturn>> {
-    type TUnwrappedParams = Parameters<typeof updater>;
-
-    const currentValue = () => updater(
-      ...refs.map(
-        // This is fine. The type is not known and isn't a concern at this step.
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        v => v.value,
-      ) as TUnwrappedParams,
-    );
-
-    const newRef = new ReactivePrimitive(currentValue());
-    refs.forEach(
-      ref => ref.bind(
-        () => newRef.value = currentValue(),
-        true,
-      ),
-    );
-    return newRef;
   }
 
   /**
@@ -160,10 +121,7 @@ export class ReactivePrimitive<T> {
   pipe <K> (
     callback: (value: T) => K,
   ): Readonly<ReactivePrimitive<K>> {
-    return ReactivePrimitive.from(
-      callback,
-      this,
-    );
+    return computed(() => callback(this.value));
   }
 
   truthy<T> (
@@ -209,17 +167,3 @@ export class ReactivePrimitive<T> {
     return this.pipe(v => condition(v) ? yes : no);
   }
 }
-
-// const a = new ReactivePrimitive(3);
-// const b = new ReactivePrimitive("6");
-// const d = new ReactiveArray(["7", "8"]);
-// const c = ReactivePrimitive.from(
-//   (a, b, d) => a + b,
-//   a,
-//   b,
-//   d
-// );
-// console.log(a.value, b.value, c.value); //3, 6, 9
-// a.value++;
-// b.value = "38";
-// console.log(a.value, b.value, c.value); //4, 38, 42

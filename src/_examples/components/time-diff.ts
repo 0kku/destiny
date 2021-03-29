@@ -1,4 +1,4 @@
-import { Component, xml, reactive, expression } from "/dist/mod.js";
+import { Component, xml, reactive, computed } from "/dist/mod.js";
 
 function formatTimeFragment (
   input: number,
@@ -56,9 +56,9 @@ export class TimeDiff extends Component {
           />
         </label>
         <br />
-        Duration of "${task.name}": ${expression`
-          ${formatTime}(Number(${task.end}) - Number(${task.start}))
-        `}
+        Duration of "${task.name}": ${computed(() => 
+          formatTime(Number(task.end.value) - Number(task.start.value))
+        )}
       </div>`
     )}
     <input
