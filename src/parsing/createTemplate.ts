@@ -11,7 +11,6 @@ import type { TParseResult } from "./TParseResult.js";
 export function createTemplate (
   [first, ...strings]: TemplateStringsArray,
   props: Array<unknown>,
-  parser: "html" | "xml",
 ): TParseResult {
   let string = first;
   const tagProps = new Map<number, unknown>();
@@ -39,7 +38,7 @@ export function createTemplate (
     }
   }
   
-  const templateElement = parseString(string, parser);
+  const templateElement = parseString(string);
 
   resolveSlots(templateElement);
 

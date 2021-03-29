@@ -30,11 +30,10 @@ function getFromCache (
 export function parser (
   strings: TemplateStringsArray,
   props: Array<unknown>,
-  parser: "xml" | "html",
 ): TemplateResult {
   const template = getFromCache(
     strings,
-    () => createTemplate(strings, props, parser),
+    () => createTemplate(strings, props),
     props,
   );
 

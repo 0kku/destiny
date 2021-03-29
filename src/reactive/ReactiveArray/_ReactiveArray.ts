@@ -461,7 +461,6 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
     deleteCount: number,
     newItems: Array<TArrayValueType<InputType>> = [],
   ): void {
-    console.log("update event", start, deleteCount, newItems);
     for (const callback of this.#callbacks) {
       callback(start, deleteCount, ...newItems);
     }
@@ -545,7 +544,6 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
     });
 
     this.bind((start, deletes, ...items) => {
-      console.log("Change", start, deletes, ...items);
       if (deletes === 0 && items.length === 0) {
         updateFilteredArray(
           callback,
