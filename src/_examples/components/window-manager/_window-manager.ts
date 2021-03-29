@@ -1,4 +1,4 @@
-import { DestinyElement, xml, reactive, ReactivePrimitive } from "/dist/mod.js";
+import { Component, xml, reactive, ReactivePrimitive } from "/dist/mod.js";
 
 import { Window } from "./window.js";
 import type { TWindow } from "./TWindow";
@@ -7,7 +7,7 @@ import type { TWindow } from "./TWindow";
 type TDirection = "n" | "s" | "e" | "w" | "ne" | "se" | "sw" | "nw";
 const directions = ["s", "n", "e", "w"] as const;
 
-export class WindowManager extends DestinyElement {
+export class WindowManager extends Component {
   #windows: Array<TWindow> = [
     {
       header: "Foo",

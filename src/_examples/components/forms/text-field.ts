@@ -1,9 +1,9 @@
-import { DestinyElement, xml, Ref } from "/dist/mod.js";
+import { Component, xml, Ref } from "/dist/mod.js";
 
 /**
  * An example of a component that forwards its props to a child.
  */
-export class TextField extends DestinyElement {
+export class TextField extends Component {
   forwardProps = new Ref;
   static captureProps = true;
 

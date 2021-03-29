@@ -1,4 +1,4 @@
-import { DestinyElement, xml, reactive, expression } from "/dist/mod.js";
+import { Component, xml, reactive, expression } from "/dist/mod.js";
 
 function formatTimeFragment (
   input: number,
@@ -28,7 +28,7 @@ function createTask () {
   };
 }
 
-export class TimeDiff extends DestinyElement {
+export class TimeDiff extends Component {
   #tasks = reactive([createTask()]); //initialize an array of tasks, with one task in it
 
   template = xml`

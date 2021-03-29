@@ -1,6 +1,6 @@
-import { DestinyElement, xml, reactive } from "/dist/mod.js";
+import { Component, xml, reactive } from "/dist/mod.js";
 
-export class VisitorDemo extends DestinyElement {
+export class VisitorDemo extends Component {
   #who = reactive("visitor");
   #count = reactive(0);
   #timer = setInterval(() => {

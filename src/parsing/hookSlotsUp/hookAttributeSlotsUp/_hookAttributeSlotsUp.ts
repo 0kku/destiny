@@ -2,7 +2,7 @@ import { resolveSlotPositions } from "./resolveSlotPositions.js";
 import { resolveAttributeValue } from "./resolveAttributeValue.js";
 import { parseAttributeName } from "./parseAttributeName.js";
 import { assignElementData } from "./elementData/_assignElementData.js";
-import type { DestinyElement } from "../../../elementLogic/DestinyElement.js";
+import type { Component } from "../../../componentLogic/Component.js";
 import type { TElementData } from "./TElementData.js";
 
 /**
@@ -46,7 +46,7 @@ export function hookAttributeSlotsUp (
     
     if (captureProps) {
       queueMicrotask(() => {
-        (element as DestinyElement).assignedData = values;
+        (element as Component).assignedData = values;
       });
     } else {
       assignElementData(element, values);

@@ -1,7 +1,7 @@
-import { DestinyElement, xml } from "/dist/mod.js";
+import { Component, xml } from "/dist/mod.js";
 import type { TReactiveObject } from "/dist/mod.js";
 
-export class TaskItem extends DestinyElement<{
+export class TaskItem extends Component<{
   item: TReactiveObject<{
     title: string,
     done: boolean,

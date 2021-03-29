@@ -1,4 +1,4 @@
-import { DestinyElement, xml, reactive } from "/dist/mod.js";
+import { Component, xml, reactive } from "/dist/mod.js";
 
 const randomColor = () => (
   "#" + 
@@ -8,7 +8,7 @@ const randomColor = () => (
   .padStart(6, "0")
 );
 
-export class ArrayDemo extends DestinyElement {
+export class ArrayDemo extends Component {
   #items = reactive(Array.from({length: 256}, randomColor));
   frame = (): void => {
     const randomIndex = Math.floor(

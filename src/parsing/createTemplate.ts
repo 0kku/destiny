@@ -1,7 +1,7 @@
 import { parseString } from "./parseString.js";
 import { resolveSlots } from "./resolveSlots.js";
-import { isDestinyElement } from "../elementLogic/isDestinyElement.js";
-import { DestinyFallback } from "../elementLogic/DestinyFallback.js";
+import { isComponent } from "../componentLogic/isComponent.js";
+import { DestinyFallback } from "../componentLogic/DestinyFallback.js";
 import type { TParseResult } from "./TParseResult.js";
 
 /**
@@ -20,7 +20,7 @@ export function createTemplate (
 
     if (string.endsWith("<")) {
       tagProps.set(i, prop);
-      if (isDestinyElement(prop) && prop.captureProps) {
+      if (isComponent(prop) && prop.captureProps) {
         string += `${prop.register()} data-capture-props="true"${fragment}`;
       } else if (prop instanceof Promise) {
         string += `${DestinyFallback.register()} prop:for="__internal_${i}_" data-capture-props="true"${fragment}`;

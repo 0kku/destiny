@@ -1,6 +1,6 @@
 import { deferredElements } from "./deferredElements.js";
 import { TemplateResult } from "./TemplateResult.js";
-import type { DestinyElement } from "../elementLogic/DestinyElement.js";
+import type { Component } from "../componentLogic/Component.js";
 
 /** A counter for labling `Comment`s for `Slot`s. */
 let counter = 0;
@@ -60,7 +60,7 @@ export class Slot {
   #brandNodes (
     nodes: Array<ChildNode>,
   ): void {
-    (nodes as Array<DestinyElement>)
+    (nodes as Array<Component>)
     .forEach(node => node.destinySlot = this);
   }
 

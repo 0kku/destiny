@@ -1,8 +1,8 @@
-import { DestinyElement, xml } from "/dist/mod.js";
+import { Component, xml } from "/dist/mod.js";
 
 import { TabView } from "./tab-view.js";
 
-export class AppRoot extends DestinyElement {
+export class AppRoot extends Component {
   template = xml/*html*/`
     <style>
       :host {

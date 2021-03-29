@@ -1,8 +1,8 @@
-import { DestinyElement, expression, xml } from "/dist/mod.js";
+import { Component, expression, xml } from "/dist/mod.js";
 
 import { route, HashRouter } from "./hash-router.js";
 
-export class TabView extends DestinyElement {
+export class TabView extends Component {
   #tabs = [
     {
       path: "/",

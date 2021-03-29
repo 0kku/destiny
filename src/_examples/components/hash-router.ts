@@ -1,4 +1,4 @@
-import { DestinyElement, reactive, xml, ReactivePrimitive } from "/dist/mod.js";
+import { Component, reactive, xml, ReactivePrimitive } from "/dist/mod.js";
 
 function getHashRoute (
   url: string,
@@ -12,7 +12,7 @@ window.addEventListener("hashchange", e => {
   route.value = getHashRoute(e.newURL);
 });
 
-export class HashRouter extends DestinyElement<{
+export class HashRouter extends Component<{
   routes: Array<{
     path: string,
     content: string,

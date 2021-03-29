@@ -1,6 +1,6 @@
-import { DestinyElement, xml } from "/dist/mod.js";
+import { Component, xml } from "/dist/mod.js";
 
-export class AsyncDemo extends DestinyElement {
+export class AsyncDemo extends Component {
   #AsyncComponent = import("./async-component.js");
 
   template = xml`

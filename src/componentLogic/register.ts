@@ -1,21 +1,21 @@
 import { pseudoRandomIdGenerator } from "../utils/id.js";
 import { pascalToKebab } from "../utils/pascalToKebab.js";
-import type { DestinyElement } from "./DestinyElement.js";
+import type { Component } from "./Component.js";
 
 const pseudoRandomId = pseudoRandomIdGenerator();
 
 const registeredComponents = new Map<
-  new () => DestinyElement,
+  new () => Component,
   string
 >();
 
 /**
- * Registers a DestinyElement component constructor as a Custom Element using its constructor name.
+ * Registers a Component constructor as a Custom Element using its constructor name.
  * @param componentConstructor A constructor for the element to be registered
  * @param noHash               Opt out of adding a unique hash to the name
  */
 export function register (
-  componentConstructor: new () => DestinyElement,
+  componentConstructor: new () => Component,
   noHash = true,
 ): string {
   const registeredName = registeredComponents.get(componentConstructor);

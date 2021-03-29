@@ -7,14 +7,14 @@ import type { Slot } from "../parsing/Slot.js";
 
 // @ts-ignore I don't know how to describe this type correctly
 // eslint-disable-next-line
-export interface DestinyElement<TProperties extends Record<string, unknown> = {}> extends TProperties {
+export interface Component<TProperties extends Record<string, unknown> = {}> extends TProperties {
   destinySlot?: Slot,
 }
 
 /**
  * A class for creating new custom elements in Destiny UI.
  */
-export class DestinyElement extends HTMLElement {
+export class Component extends HTMLElement {
   static captureProps = false;
   forwardProps?: Ref<HTMLElement> | RefPromise<HTMLElement>;
   assignedData = {
@@ -28,7 +28,7 @@ export class DestinyElement extends HTMLElement {
 
   constructor () {
     super();
-    if (new.target === DestinyElement) {
+    if (new.target === Component) {
       throw new TypeError("Can't initialize abstract class.");
     }
     const shadow = this.attachShadow({ mode: "open" });
@@ -74,7 +74,7 @@ export class DestinyElement extends HTMLElement {
 
   static register (): string {
     return register(
-      this as typeof DestinyElement & (new () => DestinyElement),
+      this as typeof Component & (new () => Component),
       false,
     );
   }

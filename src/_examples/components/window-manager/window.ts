@@ -1,8 +1,8 @@
-import { DestinyElement, xml } from "/dist/mod.js";
+import { Component, xml } from "/dist/mod.js";
 
 import type { TWindow } from "./TWindow";
 
-export class Window extends DestinyElement<{
+export class Window extends Component<{
   props: TWindow,
 }> {
   template = xml/*html*/`

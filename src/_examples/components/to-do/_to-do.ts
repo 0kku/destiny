@@ -1,4 +1,4 @@
-import { DestinyElement, xml, reactive } from "/dist/mod.js";
+import { Component, xml, reactive } from "/dist/mod.js";
 
 import { animateIn, animateOut } from "./animations.js";
 import { TaskItem } from "./task-item.js";
@@ -7,7 +7,7 @@ type TInputChangeEvent = InputEvent & {
   currentTarget: HTMLInputElement,
 };
 
-export class Todo extends DestinyElement {
+export class Todo extends Component {
   #newValue = reactive("");
   #items = reactive([
     {
