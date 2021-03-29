@@ -51,14 +51,14 @@ export class ReactivePrimitive<T> {
    */
   async *[Symbol.asyncIterator] (): AsyncIterable<T> {
     while (true) {
-      yield await this._nextUpdate();
+      yield await this.#nextUpdate();
     }
   }
 
   /**
    * Returns a Promise which will resolve the next time the `value` is updated.
    */
-  private _nextUpdate (): Promise<T> {
+  #nextUpdate (): Promise<T> {
     return new Promise<T>(resolve => {
       const cb = (v: T) => {
         resolve(v);

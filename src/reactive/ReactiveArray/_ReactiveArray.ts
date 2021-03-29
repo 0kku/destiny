@@ -66,14 +66,14 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
    */
   async *[Symbol.asyncIterator] (): AsyncIterable<TArrayUpdateArguments<TArrayValueType<InputType>>> {
     while (true) {
-      yield await this._nextUpdate();
+      yield await this.#nextUpdate();
     }
   }
 
   /**
    * Returns a promise that resolves when the next update fires, with the values the event fired with.
    */
-  private _nextUpdate (): Promise<TArrayUpdateArguments<TArrayValueType<InputType>>> {
+  #nextUpdate (): Promise<TArrayUpdateArguments<TArrayValueType<InputType>>> {
     return new Promise<[number, number, ...Array<TArrayValueType<InputType>>]>(resolve => {
       const cb: TReactiveArrayCallback<TArrayValueType<InputType>> = (...props) => {
         resolve(props);
@@ -147,7 +147,7 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
   /**
    * Returns the arguments that a full, forced, update would for a callback. I.E. first item in the array is the index (`0`), second argument is delte count (current array length), and 3...n are the items currently in the array.
    */
-  private _argsForFullUpdate (): Parameters<TReactiveArrayCallback<TArrayValueType<InputType>>> {
+  #argsForFullUpdate (): Parameters<TReactiveArrayCallback<TArrayValueType<InputType>>> {
     return [0, this.#value.length, ...this.#value];
   }
   
@@ -161,7 +161,7 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
   > (
     callback: F,
   ): Readonly<ReactivePrimitive<ReturnType<F>>> {
-    const ref = new ReactivePrimitive(callback(...this._argsForFullUpdate()));
+    const ref = new ReactivePrimitive(callback(...this.#argsForFullUpdate()));
     this.bind((...args) => {
       ref.value = callback(...args);
     }, true);
@@ -448,15 +448,15 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
       throw new RangeError(`Out of bounds assignment: tried to assign to index ${start}, but array length was only ${this.#value.length}. Sparse arrays are not allowed. Consider using .push() instead.`);
     }
     
-    this._adjustIndices(start, deleteCount, items);
+    this.#adjustIndices(start, deleteCount, items);
     const reactiveItems = makeNonPrimitiveItemsReactive(items, this);
     const deletedItems = this.#value.splice(start, deleteCount, ...reactiveItems);
-    this._dispatchUpdateEvents(start, deleteCount, reactiveItems);
+    this.#dispatchUpdateEvents(start, deleteCount, reactiveItems);
     
     return deletedItems;
   }
 
-  private _dispatchUpdateEvents (
+  #dispatchUpdateEvents (
     start: number,
     deleteCount: number,
     newItems: Array<TArrayValueType<InputType>> = [],
@@ -473,7 +473,7 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
    * @param deleteCount How many items were deleted
    * @param items Items that were added
    */
-  private _adjustIndices (
+  #adjustIndices (
     start: number,
     deleteCount: number,
     items: Array<InputType | TArrayValueType<InputType>>,
@@ -499,7 +499,7 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
    * Force the the array to dispatch events to its callback. The event will simply say `0` items were removed at index `0`, with `0` items added. No equivalent on native Array prototype.
    */
   update (): this {
-    this._dispatchUpdateEvents(0, 0);
+    this.#dispatchUpdateEvents(0, 0);
 
     return this;
   }

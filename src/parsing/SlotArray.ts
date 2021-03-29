@@ -40,7 +40,7 @@ export class SlotArray {
    * @param index Index at which to insert the items
    * @param fragments the items to be inserted
    */
-  private _insertToDom (
+  #insertToDom (
     index: number,
     ...fragments: Array<DocumentFragment | TemplateResult>
   ): void {
@@ -61,7 +61,7 @@ export class SlotArray {
    * @param from Index at which to start removing `Slot`s
    * @param count How many `Slot`s to remove
    */
-  private _removeFromDom (
+  #removeFromDom (
     from: number,
     count: number,
   ): void {
@@ -86,7 +86,7 @@ export class SlotArray {
     deleteCount: number,
     ...items: Array<DocumentFragment>
   ): void => {
-    this._removeFromDom(index, deleteCount);
-    this._insertToDom(index, ...items);
+    this.#removeFromDom(index, deleteCount);
+    this.#insertToDom(index, ...items);
   };
 }
