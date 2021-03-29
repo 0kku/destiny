@@ -97,7 +97,7 @@ export class Todo extends DestinyElement {
       ${this.#items.map((item, i) => xml`
         <${TaskItem}
           prop:item="${item}"
-          prop:remove-item="${() => this.#items.splice(i.value, 1)}"
+          prop:removeItem="${() => this.#items.splice(i.value, 1)}"
           destiny:in="${animateIn}"
           destiny:out="${animateOut}"
         />

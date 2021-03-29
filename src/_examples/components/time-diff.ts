@@ -38,14 +38,14 @@ export class TimeDiff extends DestinyElement {
           Start:
           <input
             type="time"
-            prop:value-as-date="${task.start}"
+            prop:valueAsDate="${task.start}"
           />
         </label>
         <label>
           End: 
           <input
             type="time"
-            prop:value-as-date="${task.end}"
+            prop:valueAsDate="${task.end}"
           />
         </label>
         <label>

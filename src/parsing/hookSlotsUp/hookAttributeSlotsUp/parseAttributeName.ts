@@ -1,4 +1,4 @@
-import { kebabToCamel } from "../../../utils/kebabToCamel.js";
+// import { kebabToCamel } from "../../../utils/kebabToCamel.js";
 import { isValidNamespace } from "./isValidNamespace.js";
 import type { TNamespace } from "./TNamespace.js";
 
@@ -7,18 +7,12 @@ export function parseAttributeName (
 ): [TNamespace, string] {
   const {
     namespace = "attribute",
-    attributeNameRaw,
+    attributeName,
   } = (
-    /(?:(?<namespace>[a-z]+):)?(?<attributeNameRaw>.+)/
+    /(?:(?<namespace>[a-z]+):)?(?<attributeName>.+)/
     .exec(input)
     ?.groups
     ?? {}
-  );
-
-  const attributeName = (
-    namespace !== "attribute"
-    ? kebabToCamel(attributeNameRaw)
-    : attributeNameRaw
   );
 
   if (!isValidNamespace(namespace)) {

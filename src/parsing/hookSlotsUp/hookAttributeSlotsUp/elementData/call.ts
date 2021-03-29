@@ -5,11 +5,6 @@ import type { TElementData } from "../TElementData.js";
  * `call:<ElementMethod>` takes an array of arguments to be passed to
  * the method being called, or a single argument to be called with.
  * 
- * Note that method names need to use kebab-case instead of camelCase
- * because HTML is case-insensitive. The library automatically converts
- * kebab-cased function names into camelCase. For example, to call 
- * "requestSubmit", call "request-submit".
- * 
  * Note that like all namespaced attributes, input is not optional and
  * must be slotted with `${}` for performance reasons. To call something
  * without arguments, pass in an empty array.
@@ -17,7 +12,7 @@ import type { TElementData } from "../TElementData.js";
  * Example usage:
  * 
  * ```html
- * <form call:request-submit=${[]}></form>
+ * <form call:requestSubmit=${[]}></form>
  * ```
  * 
  * @param argument.element element the attribute is on
