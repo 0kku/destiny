@@ -1,5 +1,5 @@
 import { ReactivePrimitive } from "../../../mod.js";
-import { computed } from "/dist/reactive/computed.js";
+import { computed } from "../../../reactive/computed.js";
 
 export function resolveAttributeValue (
   val: Array<{
