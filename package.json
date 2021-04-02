@@ -3,18 +3,29 @@
   "description": "A reactive UI library for JavaScript and TypeScript.",
   "version": "0.5.1",
   "main": "./dist/examples/main.js",
+  "type": "module",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.19.0",
-    "@typescript-eslint/parser": "^4.19.0",
+    "@typescript-eslint/eslint-plugin": "^4.20.0",
+    "@typescript-eslint/parser": "^4.20.0",
     "eslint": "^7.23.0",
-    "typescript": "^4.3.0-dev.20210329"
+    "typescript": "^4.3.0-dev.20210402"
   },
   "scripts": {
+    "lint": "npm run lint:types && npm run lint:code",
+    "lint:code": "eslint src",
+    "lint:types": "tsc --noEmit",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "compile": "node ./node_modules/typescript/bin/tsc",
-    "watch": "node ./node_modules/typescript/bin/tsc -w"
+    "compile": "tsc",
+    "watch": "tsc -w"
   },
-  "keywords": [],
+  "keywords": [
+    "javascript",
+    "framework",
+    "typescript",
+    "ui",
+    "frontend",
+    "reactive-programming"
+  ],
   "repository": "https://github.com/0kku/destiny",
   "author": "https://github.com/0kku/",
   "license": "OSL-3.0"
