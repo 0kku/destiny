@@ -1,26 +1,28 @@
 import { ReactivePrimitive } from "./ReactivePrimitive.js";
 
 export const computeFunction: {
-  current: undefined | (() => void),
+  current: VoidFunction | undefined,
 } = {
   current: undefined,
 };
 
+/**
+ * Takes a callback and returns a new readonly `ReactivePrimitive` whose value is updated with the return value of the callback whenever any of the reactive values used in the callback are updated.
+ * 
+ * @param callback The function that computes the value
+ */
 export function computed<T> (
   callback: () => T,
-): ReactivePrimitive<T> {
-  const reactor = new ReactivePrimitive<T | undefined>(undefined);
+): Readonly<ReactivePrimitive<T>> {
+  computeFunction.current = fn;
+  const reactor = new ReactivePrimitive(callback());
+  computeFunction.current = undefined;
 
-  const fn = () => {
-    const previous = computeFunction.current;
+  function fn () {
     computeFunction.current = fn;
-
     reactor.value = callback();
+    computeFunction.current = undefined;
+  }
 
-    computeFunction.current = previous;
-  };
-
-  fn();
-
-  return reactor as ReactivePrimitive<T>;
+  return reactor;
 }
