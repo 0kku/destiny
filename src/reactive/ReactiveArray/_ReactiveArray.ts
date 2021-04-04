@@ -103,21 +103,18 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
     return this.#value.slice(0);
   }
 
-  // This is not a setter because TS doesn't like setters and getters having different values. The input array is turned reactive recursively.
   /**
    * Replaces all the current values of the array with values of the provided array.
    * @param items array of items to replace the current ones with.
    */
-  setValue (
-    items: Array<InputType | TArrayValueType<InputType>>,
-  ): this {
+  set value (
+    items: ReadonlyArray<InputType | TArrayValueType<InputType>>,
+  ) {
     this.splice(
       0,
       this.#value.length,
       ...items,
     );
-
-    return this;
   }
 
   /**
@@ -414,7 +411,7 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
    * Works just like `Array::reverse()`. Reverses the elements of the array in place.
    */
   reverse (): this {
-    this.setValue(this.#value.reverse());
+    this.value = this.#value.reverse();
 
     return this;
   }
@@ -434,7 +431,7 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
   sort (
     compareFn?: ((a: TArrayValueType<InputType>, b: TArrayValueType<InputType>) => number),
   ): this {
-    this.setValue(this.#value.sort(compareFn));
+    this.value = this.#value.sort(compareFn);
 
     return this;
   }
