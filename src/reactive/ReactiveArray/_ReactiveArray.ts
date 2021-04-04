@@ -26,8 +26,8 @@ export type TMask = Array<TMaskEntry>;
  */
 export class ReactiveArray<InputType> extends Indexable<InputType> {
   /** An Array containing the current values of the ReactiveArray */
-  // readonly #value: Array<TArrayValueType<InputType>>;
   readonly #__value: Array<TArrayValueType<InputType>>;
+  /** A getter for an Array containing the current values of the ReactiveArray. Notifies computed values when it's being accessed. */
   get #value (): Array<TArrayValueType<InputType>> {
     if (computeFunction.current) {
       this.#callbacks.add(computeFunction.current);
@@ -105,6 +105,7 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
 
   /**
    * Replaces all the current values of the array with values of the provided array.
+   * 
    * @param items array of items to replace the current ones with.
    */
   set value (
@@ -119,6 +120,7 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
 
   /**
    * An alternative to using backet syntax `arr[index]` to access values. Bracket notation requires the Proxy, which slows down propety accesses, while this doesn't.
+   * 
    * @param index index at which you want to access a value
    */
   get (
@@ -135,6 +137,7 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
 
   /**
    * An alternative to using backet syntax `arr[index] = value` to set values. Bracket notation requires the Proxy, which slows down propety accesses, while this doesn't.
+   * 
    * @param index index at which you want to set a value
    * @param value value you want to set at the specified index
    */
@@ -173,6 +176,7 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
 
   /**
    * Adds a listener to the array, which is called when the array is modified in some capacity.
+   * 
    * @param callback The function to be called when the array is updated. It's called with `(startIndex, deleteCount, ...addedItems)`.
    * @param noFirstRun Default: false. Determines whether the callback function should be called once when the listener is first added.
    */
@@ -189,6 +193,7 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
 
   /**
    * Removes a listener that was added using `ReactiveArray::bind()`.
+   * 
    * @param callback The callback function to be unbound (removed from the array's update callbacks). Similar to EventListeners, it needs to be a reference to the same callaback function that was previously added.
    */
   unbind (
@@ -279,6 +284,7 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
 
   /**
    * Works just like `Array::copyWithin()`. Returns the this object after shallow-copying a section of the array identified by start and end to the same array starting at position target
+   * 
    * @param target Index where to start copying to. If target is negative, it is treated as length+target where length is the length of the array.
    * @param start Where to start copying from. If start is negative, it is treated as length+start. Default: `0`. 
    * @param end Where to stop copying from. If end is negative, it is treated as length+end. Default: `this.length.value`
@@ -309,7 +315,7 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
 
   /**
    * Works similar to `Array::fill()`, except inserted values are made recursively reactive. The section identified by start and end is filled with `value`. **Note** that inserted object values are not cloned, which may cause unintended behavior.
-
+   * 
    * @param value  value to fill array section with
    * @param start  index to start filling the array at. If start is negative, it is treated as length+start where length is the length of the array.
    * @param end    index to stop filling the array at. If end is negative, it is treated as length+end.
@@ -438,6 +444,7 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
 
   /**
    * Similar to `Array::splice()`. Added items are implicitly made recursively reactive.
+   * 
    * @param start        Where to start modifying the array
    * @param deleteCount  How many items to remove
    * @param items        Items to add to the array
@@ -471,6 +478,7 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
 
   /**
    * Updates the indices of each item whose index changed due to the update. Indices of removed items will become `-1`. Also inserts in new indices as `ReactivePrimitive<number>` for any added items.
+   * 
    * @param start Index at which the ReactiveArray started changing
    * @param deleteCount How many items were deleted
    * @param items Items that were added
@@ -602,7 +610,7 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
   // TODO
   flat (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
-    depth = 1,
+    _depth = 1,
   ): never {
     throw new NotImplementedError("See https://github.com/0kku/destiny/issues/1");
     // const newArr = new ReactiveArray(
@@ -619,7 +627,7 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
   // TODO
   flatMap<U> (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
-    callback: (
+    _callback: (
       value: TArrayValueType<InputType>,
       index: ReactivePrimitive<number>,
       array: Array<TArrayValueType<InputType>>,
