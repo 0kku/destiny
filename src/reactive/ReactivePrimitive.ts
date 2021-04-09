@@ -33,6 +33,13 @@ export class ReactivePrimitive<T> {
     return this.value;
   }
 
+  /**
+   * When the object is attempted to be serialized using JSON.serialize(), the current value of `this.value` is returned.
+   */
+  toJSON (): T {
+    return this.value;
+  }
+
   get [Symbol.toStringTag] (): string {
     return `ReactivePrimitive<${typeof this.#value}>`;
   }

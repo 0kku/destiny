@@ -61,6 +61,13 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
   }
 
   /**
+   * When the object is attempted to be serialized using JSON.serialize(), the current value of `this.value` is returned.
+   */
+  toJSON (): Array<TArrayValueType<InputType>> {
+    return this.value;
+  }
+
+  /**
    * Iterates over the values of the array, similar to how regular Arrays can be iterated over.
    */
   *[Symbol.iterator] (): Iterable<TArrayValueType<InputType>> {
