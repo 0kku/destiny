@@ -14,7 +14,7 @@ export class ArrayDemo extends Component {
     const randomIndex = Math.floor(
       Math.random() * this.#items.length.value,
     );
-    this.#items[randomIndex] = randomColor();
+    this.#items.set(randomIndex, randomColor());
     this.#timer = requestAnimationFrame(this.frame);
   };
   #timer = requestAnimationFrame(this.frame);

@@ -1,7 +1,6 @@
 import { ReactivePrimitive } from "../../mod.js";
 import { makeNonPrimitiveItemsReactive } from "./makeNonPrimitiveItemsReactive.js";
 import { updateFilteredArray } from "./updateFilteredArray.js";
-import { Indexable } from "./Indexable.js";
 import { computed, computeFunction } from "../computed.js";
 import { flatten } from "./flatten.js";
 import type { TReactiveArrayCallback } from "../types/IReactiveArrayCallback.js";
@@ -14,7 +13,7 @@ import type { TMask } from "./TMask.js";
 /**
  * `ReactiveArray`s are reactive values that contain multiple values which can be updated and whose updates can be listened to. In general, `ReactiveArray`s behave very similar to native `Array`s. The main difference is, that most primitive values are given as `ReactivePrimitive`s and any immutable methods will return a new readonly `ReactiveArray`, whose values are tied to the original `ReactiveArray`. The class also provides a few custom convenience methods.
  */
-export class ReactiveArray<InputType> extends Indexable<InputType> {
+export class ReactiveArray<InputType> {
   /** An Array containing the current values of the ReactiveArray */
   readonly #__value: Array<TArrayValueType<InputType>>;
   /** A getter for an Array containing the current values of the ReactiveArray. Notifies computed values when it's being accessed. */
@@ -38,7 +37,7 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
   constructor (
     ...input: Array<InputType>
   ) {
-    super();
+    // super();
 
     this.#__value = makeNonPrimitiveItemsReactive(
       input,
