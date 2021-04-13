@@ -160,17 +160,4 @@ export class ReactivePrimitive<T> {
   ): Readonly<ReactivePrimitive<T | K>> {
     return this.pipe(v => v ? valueWhenTruthy : valueWhenFalsy);
   }
-
-  ternary<A> (
-    condition: (newValue: T) => boolean, 
-    yes: A,
-    no?: undefined,
-  ): Readonly<ReactivePrimitive<A | undefined>>
-  ternary<A, B> (
-    condition: (newValue: T) => boolean, 
-    yes: A,
-    no: B,
-  ): Readonly<ReactivePrimitive<A | B>> {
-    return this.pipe(v => condition(v) ? yes : no);
-  }
 }
