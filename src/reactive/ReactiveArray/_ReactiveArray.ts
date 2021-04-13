@@ -1,25 +1,15 @@
 import { ReactivePrimitive } from "../../mod.js";
 import { makeNonPrimitiveItemsReactive } from "./makeNonPrimitiveItemsReactive.js";
-import { NotImplementedError } from "../../utils/NotImplementedError.js";
 import { updateFilteredArray } from "./updateFilteredArray.js";
 import { Indexable } from "./Indexable.js";
+import { computed, computeFunction } from "../computed.js";
+import { flatten } from "./flatten.js";
 import type { TReactiveArrayCallback } from "../types/IReactiveArrayCallback.js";
 import type { TArrayValueType } from "../types/IArrayValueType.js";
 import type { TReactiveEntity } from "../types/IReactiveEntity.js";
-import { computed, computeFunction } from "../computed.js";
-
-type TArrayUpdateArguments<T> = [
-  startEditingAt: number, 
-  deleteCount: number,
-  ...newElements: Array<T>
-];
-
-export type TMaskEntry = {
-  index: number,
-  show: boolean,
-};
-
-export type TMask = Array<TMaskEntry>;
+import type { TUnwrapReactiveArray } from "./TUnwrapReactiveArray.js";
+import type { TArrayUpdateArguments } from "./TArrayUpdateArguments.js";
+import type { TMask } from "./TMask.js";
 
 /**
  * `ReactiveArray`s are reactive values that contain multiple values which can be updated and whose updates can be listened to. In general, `ReactiveArray`s behave very similar to native `Array`s. The main difference is, that most primitive values are given as `ReactivePrimitive`s and any immutable methods will return a new readonly `ReactiveArray`, whose values are tied to the original `ReactiveArray`. The class also provides a few custom convenience methods.
@@ -614,42 +604,41 @@ export class ReactiveArray<InputType> extends Indexable<InputType> {
     return filteredArray;
   }
 
-  // TODO
-  flat (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
-    _depth = 1,
-  ): never {
-    throw new NotImplementedError("See https://github.com/0kku/destiny/issues/1");
-    // const newArr = new ReactiveArray(
-    //   ...this.#value.flat(depth),
-    // );
-    // this.#callbacks.add(
-    //   () => newArr.setValue(
-    //     this.#value.flat(depth),
-    //   ),
-    // );
-    // return newArr;
+  /**
+   * Similar to `Array::flat()`, except that it does **not** accept a depth parameter, and it returns a readonly ReactiveArray which gets gets updated with new values as the originating array is updated.
+   * 
+   * ! This metod does not optimize changes. When source canges in any way, it recomputes every value, even when it theoretically wouldn't need to.
+   */
+  flat (): Readonly<ReactiveArray<TUnwrapReactiveArray<TArrayValueType<InputType>>>> {
+    const newArr = new ReactiveArray(...flatten(this.#value));
+    this.bind(
+      () => newArr.value = flatten(this.#value),
+      false,
+    );
+    return newArr;
   }
-
-  // TODO
+  
+  /**
+   * Similar to `Array::flatMap()`, except that it returns a readonly ReactiveArray, which gets gets updated with new values as the originating array is updated. If you don't want this behavior, use `ReactiveArray.prototype.value.flatMap()` instead.
+   * 
+   * ! This metod does not optimize changes. When source canges in any way, it recomputes every value, even when it theoretically wouldn't need to.
+   */
   flatMap<U> (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars-experimental
-    _callback: (
+    callback: (
       value: TArrayValueType<InputType>,
-      index: ReactivePrimitive<number>,
+      index: number,
       array: Array<TArrayValueType<InputType>>,
     ) => U | ReadonlyArray<U>,
-  ): never {
-    throw new NotImplementedError("See https://github.com/0kku/destiny/issues/1");
-    // const newArr = new ReactiveArray(
-    //   ...this.#value.flatMap(callback)
-    // );
-    // this.pipe(() => {
-    //   newArr.setValue(
-    //     this.#value.flatMap(callback),
-    //   );
-    // });
-    // return newArr;
+  ): Readonly<ReactiveArray<TUnwrapReactiveArray<U>>> {
+    const flatMap = () => flatten(this.value.flatMap(callback));
+
+    const newArr = new ReactiveArray(...flatMap());
+    this.bind(
+      () => newArr.value = flatMap(),
+      false,
+    );
+
+    return newArr;
   }
 
   /**

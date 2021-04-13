@@ -1,4 +1,6 @@
-import type { ReactiveArray, TMask, TMaskEntry } from "./_ReactiveArray.js";
+import type { ReactiveArray } from "./_ReactiveArray.js";
+import type { TMask } from "./TMask.js";
+import type { TMaskEntry } from "./TMaskEntry.js";
 
 type TUpdateQueueEntry<T> = TMaskEntry & {value: T};
 type TUpdateQueue<T> = Array<TUpdateQueueEntry<T>>;
