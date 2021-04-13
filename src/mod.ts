@@ -7,6 +7,7 @@ export { ReactiveArray     } from "./reactive/ReactiveArray/_ReactiveArray.js";
 export { reactive          } from "./reactive/reactive.js";
 export { computed          } from "./reactive/computed.js";
 export { xml               } from "./parsing/_xml.js";
+export { xml as html       } from "./parsing/_xml.js";
 
 export type { TReactiveValueType } from "./reactive/types/IReactiveValueType.js";
 export type { TReactiveObject    } from "./reactive/types/IReactiveObject.js";
