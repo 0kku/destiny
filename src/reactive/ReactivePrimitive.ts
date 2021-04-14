@@ -114,8 +114,8 @@ export class ReactivePrimitive<T> {
   }
 
   get value (): T {
-    if (computeFunction.current) {
-      this.#callbacks.add(computeFunction.current);
+    if (computeFunction) {
+      this.#callbacks.add(computeFunction);
     }
 
     return this.#value;

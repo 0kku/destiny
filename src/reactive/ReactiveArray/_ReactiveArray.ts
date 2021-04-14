@@ -18,8 +18,8 @@ export class ReactiveArray<InputType> {
   readonly #__value: Array<TArrayValueType<InputType>>;
   /** A getter for an Array containing the current values of the ReactiveArray. Notifies computed values when it's being accessed. */
   get #value (): Array<TArrayValueType<InputType>> {
-    if (computeFunction.current) {
-      this.#callbacks.add(computeFunction.current);
+    if (computeFunction) {
+      this.#callbacks.add(computeFunction);
     }
 
     return this.#__value;
