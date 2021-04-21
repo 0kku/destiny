@@ -1,4 +1,4 @@
-import { Component, computed, xml } from "/dist/mod.js";
+import { Component, computed, xml, css } from "/dist/mod.js";
 
 import { route, HashRouter } from "./hash-router.js";
 
@@ -43,41 +43,42 @@ export class TabView extends Component {
     });
   }
 
-  template = xml/*html*/`
-    <style>
-      nav {
-        padding: 0;
-        padding-left: var(--m);
-        display: flex;
-        margin: 0;
-      }
-      a {
-        padding: var(--s) var(--m);
-        border-top-left-radius: var(--border-radius);
-        border-top-right-radius: var(--border-radius);
-        transition: background .2s;
-        user-select: none;
-        color: white;
-        text-decoration: none;
-      }
-      a:not(.selected):hover {
-        background: rgba(255, 255, 255, .06);
-        cursor: pointer;
-      }
-      a:not(.selected):active {
-        background: rgba(255, 255, 255, .03);
-        cursor: pointer;
-      }
+  static styles = css`
+    nav {
+      padding: 0;
+      padding-left: var(--m);
+      display: flex;
+      margin: 0;
+    }
+    a {
+      padding: var(--s) var(--m);
+      border-top-left-radius: var(--border-radius);
+      border-top-right-radius: var(--border-radius);
+      transition: background .2s;
+      user-select: none;
+      color: white;
+      text-decoration: none;
+    }
+    a:not(.selected):hover {
+      background: rgba(255, 255, 255, .06);
+      cursor: pointer;
+    }
+    a:not(.selected):active {
+      background: rgba(255, 255, 255, .03);
+      cursor: pointer;
+    }
 
-      .selected, main {
-        background: rgba(255, 255, 255, .1);
-      }
+    .selected, main {
+      background: rgba(255, 255, 255, .1);
+    }
 
-      main {
-        padding: var(--m);
-        border-radius: var(--border-radius);
-      }
-    </style>
+    main {
+      padding: var(--m);
+      border-radius: var(--border-radius);
+    }
+  `;
+
+  template = xml`
     <nav>
       ${this.#tabs.map(({path, title}) => xml`
         <a

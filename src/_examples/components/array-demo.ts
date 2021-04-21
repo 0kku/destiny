@@ -1,4 +1,4 @@
-import { Component, xml, reactive } from "/dist/mod.js";
+import { Component, reactive, xml, css } from "/dist/mod.js";
 
 const randomColor = () => (
   "#" + 
@@ -23,29 +23,30 @@ export class ArrayDemo extends Component {
     cancelAnimationFrame(this.#timer);
   }
 
-  template = xml/*html*/`
-    <style>
-      ul {
-        list-style: none;
-        padding: 0;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-      }
+  static styles = css`
+    ul {
+      list-style: none;
+      padding: 0;
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
 
-      li {
-        display: block;
-        width: var(--l);
-        height: var(--l);
-        text-align: center;
-        line-height: var(--l);
-        margin: var(--xs);
-        border-radius: var(--border-radius);
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
-        box-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
-        font-family: monospace;
-      }
-    </style>
+    li {
+      display: block;
+      width: var(--l);
+      height: var(--l);
+      text-align: center;
+      line-height: var(--l);
+      margin: var(--xs);
+      border-radius: var(--border-radius);
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
+      box-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
+      font-family: monospace;
+    }
+  `;
+
+  template = xml`
     <ul>
       ${this.#items.map((text, i) => xml`
         <li style="background-color: ${text};">${i}</li>

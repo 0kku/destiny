@@ -9,7 +9,9 @@ export { computed          } from "./reactive/computed.js";
 export { xml               } from "./parsing/_xml.js";
 export { xml as html       } from "./parsing/_xml.js";
 export { classNames        } from "./reactive/classNames.js";
-export { attachCSSProperty } from "./componentLogic/attachCSSProperty.js";
+export { attachCSSProperty } from "./styling/attachCSSProperty.js";
+export { css               } from "./styling/css.js";
+export { CSSTemplate       } from "./styling/CSSTemplate.js";
 
 export type { TReactiveValueType } from "./reactive/types/IReactiveValueType.js";
 export type { TReactiveObject    } from "./reactive/types/IReactiveObject.js";

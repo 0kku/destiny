@@ -10,7 +10,7 @@ import type { ReactivePrimitive } from "../reactive/ReactivePrimitive.js";
 export function attachCSSProperty (
   element: HTMLElement,
   property: string,
-  source: ReactivePrimitive<string>,
+  source: Readonly<ReactivePrimitive<string>>,
 ): void {
-  source.bind(value => element.style.setProperty(property, String(value)));
+  source.bind(value => element.style.setProperty(property, value));
 }

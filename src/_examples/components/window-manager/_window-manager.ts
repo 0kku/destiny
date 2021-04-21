@@ -1,4 +1,4 @@
-import { Component, xml, reactive, ReactivePrimitive } from "/dist/mod.js";
+import { Component, xml, css, reactive, ReactivePrimitive } from "/dist/mod.js";
 
 import { Window } from "./window.js";
 import type { TWindow } from "./TWindow";
@@ -128,37 +128,51 @@ export class WindowManager extends Component {
     window.addEventListener("mouseup", () => this.#dragging.type.value = "");
   }
 
-  template = xml/*html*/`
-    <style>
-      :host {
-        position: relative;
-        display: block;
-        height: 80vh;
-        overflow: hidden;
-        outline: 1px dashed red;
-        user-select: ${this.#dragging.type.truthy("none", "initial")};
-        cursor: ${this.#dragging.type.pipe(v => {
-          switch (v) {
-            case "move":
-              return "grabbing";
-            case "n":
-            case "s":
-              return "ns-resize";
-            case "e":
-            case "w":
-              return "ew-resize";
-            case "ne":
-            case "sw":
-              return "nesw-resize";
-            case "nw":
-            case "se":
-              return "nwse-resize";
-            default:
-              return "initial";
-          }
-        })}
-      }
-    </style>
+  constructor () {
+    super();
+
+    this.attachCSSProperty(
+      "user-select",
+      this.#dragging.type.truthy("none", "initial"),
+    );
+    this.attachCSSProperty(
+      "cursor",
+      this.#dragging.type.pipe<string>(v => {
+        switch (v) {
+          case "move":
+            return "grabbing";
+          case "n":
+          case "s":
+            return "ns-resize";
+          case "e":
+          case "w":
+            return "ew-resize";
+          case "ne":
+          case "sw":
+            return "nesw-resize";
+          case "nw":
+          case "se":
+            return "nwse-resize";
+          default:
+            return "initial";
+        }
+      }),
+    );
+  }
+
+  static styles = css`
+    :host {
+      position: relative;
+      display: block;
+      height: 80vh;
+      overflow: hidden;
+      outline: 1px dashed red;
+      user-select: none;
+      cursor: initial;
+    }
+  `;
+
+  template = xml`
     ${this.#windows.map(win => xml`
       <${Window} prop:props="${win}" />
     `)}

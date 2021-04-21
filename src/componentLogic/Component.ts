@@ -1,11 +1,13 @@
-import { register, xml } from "../mod.js";
+import { register, xml, attachCSSProperty } from "../mod.js";
 import { deferredElements } from "../parsing/deferredElements.js";
 import { assignElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/elementData/_assignElementData.js";
-import { attachCSSProperty } from "./attachCSSProperty.js";
+import { supportsAdoptedStyleSheets } from "../styling/supportsAdoptedStyleSheets.js";
+import { arrayWrap } from "../utils/arrayWrap.js";
 import type { Ref, RefPromise } from "./Ref.js";
-import type { Renderable } from "../parsing/Renderable";
+import type { Renderable } from "../parsing/Renderable.js";
 import type { Slot } from "../parsing/Slot.js";
 import type { ReactivePrimitive } from "../reactive/ReactivePrimitive.js";
+import type { CSSTemplate } from "../styling/CSSTemplate.js";
 
 // @ts-ignore I don't know how to describe this type correctly
 // eslint-disable-next-line
@@ -27,6 +29,7 @@ export class Component extends HTMLElement {
     attribute: new Map<string, unknown>(),
   } as const;
   template: Renderable = xml`<slot />`;
+  static styles: Array<CSSTemplate> | CSSTemplate = [];
 
   constructor () {
     super();
@@ -43,6 +46,12 @@ export class Component extends HTMLElement {
       shadow.appendChild(
         this.template.content,
       );
+
+      if (supportsAdoptedStyleSheets) {
+        shadow.adoptedStyleSheets = arrayWrap(new.target.styles).map(v => v.styleSheet);
+      } else {
+        shadow.append(...arrayWrap(new.target.styles).map(v => v.styleElement));
+      }
     });
 
     // Disabled for now due to lack of vendor support
@@ -61,7 +70,7 @@ export class Component extends HTMLElement {
    */
   attachCSSProperty (
     property: string,
-    source: ReactivePrimitive<string>,
+    source: Readonly<ReactivePrimitive<string>>,
   ): void {
     attachCSSProperty(this, property, source);
   }
