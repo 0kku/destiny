@@ -1,12 +1,10 @@
-import { propertyDescriptorToReactive } from "./propertyDescriptorToReactive.js";
+import { reactive } from "../reactive.js";
 import { reactiveObjectFlag } from "./reactiveObjectFlag.js";
 import type { TReactiveEntity } from "../types/IReactiveEntity.js";
 import type { TReactiveObject } from "../types/IReactiveObject.js";
 
 /**
- * Takes an object, and passes each of its non-function properties to `reactive()`, which makes the entire structure reactive recursively.
- * 
- * !Note: this method modifies the original object. It may break code that relies on that not happening. There may be cases where objects (either the top level one, or one further down) misbehaves or breaks. To avoid an inner object from being converted, wrap it in `new ReactivePrimitive()`.
+ * Takes an object, and passes each of its enumerable properties to `reactive()`, which makes the entire structure reactive recursively.
  * 
  * @param input The object whose properties are to be made reactive
  * @param parent Another reactive entity to which any reactive items created should report to when updating, so updates can correctly propagate to the highest level
@@ -15,42 +13,17 @@ export function reactiveObject<T extends Record<string, unknown>, K = unknown> (
   input: T,
   parent?: TReactiveEntity<K>,
 ): TReactiveObject<T> {
-  let current: Record<string, unknown> | undefined = input;
-  const prototypeChain: Array<{
-    [x: string]: PropertyDescriptor,
-  }> = [];
-  do {
-    prototypeChain.unshift(Object.getOwnPropertyDescriptors(current));
-  // eslint-disable-next-line no-cond-assign
-  } while (current = Reflect.getPrototypeOf(current) as Record<string, unknown> | undefined);
+  // TS is incapable of figuring out the type correctly here, so it will throw a runtime error instead.
+  if (![null, Object].includes(input.constructor as ObjectConstructor)) {
+    throw new TypeError(`Illegal object passed to reactiveObject. Reactive objects must be made with objects that have \`Object\` or \`null\` as their prototype, but it was \`${input.constructor.name}\`. Alternatively, wrap the object using ReactivePrimitive.`);
+  }
+  
+  const result = Object.fromEntries(
+    Object
+    .entries(input)
+    .map(entry => (entry[1] = reactive(entry[1], {parent}), entry))
+  ) as TReactiveObject<T>;
+  result[reactiveObjectFlag] = true;
 
-  Object.seal(
-    Object.defineProperties(input,
-      Object.fromEntries(
-        Object.entries(
-          Object.assign(
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            prototypeChain.shift()!,
-            ...prototypeChain,
-            {
-              [reactiveObjectFlag]: {
-                writable: false,
-                enumerable: false,
-                value: true,
-              },
-            },
-          ) as {
-            [x: string]: PropertyDescriptor,
-          },
-        )
-        .filter(([, {value, configurable}]) => (
-          typeof value !== "function" && 
-          configurable
-        ))
-        .map(propertyDescriptorToReactive(parent)),
-      ),
-    ),
-  );
-
-  return input as TReactiveObject<T>;
+  return result;
 }
