@@ -1,9 +1,11 @@
 import { register, xml } from "../mod.js";
 import { deferredElements } from "../parsing/deferredElements.js";
 import { assignElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/elementData/_assignElementData.js";
+import { attachCSSProperty } from "./attachCSSProperty.js";
 import type { Ref, RefPromise } from "./Ref.js";
 import type { Renderable } from "../parsing/Renderable";
 import type { Slot } from "../parsing/Slot.js";
+import type { ReactivePrimitive } from "../reactive/ReactivePrimitive.js";
 
 // @ts-ignore I don't know how to describe this type correctly
 // eslint-disable-next-line
@@ -49,6 +51,19 @@ export class Component extends HTMLElement {
     // } catch (e) {
     //   console.error("Element internals couldn't be attached due to lack of browser support. If you're using Firefox, the feature can be enabled in about:config by toggling the dom.webcomponents.elementInternals.enabled flag on. If you're using something other than Firefox or a Chromium based browser, consider switching to a better browser. Error message: ", e);
     // }
+  }
+
+  /**
+   * Synchonizes a CSS property of this element to a ReactivePrimitive.
+   * 
+   * @param property  CSS property to be synchronized
+   * @param source    A ReactivePrimitive whose value is to be used for the CSS Property
+   */
+  attachCSSProperty (
+    property: string,
+    source: ReactivePrimitive<string>,
+  ): void {
+    attachCSSProperty(this, property, source);
   }
 
   replaceWith (
