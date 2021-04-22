@@ -1,6 +1,8 @@
 import { Component, xml, css } from "/dist/mod.js";
 import type { TReactiveObject } from "/dist/mod.js";
 
+import { inputStyles } from "../inputStyles.js";
+
 export class TaskItem extends Component<{
   item: TReactiveObject<{
     title: string,
@@ -14,67 +16,39 @@ export class TaskItem extends Component<{
     this.setAttribute("role", "listitem");
   }
 
-  static styles = css`
-    :host {
-      padding-bottom: var(--xs);
-      line-height: var(--l);
-    }
+  static styles = [
+    inputStyles,
+    css`
+      :host {
+        padding-bottom: var(--xs);
+        line-height: var(--l);
+      }
 
-    form {
-      height: 100%;
-      font-size: var(--m);
-    }
+      label {
+        display: inline-flex;
+        align-items: center;
+        justify-content: space-between;
+      }
 
-    input:not([type=checkbox]) {
-      vertical-align: top;
-      box-sizing: border-box;
-      width: var(--xl);
-      height: var(--l);
-      background: var(--element-color);
-      outline: none;
-      border-radius: var(--border-radius);
-      box-shadow: 0 1px 1px rgba(0,0,0,.4);
-      border: 1px solid transparent;
-      transition: all .1s;
-      font-size: var(--m);
-    }
-    input:not([type=checkbox]):hover {
-      background: var(--element-hover-color);
-    }
-    input:not([type=checkbox]):active {
-      transform: translateY(1px);
-    }
-    input:not([type=checkbox]):focus {
-      border: 1px solid var(--element-focus-color);
-    }
+      form {
+        height: 100%;
+        font-size: var(--m);
+      }
 
-    input[type=text] {
-      color: white;
-      text-shadow: 1px 1px 1px rgba(0,0,0,.7);
-      padding: 0 var(--s);
-      width: 200px;
-      height: var(--l);
-      background: var(--element-color);
-      border: none;
-      outline: none;
-      border-radius: var(--border-radius);
-    }
+      .task-checkbox {
+        width: 25px;
+      }
 
-    .task-name {
-      display: inline-block;
-      box-sizing: border-box;
-      width: 175px;
-    }
-
-    [type=text] {
-      box-sizing: border-box;
-      width: 200px;
-    }
-
-    input:not([type=text]), label {
-      cursor: pointer;
-    }
-  `;
+      .task-name {
+        display: inline-block;
+        box-sizing: border-box;
+        width: 175px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    `,
+  ];
 
   template = xml`
     <form
@@ -87,10 +61,12 @@ export class TaskItem extends Component<{
       ${this.item.editing.pipe(editing => !editing
         ? xml`
           <label>
-            <input
-              type="checkbox"
-              prop:checked="${this.item.done}"
-            />
+            <span class="task-checkbox">
+              <input
+                type="checkbox"
+                prop:checked="${this.item.done}"
+              />
+            </span>
             <span
               class="task-name"
               style="${this.item.done.truthy("text-decoration: line-through")}"
@@ -104,10 +80,11 @@ export class TaskItem extends Component<{
             title="Edit"
             on:click="${() => this.item.editing.value = true}"
           />
-        ` : xml`
+        `
+        : xml`
           <input
             type="text"
-            value="${this.item.title}"
+            prop:value="${this.item.title}"
             required=""
             destiny:in="${(e: HTMLInputElement) => e.focus()}"
           />

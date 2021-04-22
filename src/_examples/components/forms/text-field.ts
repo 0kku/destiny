@@ -1,3 +1,4 @@
+import { inputStyles } from "../inputStyles.js";
 import { Component, xml, Ref } from "/dist/mod.js";
 
 /**
@@ -6,6 +7,7 @@ import { Component, xml, Ref } from "/dist/mod.js";
 export class TextField extends Component {
   forwardProps = new Ref;
   static captureProps = true;
+  static styles = inputStyles;
 
   template = xml`
     <input type="text" destiny:ref="${this.forwardProps}" />

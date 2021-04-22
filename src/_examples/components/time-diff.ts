@@ -1,5 +1,7 @@
 import { Component, xml, reactive, computed } from "/dist/mod.js";
 
+import { inputStyles } from "./inputStyles.js";
+
 function formatTimeFragment (
   input: number,
 ) {
@@ -31,6 +33,8 @@ function createTask () {
 export class TimeDiff extends Component {
   #tasks = reactive([createTask()]); //initialize an array of tasks, with one task in it
 
+  static styles = inputStyles;
+
   template = xml`
     ${this.#tasks.map(task => xml`
       <div>
@@ -55,10 +59,11 @@ export class TimeDiff extends Component {
             prop:value="${task.name}"
           />
         </label>
-        <br />
-        Duration of "${task.name}": ${computed(() => 
-          formatTime(Number(task.end.value) - Number(task.start.value))
-        )}
+        <p>
+          Duration of "${task.name}": ${computed(() => 
+            formatTime(Number(task.end.value) - Number(task.start.value))
+          )}
+        </p>
       </div>`
     )}
     <input

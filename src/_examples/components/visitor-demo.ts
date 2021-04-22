@@ -1,5 +1,7 @@
 import { Component, xml, reactive } from "/dist/mod.js";
 
+import { inputStyles } from "./inputStyles.js";
+
 export class VisitorDemo extends Component {
   #who = reactive("visitor");
   #count = reactive(0);
@@ -10,6 +12,8 @@ export class VisitorDemo extends Component {
   disconnectedCallback (): void {
     clearInterval(this.#timer);
   }
+
+  static styles = inputStyles;
 
   template = xml`
     <label>

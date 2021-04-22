@@ -2,6 +2,7 @@ import { Component, xml, css, reactive } from "/dist/mod.js";
 
 import { animateIn, animateOut } from "./animations.js";
 import { TaskItem } from "./task-item.js";
+import { inputStyles } from "../inputStyles.js";
 
 type TInputChangeEvent = InputEvent & {
   currentTarget: HTMLInputElement,
@@ -27,70 +28,28 @@ export class Todo extends Component {
     },
   ]);
 
-  static styles = css`
-    label {
-      height: var(--l);
-      line-height: var(--l);
-    }
+  static styles = [
+    inputStyles,
+    css`
+      ul {
+        list-style: none;
+      }
 
-    label, [type=button], [type=submit] {
-      cursor: pointer;
-      color: white;
-    }
+      li {
+        height: var(--l);
+        overflow: hidden;
+        font-size: var(--m);
+        padding-bottom: var(--xs);
+      }
 
-    li {
-      height: var(--l);
-      overflow: hidden;
-      font-size: var(--m);
-    }
 
-    input:not([type=checkbox]) {
-      color: white;
-      text-shadow: 1px 1px 1px rgba(0,0,0,.7);
-      vertical-align: top;
-      box-sizing: border-box;
-      min-width: var(--xl);
-      height: var(--l);
-      padding: 0 var(--s);
-      background: var(--element-color);
-      border-radius: var(--border-radius);
-      box-shadow: 0 1px 1px rgba(0,0,0,.4);
-      outline: none;
-      transition: all .1s;
-      border: 1px solid transparent;
-      font-size: var(--m);
-    }
-    input:not([type=checkbox]):hover {
-      background: var(--element-hover-color);
-    }
-    input:not([type=checkbox]):active {
-      transform: translateY(1px);
-    }
-    input:not([type=checkbox]):focus {
-      border: 1px solid var(--element-focus-color);
-    }
-
-    input[type=text] {
-      padding: 0 var(--s);
-      width: 200px;
-      height: var(--l);
-      background: var(--element-color);
-      border: none;
-      outline: none;
-      border-radius: var(--border-radius);
-    }
-    input[type=text]::placeholder {
-      font-style: italic;
-      color: #333;
-      text-shadow: none;
-    }
-
-    ${TaskItem} {
-      display: block;
-      height: var(--l);
-      overflow: hidden;
-    }
-  `;
+      ${TaskItem} {
+        display: block;
+        height: var(--l);
+        overflow: hidden;
+      }
+    `,
+  ];
 
   template = xml`
     <h1>${this.#items.filter(v => v.done.value).length}/${this.#items.length} tasks compelete</h1>

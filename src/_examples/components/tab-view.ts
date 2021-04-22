@@ -7,34 +7,34 @@ export class TabView extends Component {
     {
       path: "/",
       title: "Visitor demo",
-      content: new URL("./visitor-demo.js", import.meta.url).href,
+      content: "./visitor-demo.js",
     },
     {
       path: "/todo",
       title: "Todo",
-      content: new URL("./to-do/_to-do.js", import.meta.url).href,
+      content: "./to-do/_to-do.js",
     },
     {
       path: "/array-demo",
       title: "Array demo",
-      content: new URL("./array-demo.js", import.meta.url).href,
+      content: "./array-demo.js",
     },
     {
       path: "/time-difference",
       title: "Time difference",
-      content: new URL("./time-diff.js", import.meta.url).href,
+      content: "./time-diff.js",
     },
     {
       path: "/async",
       title: "Async",
-      content: new URL("./async-demo.js", import.meta.url).href,
+      content: "./async-demo.js",
     },
     {
       path: "/window-manager",
       title: "Windowing demo",
-      content: new URL("./window-manager/_window-manager.js", import.meta.url).href,
+      content: "./window-manager/_window-manager.js",
     },
-  ];
+  ].map(tab => (tab.content = new URL(tab.content, import.meta.url).href, tab));
 
   connectedCallback (): void {
     const original = document.title;
