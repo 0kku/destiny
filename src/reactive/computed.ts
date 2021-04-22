@@ -31,9 +31,7 @@ export function computed<T> (
     computeFunction = fn;
     const newValue = cb();
     computeFunction = undefined;
-    if (!Object.is(newValue, reactor.value)) {
-      reactor.value = newValue;
-    }
+    reactor.value = newValue;
   }
 
   return reactor;
