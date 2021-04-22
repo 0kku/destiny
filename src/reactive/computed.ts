@@ -29,8 +29,11 @@ export function computed<T> (
 
   function fn () {
     computeFunction = fn;
-    reactor.value = cb();
+    const newValue = cb();
     computeFunction = undefined;
+    if (!Object.is(newValue, reactor.value)) {
+      reactor.value = newValue;
+    }
   }
 
   return reactor;

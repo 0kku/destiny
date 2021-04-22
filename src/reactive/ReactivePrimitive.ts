@@ -97,11 +97,11 @@ export class ReactivePrimitive<T> {
     value: T,
     ...noUpdate: Array<(newValue: T) => void>
   ): this {
-    if (value !== this.#value) {
+    if (!Object.is(value, this.#value)) {
       this.#value = value;
       [...this.#callbacks.values()]
-        .filter(cb => !noUpdate.includes(cb))
-        .forEach(cb => cb(value));
+      .filter(cb => !noUpdate.includes(cb))
+      .forEach(cb => cb(value));
     }
     return this;
   }
