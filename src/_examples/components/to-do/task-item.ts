@@ -53,10 +53,10 @@ export class TaskItem extends Component<{
   template = xml`
     <form
       class="edit-task"
-      on:submit="${(e: Event) => {
+      on:submit=${(e: Event) => {
         e.preventDefault();
         this.item.editing.value = false;
-      }}"
+      }}
     >
       ${this.item.editing.pipe(editing => !editing
         ? xml`
@@ -64,12 +64,12 @@ export class TaskItem extends Component<{
             <span class="task-checkbox">
               <input
                 type="checkbox"
-                prop:checked="${this.item.done}"
+                prop:checked=${this.item.done}
               />
             </span>
             <span
               class="task-name"
-              style="${this.item.done.truthy("text-decoration: line-through")}"
+              style=${this.item.done.truthy("text-decoration: line-through")}
             >
               ${this.item.title}
             </span>
@@ -78,15 +78,15 @@ export class TaskItem extends Component<{
             type="button"
             value="📝"
             title="Edit"
-            on:click="${() => this.item.editing.value = true}"
+            on:click=${() => this.item.editing.value = true}
           />
         `
         : xml`
           <input
             type="text"
-            prop:value="${this.item.title}"
+            prop:value=${this.item.title}
             required=""
-            destiny:in="${(e: HTMLInputElement) => e.focus()}"
+            destiny:in=${(e: HTMLInputElement) => e.focus()}
           />
           <input
             type="submit"
@@ -99,7 +99,7 @@ export class TaskItem extends Component<{
         type="button"
         value="🚮"
         title="Delete"
-        on:click="${this.removeItem}"
+        on:click=${this.removeItem}
       />
     </form>
   `;

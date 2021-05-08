@@ -10,6 +10,6 @@ export class TextField extends Component {
   static styles = inputStyles;
 
   template = xml`
-    <input type="text" destiny:ref="${this.forwardProps}" />
+    <input type="text" destiny:ref=${this.forwardProps} />
   `;
 }

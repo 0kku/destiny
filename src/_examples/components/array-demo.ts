@@ -49,7 +49,7 @@ export class ArrayDemo extends Component {
   template = xml`
     <ul>
       ${this.#items.map((text, i) => xml`
-        <li style="${computed`background-color: ${text};`}">
+        <li style=${computed`background-color: ${text};`}>
           ${i}
         </li>
       `)}

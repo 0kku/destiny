@@ -82,10 +82,10 @@ export class TabView extends Component {
     <nav>
       ${this.#tabs.map(({path, title}) => xml`
         <a
-          href="${computed`#${path}`}"
-          class="${classNames({
+          href=${computed`#${path}`}
+          class=${classNames({
             selected: computed(() => path === route.value)
-          })}"
+          })}
         >
           ${title}
         </a>
@@ -93,7 +93,7 @@ export class TabView extends Component {
     </nav>
 
     <main>
-      <${HashRouter} prop:routes="${this.#tabs}">
+      <${HashRouter} prop:routes=${this.#tabs}>
         <div slot="404">
           Couldn't find resource "${route}". <br />
           Please check your spelling.

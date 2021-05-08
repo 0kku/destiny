@@ -56,16 +56,16 @@ export class Todo extends Component {
     <ul>
       ${this.#items.map((item, i) => xml`
         <${TaskItem}
-          prop:item="${item}"
-          prop:removeItem="${() => this.#items.splice(i.value, 1)}"
-          destiny:in="${animateIn}"
-          destiny:out="${animateOut}"
+          prop:item=${item}
+          prop:removeItem=${() => this.#items.splice(i.value, 1)}
+          destiny:in=${animateIn}
+          destiny:out=${animateOut}
         />
       `)}
       ${this.#items.length.falsy(xml`
         <li
-          destiny:in="${animateIn}"
-          destiny:out="${animateOut}"
+          destiny:in=${animateIn}
+          destiny:out=${animateOut}
         >
           <i>No items to show</i>
         </li>
@@ -73,7 +73,7 @@ export class Todo extends Component {
       <li>
         <form
           id="add-task"
-          on:submit="${(e: Event) => {
+          on:submit=${(e: Event) => {
             e.preventDefault();
             this.#items.push({
               title: this.#newValue.value,
@@ -81,11 +81,11 @@ export class Todo extends Component {
               editing: false,
             });
             this.#newValue.value = "";
-          }}"
+          }}
         >
           <input
             type="text"
-            prop:value="${this.#newValue}"
+            prop:value=${this.#newValue}
             required=""
             placeholder="Add an item..."
             aria-label="Add an item"
@@ -98,20 +98,20 @@ export class Todo extends Component {
       <input
         type="checkbox"
         class="check-all"
-        prop:checked="${this.#items.every(item => item.done.value)}"
-        prop:indeterminate="${this.#items.exclusiveSome(item => item.done.value)}"
-        on:change="${(e: TInputChangeEvent) => {
+        prop:checked=${this.#items.every(item => item.done.value)}
+        prop:indeterminate=${this.#items.exclusiveSome(item => item.done.value)}
+        on:change=${(e: TInputChangeEvent) => {
           this.#items.value.forEach(item => {
             item.done.value = e.currentTarget.checked;
           });
-        }}"
+        }}
       />
       Check all
     </label>
     <input
       type="button"
       value="Clear done"
-      on:click="${() => this.#items.mutFilter(v => !v.done.value)}"
+      on:click=${() => this.#items.mutFilter(v => !v.done.value)}
     />
   `;
 }

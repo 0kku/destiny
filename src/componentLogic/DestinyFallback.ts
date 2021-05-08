@@ -20,8 +20,8 @@ export class DestinyFallback extends Component {
       this.replaceWith(
         xml`
           <${component}
-            destiny:ref="${this.forwardProps}"
-            call:append="${[...this.childNodes]}"
+            destiny:ref=${this.forwardProps}
+            call:append=${[...this.childNodes]}
           />
         `.content,
       );

@@ -19,7 +19,7 @@ export function resolveSlots (
     const node = walker.currentNode;
     if (isTextNode(node)) {
       const matches = node.wholeText.matchAll(
-        /__internal_([0-9]+)_/gu,
+        /"__internal_([0-9]+)_"/gu,
       ) as IterableIterator<RegExpMatchArray & {index: number}>;
       const fragment = {
         node,

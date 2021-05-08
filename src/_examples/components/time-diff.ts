@@ -42,21 +42,21 @@ export class TimeDiff extends Component {
           Start:
           <input
             type="time"
-            prop:valueAsDate="${task.start}"
+            prop:valueAsDate=${task.start}
           />
         </label>
         <label>
           End: 
           <input
             type="time"
-            prop:valueAsDate="${task.end}"
+            prop:valueAsDate=${task.end}
           />
         </label>
         <label>
           Name:
           <input
             type="text"
-            prop:value="${task.name}"
+            prop:value=${task.name}
           />
         </label>
         <p>
@@ -68,7 +68,7 @@ export class TimeDiff extends Component {
     )}
     <input
       type="button"
-      on:click="${() => this.#tasks.push(createTask())}"
+      on:click=${() => this.#tasks.push(createTask())}
       value="New task"
     />
   `;

@@ -17,7 +17,7 @@ export class VisitorDemo extends Component {
 
   template = xml`
     <label>
-      What's your name? <input type="text" value="${this.#who}" />
+      What's your name? <input type="text" value=${this.#who} />
     </label>
     <p>
       Hello, ${this.#who}! You arrived ${this.#count} seconds ago.

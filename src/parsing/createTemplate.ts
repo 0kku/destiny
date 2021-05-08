@@ -34,7 +34,7 @@ export function createTemplate (
         string += String(prop) + fragment;
       }
     } else {
-      string += `__internal_${i}_${fragment}`;
+      string += `"__internal_${i}_"${fragment}`;
     }
   }
   

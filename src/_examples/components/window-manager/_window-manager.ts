@@ -174,7 +174,7 @@ export class WindowManager extends Component {
 
   template = xml`
     ${this.#windows.map(win => xml`
-      <${Window} prop:props="${win}" />
+      <${Window} prop:props=${win} />
     `)}
   `;
 }
