@@ -1,4 +1,4 @@
-import { Component, reactive, xml, css } from "/dist/mod.js";
+import { Component, reactive, xml, css, computed } from "/dist/mod.js";
 
 const randomColor = () => (
   "#" + 
@@ -49,7 +49,9 @@ export class ArrayDemo extends Component {
   template = xml`
     <ul>
       ${this.#items.map((text, i) => xml`
-        <li style="background-color: ${text};">${i}</li>
+        <li style="${computed`background-color: ${text};`}">
+          ${i}
+        </li>
       `)}
     </ul>
   `;

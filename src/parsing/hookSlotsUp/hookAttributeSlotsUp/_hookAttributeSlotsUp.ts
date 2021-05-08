@@ -1,5 +1,4 @@
-import { resolveSlotPositions } from "./resolveSlotPositions.js";
-import { resolveAttributeValue } from "./resolveAttributeValue.js";
+import { resolveSlotPropIndex } from "./resolveSlotPropIndex.js";
 import { parseAttributeName } from "./parseAttributeName.js";
 import { assignElementData } from "./elementData/_assignElementData.js";
 import type { Component } from "../../../componentLogic/Component.js";
@@ -28,10 +27,10 @@ export function hookAttributeSlotsUp (
       attribute: new Map<string, unknown>(),
     } as const;
     for (const {name, value} of element.attributes) {
-      const val = resolveSlotPositions(value);
+      const propIndex = resolveSlotPropIndex(value);
 
-      //if no slots, skip
-      if (!val.length) {
+      // skip if attribute wasn't slotted
+      if (propIndex === -1) {
         if (captureProps && name !== "destiny:attr") {
           const [namespace, attributeName] = parseAttributeName(name);
           values[namespace].set(attributeName, value);
@@ -39,7 +38,7 @@ export function hookAttributeSlotsUp (
         continue;
       }
 
-      const attrVal = resolveAttributeValue(val, props);
+      const attrVal = props[propIndex];
       const [namespace, attributeName] = parseAttributeName(name);
       values[namespace].set(attributeName, attrVal);
     }
