@@ -24,7 +24,6 @@ export class Component extends HTMLElement {
   assignedData = {
     prop: new Map<string, unknown>(),
     on: new Map<string, unknown>(),
-    call: new Map<string, unknown>(),
     destiny: new Map<string, unknown>(),
     attribute: new Map<string, unknown>(),
   } as const;

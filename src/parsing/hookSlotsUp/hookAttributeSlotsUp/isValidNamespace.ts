@@ -1,6 +1,6 @@
 import type { TNamespace } from "./TNamespace.js";
 
-export const validNamespaces = ["attribute", "prop", "call", "on", "destiny"] as const;
+export const validNamespaces = ["attribute", "prop", "on", "destiny"] as const;
 
 export function isValidNamespace (
   input: string,
