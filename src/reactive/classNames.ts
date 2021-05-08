@@ -2,7 +2,7 @@ import { computed } from "./computed.js";
 import { ReactivePrimitive } from "./ReactivePrimitive.js";
 
 export function classNames (
-  input: Record<string, boolean | ReactivePrimitive<boolean>>,
+  input: Record<string, boolean | Readonly<ReactivePrimitive<boolean>>>,
 ): Readonly<ReactivePrimitive<string>> {
   return computed(() =>
     Object
@@ -12,9 +12,7 @@ export function classNames (
       ? value.value
       : value
     )
-    .reduce(
-      (result, [key]) => `${result} ${key}`,
-      "",
-    ),
+    .map(([key]) => key)
+    .join(" "),
   );
 }
