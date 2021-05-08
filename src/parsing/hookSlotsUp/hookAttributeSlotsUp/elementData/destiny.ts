@@ -1,5 +1,5 @@
-import { destinyOut } from "./destinyOut.js";
-import { destinyIn } from "./destinyIn.js";
+import { destinyUnmount } from "./destinyUnmount.js";
+import { destinyMount } from "./destinyMount.js";
 import { destinyRef } from "./destinyRef.js";
 import type { TElementData } from "../TElementData.js";
 
@@ -16,12 +16,12 @@ export function destiny (
         destinyRef(value, element);
       break;
 
-      case "in":
-        destinyIn(value, element);
+      case "mount":
+        destinyMount(value, element);
       break;
 
-      case "out":
-        destinyOut(element, value);
+      case "unmount":
+        destinyUnmount(element, value);
       break;
 
       default:

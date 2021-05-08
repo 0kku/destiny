@@ -106,7 +106,7 @@ export class Slot {
   }
 
   /**
-   * Removes all the associated content from the DOM and destroys the `Slot`. Note: this is an async function and will wait for any exit animations or other tasks to finish before removing anything. Exit tasks for HTML elements are defined by the `destiny:out` attribute; if the callback function given to it returns a `Promise`, that's what's being awaited before removal.
+   * Removes all the associated content from the DOM and destroys the `Slot`. Note: this is an async function and will wait for any exit animations or other tasks to finish before removing anything. Exit tasks for HTML elements are defined by the `destiny:unmount` attribute; if the callback function given to it returns a `Promise`, that's what's being awaited before removal.
    */
   async remove (): Promise<void> {
     await this.#disposeCurrentNodes();

@@ -21,7 +21,7 @@ export class DestinyFallback extends Component {
         xml`
           <${component}
             destiny:ref=${this.forwardProps}
-            destiny:in=${(element: HTMLElement) => element.append(...this.childNodes)}
+            destiny:mount=${(element: HTMLElement) => element.append(...this.childNodes)}
           />
         `.content,
       );

@@ -1,14 +1,14 @@
 import { deferredElements } from "../../../deferredElements.js";
 
 /**
- * `destiny:out` takes a callback function which will be called
+ * `destiny:unmount` takes a callback function which will be called
  * when the element is about to be removed from DOM. If the 
  * callback returns a promise, that promise will be awaited on
  * and the element is removed once it resolves.
  * 
  * Example usage: 
  * ```html
- * <div destiny:in=${
+ * <div destiny:unmount=${
  *   element => {
  *     const anim = element.animate(
  *       [{opacity: 0}, {height: 1}],
@@ -20,7 +20,7 @@ import { deferredElements } from "../../../deferredElements.js";
  * }> This will fade out! </div>
  * ```
  */
-export function destinyOut (
+export function destinyUnmount (
   element: HTMLElement,
   value: unknown,
 ): void {

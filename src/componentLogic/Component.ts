@@ -84,7 +84,7 @@ export class Component extends HTMLElement {
     }
   }
 
-  out (
+  unmount (
     callback: (element: HTMLElement) => Promise<void> | void,
   ): this {
     deferredElements.set(

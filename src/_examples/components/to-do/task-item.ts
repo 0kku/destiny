@@ -86,7 +86,7 @@ export class TaskItem extends Component<{
             type="text"
             prop:value=${this.item.title}
             required=""
-            destiny:in=${(e: HTMLInputElement) => e.focus()}
+            destiny:mount=${(e: HTMLInputElement) => e.focus()}
           />
           <input
             type="submit"

@@ -58,14 +58,14 @@ export class Todo extends Component {
         <${TaskItem}
           prop:item=${item}
           prop:removeItem=${() => this.#items.splice(i.value, 1)}
-          destiny:in=${animateIn}
-          destiny:out=${animateOut}
+          destiny:mount=${animateIn}
+          destiny:unmount=${animateOut}
         />
       `)}
       ${this.#items.length.falsy(xml`
         <li
-          destiny:in=${animateIn}
-          destiny:out=${animateOut}
+          destiny:mount=${animateIn}
+          destiny:unmount=${animateOut}
         >
           <i>No items to show</i>
         </li>
