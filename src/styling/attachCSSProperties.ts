@@ -7,10 +7,13 @@ import type { ReactivePrimitive } from "../reactive/ReactivePrimitive.js";
  * @param property  CSS property to be synchronized
  * @param source    A ReactivePrimitive whose value is to be used for the CSS Property
  */
-export function attachCSSProperty (
+export function attachCSSProperties (
   element: HTMLElement,
-  property: string,
-  source: Readonly<ReactivePrimitive<string>>,
+  styles: {
+    [Key: string]: Readonly<ReactivePrimitive<string>>,
+  },
 ): void {
-  source.bind(value => element.style.setProperty(property, value));
+  for (const [property, source] of Object.entries(styles)) {
+    source.bind(value => element.style.setProperty(property, value));
+  }
 }

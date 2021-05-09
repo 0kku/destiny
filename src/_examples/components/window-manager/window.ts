@@ -8,12 +8,14 @@ export class Window extends Component<{
   constructor () {
     super();
 
-    this.attachCSSProperty("width", computed`${this.props.size.x}px`);
-    this.attachCSSProperty("height", computed`${this.props.size.y}px`);
-    this.attachCSSProperty(
-      "transform",
-      computed`translate(${this.props.position.x}px, ${this.props.position.y}px)`,
-    );
+    this.attachCSSProperties({
+      width:     computed`${this.props.size.x}px`,
+      height:    computed`${this.props.size.y}px`,
+      transform: computed`translate(
+        ${this.props.position.x}px,
+        ${this.props.position.y}px
+      )`,
+    });
   }
 
   static styles = css`

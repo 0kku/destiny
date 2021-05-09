@@ -7,7 +7,7 @@ export function css (
   ...props: Array<unknown>
 ): CSSTemplate {
   if (props.some(v => isReactive(v))) {
-    throw new TypeError("CSS templates are not reactive. Instead, use `attachCSSProperty` to synchronize your CSS with your application state.");
+    throw new TypeError("CSS templates are not reactive. Instead, use `attachCSSProperties()` to synchronize your CSS with your application state.");
   }
 
   return new CSSTemplate(composeTemplateString(strings, props));

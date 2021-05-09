@@ -1,11 +1,33 @@
 import { Component, xml, css, reactive, ReactivePrimitive } from "/dist/mod.js";
 
 import { Window } from "./window.js";
-import type { TWindow } from "./TWindow";
+import type { TWindow } from "./TWindow.js";
 
 
 type TDirection = "n" | "s" | "e" | "w" | "ne" | "se" | "sw" | "nw";
+type TGrabType = TDirection | "move" | "";
 const directions = ["s", "n", "e", "w"] as const;
+
+function grabTypeToCursorType (v: TGrabType) {
+  switch (v) {
+    case "move":
+      return "grabbing";
+    case "n":
+    case "s":
+      return "ns-resize";
+    case "e":
+    case "w":
+      return "ew-resize";
+    case "ne":
+    case "sw":
+      return "nesw-resize";
+    case "nw":
+    case "se":
+      return "nwse-resize";
+    default:
+      return "initial";
+  }
+}
 
 export class WindowManager extends Component {
   #windows: Array<TWindow> = [
@@ -37,11 +59,7 @@ export class WindowManager extends Component {
 
   #dragging = {
     target: this.#windows[0],
-    type: new ReactivePrimitive<
-      | "move"
-      | TDirection
-      | ""
-    >(""),
+    type: new ReactivePrimitive<TGrabType>(""),
     positionStart: {
       x: 0,
       y: 0,
@@ -131,33 +149,10 @@ export class WindowManager extends Component {
   constructor () {
     super();
 
-    this.attachCSSProperty(
-      "user-select",
-      this.#dragging.type.truthy("none", "initial"),
-    );
-    this.attachCSSProperty(
-      "cursor",
-      this.#dragging.type.pipe<string>(v => {
-        switch (v) {
-          case "move":
-            return "grabbing";
-          case "n":
-          case "s":
-            return "ns-resize";
-          case "e":
-          case "w":
-            return "ew-resize";
-          case "ne":
-          case "sw":
-            return "nesw-resize";
-          case "nw":
-          case "se":
-            return "nwse-resize";
-          default:
-            return "initial";
-        }
-      }),
-    );
+    this.attachCSSProperties({
+      "user-select": this.#dragging.type.truthy("none", "initial"),
+      cursor: this.#dragging.type.pipe<string>(grabTypeToCursorType),
+    });
   }
 
   static styles = css`

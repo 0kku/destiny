@@ -1,4 +1,4 @@
-import { register, xml, attachCSSProperty } from "../mod.js";
+import { register, xml, attachCSSProperties } from "../mod.js";
 import { deferredElements } from "../parsing/deferredElements.js";
 import { assignElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/elementData/_assignElementData.js";
 import { supportsAdoptedStyleSheets } from "../styling/supportsAdoptedStyleSheets.js";
@@ -67,11 +67,12 @@ export class Component extends HTMLElement {
    * @param property  CSS property to be synchronized
    * @param source    A ReactivePrimitive whose value is to be used for the CSS Property
    */
-  attachCSSProperty (
-    property: string,
-    source: Readonly<ReactivePrimitive<string>>,
+  attachCSSProperties (
+    styles: {
+      [Key: string]: Readonly<ReactivePrimitive<string>>,
+    },
   ): void {
-    attachCSSProperty(this, property, source);
+    attachCSSProperties(this, styles);
   }
 
   replaceWith (
