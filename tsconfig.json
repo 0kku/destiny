@@ -7,7 +7,7 @@
     "lib": [
       "dom",
       "DOM.Iterable",
-      "es2020",
+      // "es2020",
       "esnext",
     ],                                        /* Specify library files to be included in the compilation. */
     // "allowJs": true,                       /* Allow javascript files to be compiled. */
@@ -60,5 +60,7 @@
     // "inlineSourceMap": true,               /* Emit a single file with source maps instead of having a separate file. */
     // "inlineSources": true,                 /* Emit the source alongside the sourcemaps within a single file; requires '--inlineSourceMap' or '--sourceMap' to be set. */
     "importsNotUsedAsValues": "error",
+    // "noUncheckedIndexedAccess": true,
+    // "noImplicitOverride": true,
   }
 }
