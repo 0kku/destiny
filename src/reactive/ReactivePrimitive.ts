@@ -1,22 +1,60 @@
-import { computed, computeFunction } from "./computed.js";
+import { computeFunction } from "./computed.js";
 
-/**
- * `ReactivePrimitive`s are reactive values that contain a single value which can be updated and whose updates can be listened to.
- */
-export class ReactivePrimitive<T> {
+const setValue = new class {
+  #inner = new WeakMap<
+    ReadonlyReactivePrimitive<any>
+  >();
+
+  get<T>(
+    key: ReadonlyReactivePrimitive<T>
+  ) {
+    return this.#inner.get(key) as (
+      value: T,
+      ...noUpdate: Array<(newValue: T) => void>
+    ) => void;
+  }
+
+  set<T>(
+    key: ReadonlyReactivePrimitive<T>,
+    value: (
+      value: T,
+      ...noUpdate: Array<(newValue: T) => void>
+    ) => void,
+  ) {
+    this.#inner.set(key, value);
+  }
+};
+
+export class ReadonlyReactivePrimitive<T> {
   /** The current value of the `ReactivePrimitive`. */
   #value: T;
 
   /** All the callbacks added to the `ReactivePrimitive`, which are to be called when the `value` updates. */
   #callbacks: Set<(value: T) => void> = new Set;
 
-  /**
-   * @param initialValue the value to initialize the ReactivePrimitive with
-   */
   constructor (
     initialValue: T,
   ) {
     this.#value = initialValue;
+    setValue.set(this, (...args) => this.#set(...args));
+  }
+  
+  /**
+   * Can be used to functionally update the value.
+   * @param value New value to be set
+   * @param noUpdate One or more callback methods you don't want to be called on this update. This can be useful for example when responding to DOM events: you wouldn't want to update the DOM with the new value on the same element that caused the udpate in the first place.
+   */
+  #set (
+    value: T,
+    ...noUpdate: ReadonlyArray<(newValue: T) => void>
+  ): this {
+    if (!Object.is(value, this.#value)) {
+      this.#value = value;
+      [...this.#callbacks.values()]
+      .filter(cb => !noUpdate.includes(cb))
+      .forEach(cb => cb(value));
+    }
+    return this;
   }
 
   /**
@@ -79,40 +117,7 @@ export class ReactivePrimitive<T> {
     return this;
   }
 
-  /**
-   * Forces an update event to be dispatched.
-   */
-  update (): this {
-    this.set(this.#value);
-
-    return this;
-  }
-  
-  /**
-   * Can be used to functionally update the value.
-   * @param value New value to be set
-   * @param noUpdate One or more callback methods you don't want to be called on this update. This can be useful for example when responding to DOM events: you wouldn't want to update the DOM with the new value on the same element that caused the udpate in the first place.
-   */
-  set (
-    value: T,
-    ...noUpdate: Array<(newValue: T) => void>
-  ): this {
-    if (!Object.is(value, this.#value)) {
-      this.#value = value;
-      [...this.#callbacks.values()]
-      .filter(cb => !noUpdate.includes(cb))
-      .forEach(cb => cb(value));
-    }
-    return this;
-  }
-
-  /** The current `value` of the `ReactivePrimitive` */
-  set value (
-    value: T,
-  ) {
-    this.set(value);
-  }
-
+  /** The current value of the ReadonlyReactivePrimitive. */
   get value (): T {
     if (computeFunction) {
       this.#callbacks.add(computeFunction);
@@ -127,37 +132,84 @@ export class ReactivePrimitive<T> {
    */
   pipe <K> (
     callback: (value: T) => K,
-  ): Readonly<ReactivePrimitive<K>> {
-    return computed(() => callback(this.value));
+  ): ReadonlyReactivePrimitive<K> {
+    const reactor = new ReadonlyReactivePrimitive(callback(this.#value));
+    this.bind(v => setValue.get(reactor)(callback(v)));
+    return reactor;
   }
 
   truthy<T> (
     valueWhenTruthy: T,
     valueWhenFalsy?: undefined,
-  ): Readonly<ReactivePrimitive<T | undefined>>
+  ): ReadonlyReactivePrimitive<T | undefined>
   truthy<T, K> (
     valueWhenTruthy: T,
     valueWhenFalsy: K,
-  ): Readonly<ReactivePrimitive<T | K>>
+  ): ReadonlyReactivePrimitive<T | K>
   truthy<T, K> (
     valueWhenTruthy: T,
     valueWhenFalsy: K,
-  ): Readonly<ReactivePrimitive<T | K>> {
+  ): ReadonlyReactivePrimitive<T | K> {
     return this.pipe(v => v ? valueWhenTruthy : valueWhenFalsy);
   }
 
   falsy<T> (
     valueWhenFalsy: T,
     valueWhenTruthy?: undefined,
-  ): Readonly<ReactivePrimitive<T | undefined>>
+  ): ReadonlyReactivePrimitive<T | undefined>
   falsy<T, K> (
     valueWhenFalsy: T,
     valueWhenTruthy: K,
-  ): Readonly<ReactivePrimitive<T | K>>
+  ): ReadonlyReactivePrimitive<T | K>
   falsy<T, K> (
     valueWhenFalsy: T,
     valueWhenTruthy: K,
-  ): Readonly<ReactivePrimitive<T | K>> {
+  ): ReadonlyReactivePrimitive<T | K> {
     return this.pipe(v => v ? valueWhenTruthy : valueWhenFalsy);
+  }
+}
+
+export class ReactivePrimitive<T> extends ReadonlyReactivePrimitive<T> {
+  /**
+   * Forces an update event to be dispatched.
+   */
+  update (): this {
+    this.set(this.value);
+
+    return this;
+  }
+    
+  /**
+   * Can be used to functionally update the value.
+   * @param value New value to be set
+   * @param noUpdate One or more callback methods you don't want to be called on this update. This can be useful for example when responding to DOM events: you wouldn't want to update the DOM with the new value on the same element that caused the udpate in the first place.
+   */
+  set (
+    value: T,
+    ...noUpdate: Array<(newValue: T) => void>
+  ): this {
+    setValue.get(this)(value, ...noUpdate);
+
+    return this;
+  }
+  
+  /** The current value of the ReactivePrimitive. */
+  get value (): T {
+    return super.value; 
+  }
+
+  /** The current `value` of the `ReactivePrimitive` */
+  set value (
+    value: T,
+  ) {
+    this.set(value);
+  }
+
+  /** Cache for readonly getter */
+  #readonly: ReadonlyReactivePrimitive<T> | undefined;
+
+  /** Readonly version of the instance that can't be mutated from the outside, but will be updated as the original instance updates. */
+  get readonly (): ReadonlyReactivePrimitive<T> {
+    return this.#readonly ?? (this.#readonly = this.pipe(v => v));
   }
 }

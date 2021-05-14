@@ -1,4 +1,4 @@
-import type { ReactivePrimitive } from "../reactive/ReactivePrimitive.js";
+import type { ReadonlyReactivePrimitive } from "../reactive/ReactivePrimitive.js";
 
 /**
  * Synchonizes a CSS property of an element to a ReactivePrimitive.
@@ -10,7 +10,7 @@ import type { ReactivePrimitive } from "../reactive/ReactivePrimitive.js";
 export function attachCSSProperties (
   element: HTMLElement,
   styles: {
-    [Key: string]: Readonly<ReactivePrimitive<string>>,
+    [Key: string]: ReadonlyReactivePrimitive<string>,
   },
 ): void {
   for (const [property, source] of Object.entries(styles)) {

@@ -6,7 +6,7 @@ import { arrayWrap } from "../utils/arrayWrap.js";
 import type { Ref, RefPromise } from "./Ref.js";
 import type { Renderable } from "../parsing/Renderable.js";
 import type { Slot } from "../parsing/Slot.js";
-import type { ReactivePrimitive } from "../reactive/ReactivePrimitive.js";
+import type { ReadonlyReactivePrimitive } from "../reactive/ReactivePrimitive.js";
 import type { CSSTemplate } from "../styling/CSSTemplate.js";
 
 // @ts-ignore I don't know how to describe this type correctly
@@ -69,7 +69,7 @@ export class Component extends HTMLElement {
    */
   attachCSSProperties (
     styles: {
-      [Key: string]: Readonly<ReactivePrimitive<string>>,
+      [Key: string]: ReadonlyReactivePrimitive<string>,
     },
   ): void {
     attachCSSProperties(this, styles);

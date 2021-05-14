@@ -1,4 +1,4 @@
-import { ReactiveArray, ReactivePrimitive } from "../mod.js";
+import { ReactiveArray, ReadonlyReactivePrimitive } from "../mod.js";
 import { reactiveObjectFlag } from "../reactive/reactiveObject/reactiveObjectFlag.js";
 import type { TReactive } from "../reactive/types/IReactive.js";
 
@@ -12,7 +12,7 @@ export function isReactive (
 ): input is TReactive<unknown> {
   return [
     ReactiveArray,
-    ReactivePrimitive,
+    ReadonlyReactivePrimitive,
   ].some(constr => input instanceof constr) || (
     !!input &&
     typeof input === "object" &&

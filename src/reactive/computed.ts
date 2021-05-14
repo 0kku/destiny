@@ -1,5 +1,5 @@
 import { composeTemplateString } from "../utils/composeTemplateString.js";
-import { ReactivePrimitive } from "./ReactivePrimitive.js";
+import { ReactivePrimitive, ReadonlyReactivePrimitive } from "./ReactivePrimitive.js";
 
 export let computeFunction: VoidFunction | undefined;
 
@@ -11,14 +11,14 @@ export let computeFunction: VoidFunction | undefined;
 export function computed (
   callback: TemplateStringsArray,
   ...props: Array<unknown>
-): Readonly<ReactivePrimitive<string>>;
+): ReadonlyReactivePrimitive<string>;
 export function computed<T> (
   callback: () => T,
-): Readonly<ReactivePrimitive<T>>;
+): ReadonlyReactivePrimitive<T>;
 export function computed<T> (
   callback: (() => T) | TemplateStringsArray,
   ...props: Array<unknown>
-): Readonly<ReactivePrimitive<string>> | Readonly<ReactivePrimitive<T>> {
+): ReadonlyReactivePrimitive<string> | ReadonlyReactivePrimitive<T> {
   if ("raw" in callback) {
     return computed(() => composeTemplateString(callback, props));
   }
@@ -34,5 +34,5 @@ export function computed<T> (
     reactor.value = newValue;
   }
 
-  return reactor;
+  return reactor.readonly;
 }

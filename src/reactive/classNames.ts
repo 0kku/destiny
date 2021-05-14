@@ -1,14 +1,14 @@
 import { computed } from "./computed.js";
-import { ReactivePrimitive } from "./ReactivePrimitive.js";
+import { ReadonlyReactivePrimitive } from "./ReactivePrimitive.js";
 
 export function classNames (
-  input: Record<string, boolean | Readonly<ReactivePrimitive<boolean>>>,
-): Readonly<ReactivePrimitive<string>> {
+  input: Record<string, boolean | ReadonlyReactivePrimitive<boolean>>,
+): ReadonlyReactivePrimitive<string> {
   return computed(() =>
     Object
     .entries(input)
     .filter(([, value]) => 
-      value instanceof ReactivePrimitive
+      value instanceof ReadonlyReactivePrimitive
       ? value.value
       : value
     )
