@@ -17,7 +17,7 @@ export function doOrBind (
         value.set(
           (e.currentTarget as HTMLInputElement | null)
           ?.[key as TWatchedAttribute],
-          whatToDo,
+          { noUpdate: [whatToDo] },
         );
       });
     }

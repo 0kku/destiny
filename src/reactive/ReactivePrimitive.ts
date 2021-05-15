@@ -1,5 +1,17 @@
 import { computeFunction } from "./computed.js";
 
+type TReactivePrimitiveCallback<T> = (newValue: T) => void;
+
+type TReactivePrimitiveUpdaterOptions<T> = {
+  noUpdate: ReadonlyArray<TReactivePrimitiveCallback<T>>,
+  force: boolean,
+};
+
+type TReactivePrimitiveUpdater<T> = (
+  value: T,
+  options?: Partial<TReactivePrimitiveUpdaterOptions<T>>,
+) => void;
+
 const setValue = new class {
   #inner = new WeakMap<
     ReadonlyReactivePrimitive<any>
@@ -8,18 +20,12 @@ const setValue = new class {
   get<T>(
     key: ReadonlyReactivePrimitive<T>
   ) {
-    return this.#inner.get(key) as (
-      value: T,
-      ...noUpdate: Array<(newValue: T) => void>
-    ) => void;
+    return this.#inner.get(key) as TReactivePrimitiveUpdater<T>;
   }
 
   set<T>(
     key: ReadonlyReactivePrimitive<T>,
-    value: (
-      value: T,
-      ...noUpdate: Array<(newValue: T) => void>
-    ) => void,
+    value: TReactivePrimitiveUpdater<T>,
   ) {
     this.#inner.set(key, value);
   }
@@ -30,13 +36,16 @@ export class ReadonlyReactivePrimitive<T> {
   #value: T;
 
   /** All the callbacks added to the `ReactivePrimitive`, which are to be called when the `value` updates. */
-  #callbacks: Set<(value: T) => void> = new Set;
+  #callbacks: Set<TReactivePrimitiveCallback<T>> = new Set;
 
   constructor (
     initialValue: T,
   ) {
     this.#value = initialValue;
-    setValue.set(this, (...args) => this.#set(...args));
+    setValue.set(
+      this,
+      (...args) => this.#set(...args),
+    );
   }
   
   /**
@@ -46,9 +55,17 @@ export class ReadonlyReactivePrimitive<T> {
    */
   #set (
     value: T,
-    ...noUpdate: ReadonlyArray<(newValue: T) => void>
+    options?: Partial<TReactivePrimitiveUpdaterOptions<T>>,
   ): this {
-    if (!Object.is(value, this.#value)) {
+    const {
+      noUpdate,
+      force,
+    }: TReactivePrimitiveUpdaterOptions<T> = {
+      noUpdate: [],
+      force: false,
+      ...options,
+    };
+    if (force || !Object.is(value, this.#value)) {
       this.#value = value;
       [...this.#callbacks.values()]
       .filter(cb => !noUpdate.includes(cb))
@@ -109,7 +126,7 @@ export class ReadonlyReactivePrimitive<T> {
    * @param callback the function to be called on updates
    */
   bind (
-    callback: (newValue: T) => void,
+    callback: TReactivePrimitiveCallback<T>,
     noFirstCall = false,
   ): this {
     this.#callbacks.add(callback);
@@ -174,7 +191,10 @@ export class ReactivePrimitive<T> extends ReadonlyReactivePrimitive<T> {
    * Forces an update event to be dispatched.
    */
   update (): this {
-    this.set(this.value);
+    this.set(
+      this.value,
+      { force: true },
+    );
 
     return this;
   }
@@ -186,9 +206,9 @@ export class ReactivePrimitive<T> extends ReadonlyReactivePrimitive<T> {
    */
   set (
     value: T,
-    ...noUpdate: Array<(newValue: T) => void>
+    options?: Partial<TReactivePrimitiveUpdaterOptions<T>>,
   ): this {
-    setValue.get(this)(value, ...noUpdate);
+    setValue.get(this)(value, options);
 
     return this;
   }
