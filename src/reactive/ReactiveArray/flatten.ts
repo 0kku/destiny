@@ -1,4 +1,4 @@
-import { ReactiveArray } from "./_ReactiveArray.js";
+import { ReadonlyReactiveArray } from "./_ReactiveArray.js";
 import type { TUnwrapReactiveArray } from "./TUnwrapReactiveArray.js";
 
 type TUnwrapArray<Input> = (
@@ -13,7 +13,7 @@ export const flatten = <
   input: Input,
 ): Array<TUnwrapReactiveArray<TUnwrapArray<Input>>> => {
   return input.reduce((acc: Array<TUnwrapReactiveArray<TUnwrapArray<Input>>>, v) => {
-    v instanceof ReactiveArray
+    v instanceof ReadonlyReactiveArray
     ? acc.push(...v.value)
     : acc.push(v as TUnwrapReactiveArray<TUnwrapArray<Input>>);
     return acc;

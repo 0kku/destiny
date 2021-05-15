@@ -1,7 +1,7 @@
-import type { ReactiveArray } from "./_ReactiveArray.js";
+import type { ReadonlyReactiveArray } from "./_ReactiveArray.js";
 
 export type TUnwrapReactiveArray<Input> = (
-  Input extends Readonly<ReactiveArray<infer V>>
+  Input extends ReadonlyReactiveArray<infer V>
   ? V
   : Input
 );

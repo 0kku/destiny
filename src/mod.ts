@@ -1,6 +1,7 @@
 export { ReactivePrimitive         } from "./reactive/ReactivePrimitive.js";
 export { ReadonlyReactivePrimitive } from "./reactive/ReactivePrimitive.js";
 export { ReactiveArray             } from "./reactive/ReactiveArray/_ReactiveArray.js";
+export { ReadonlyReactiveArray     } from "./reactive/ReactiveArray/_ReactiveArray.js";
 export { reactiveObject            } from "./reactive/reactiveObject/reactiveObject.js";
 export { reactive                  } from "./reactive/reactive.js";
 export { computed                  } from "./reactive/computed.js";

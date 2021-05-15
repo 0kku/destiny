@@ -1,4 +1,4 @@
-import { reactive, ReactiveArray } from "../../mod.js";
+import { reactive, ReadonlyReactiveArray } from "../../mod.js";
 import { isSpecialCaseObject } from "../reactiveObject/specialCaseObjects.js";
 import { isReactive } from "../../typeChecks/isReactive.js";
 import { isObject } from "../../typeChecks/isObject.js";
@@ -11,7 +11,7 @@ import type { TArrayValueType } from "../types/IArrayValueType.js";
  */
 export function makeNonPrimitiveItemsReactive<InputType> (
   items: Array<InputType | TArrayValueType<InputType>>,
-  parent: ReactiveArray<InputType>,
+  parent: ReadonlyReactiveArray<InputType>,
 ): Array<TArrayValueType<InputType>> {
   return items.map((v: unknown) => {
     return (
@@ -19,7 +19,7 @@ export function makeNonPrimitiveItemsReactive<InputType> (
       ? v
       : reactive<unknown>(
           v,
-          {parent: parent as ReactiveArray<unknown>},
+          {parent: parent as ReadonlyReactiveArray<unknown>},
         )
     ) as TArrayValueType<InputType>;
   });

@@ -1,4 +1,4 @@
-import { ReadonlyReactivePrimitive, ReactiveArray } from "../../../mod.js";
+import { ReadonlyReactivePrimitive, ReadonlyReactiveArray } from "../../../mod.js";
 import { valueToFragment } from "./toFragment/valueToFragment.js";
 import { Slot } from "../../Slot.js";
 import { SlotArray } from "../../SlotArray.js";
@@ -24,7 +24,7 @@ export function hookContentSlotsUp (
       item.bind(value => {
         slot.update(valueToFragment(value));
       });
-    } else if (item instanceof ReactiveArray) {
+    } else if (item instanceof ReadonlyReactiveArray) {
       new SlotArray(contentSlot, item);
     } else {
       new Slot(contentSlot, valueToFragment(item));

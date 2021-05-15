@@ -1,9 +1,9 @@
 import { Slot } from "./Slot.js";
-import type { ReactiveArray } from "../mod.js";
+import type { ReadonlyReactiveArray } from "../mod.js";
 import type { TemplateResult } from "./TemplateResult.js";
 
 /**
- * Keeps track of `ReactiveArray`s slotted into a template in the DOM. 
+ * Keeps track of `ReadonlyReactiveArray`s slotted into a template in the DOM. 
  */
 export class SlotArray {
   /** A "bookmark" for where in the DOM this `SlotArray` starts */
@@ -12,19 +12,19 @@ export class SlotArray {
   /** A "bookmark" for where in the DOM this `SlotArray` ends */
   #endAnchor = new Comment("</DestinyArray>");
 
-  /** The original `ReactiveArray` this instance is receiving updates from */
-  #source: ReactiveArray<DocumentFragment>;
+  /** The original `ReadonlyReactiveArray` this instance is receiving updates from */
+  #source: ReadonlyReactiveArray<DocumentFragment>;
 
   /** All the `Slot`s being tracked by this instance */
   #domArray: Array<Slot> = [];
 
   /**
    * @param placeholderNode A `Node` which is used as a "bookmark" of where in the DOM the `SlotArray`'s content should be inserted
-   * @param source The `ReactiveArray` which is being rendered
+   * @param source The `ReadonlyReactiveArray` which is being rendered
    */
   constructor (
     placeholderNode: ChildNode,
-    source: ReactiveArray<DocumentFragment>,
+    source: ReadonlyReactiveArray<DocumentFragment>,
   ) {
     placeholderNode.replaceWith(
       this.#startAnchor,

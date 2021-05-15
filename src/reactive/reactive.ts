@@ -1,4 +1,4 @@
-import { ReactiveArray, ReactivePrimitive, reactiveObject } from "../mod.js";
+import { ReactiveArray, ReadonlyReactiveArray, ReactivePrimitive, reactiveObject } from "../mod.js";
 import { isSpecialCaseObject } from "./reactiveObject/specialCaseObjects.js";
 import { isReactive } from "../typeChecks/isReactive.js";
 import { isObject } from "../typeChecks/isObject.js";
@@ -17,13 +17,13 @@ function reactive<T extends Promise<unknown>, K = unknown> (
   initialValue: T,
   options: {
     fallback: T extends Promise<infer V> ? V : never,
-    parent?: ReactivePrimitive<K> | ReactiveArray<K>,
+    parent?: ReactivePrimitive<K> | ReadonlyReactiveArray<K>,
   },
 ): ReactivePrimitive<T extends Promise<infer V> ? V : never>;
 function reactive<T, K = unknown> (
   initialValue: T,
   options?: {
-    parent?: ReactivePrimitive<K> | ReactiveArray<K>,
+    parent?: ReactivePrimitive<K> | ReadonlyReactiveArray<K>,
   },
 ): TReactiveValueType<T>;
 function reactive<K = unknown> (
@@ -36,7 +36,7 @@ function reactive<T, K = unknown> (
   initialValue: T,
   options: {
     fallback?: T,
-    parent?: ReactivePrimitive<K> | ReactiveArray<K>,
+    parent?: ReactivePrimitive<K> | ReadonlyReactiveArray<K>,
   } = {},
 ): unknown {
   if (isReactive(initialValue as unknown)) {
