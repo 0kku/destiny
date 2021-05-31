@@ -1,7 +1,7 @@
 import { ReactivePrimitive } from "../../../mod.js";
 import { matchChangeWatcher } from "./matchChangeWatcher.js";
+import { ReadonlyReactivePrimitive } from "../../../reactive/ReactivePrimitive.js";
 import type { TWatchedAttribute } from "./matchChangeWatcher.js";
-import { ReadonlyReactivePrimitive } from "/dist/reactive/ReactivePrimitive.js";
 
 export function doOrBind (
   element: HTMLElement,
