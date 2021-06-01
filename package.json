@@ -5,10 +5,10 @@
   "main": "./dist/examples/main.js",
   "type": "module",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.22.1",
-    "@typescript-eslint/parser": "^4.22.1",
-    "eslint": "^7.26.0",
-    "typescript": "^4.3.0-beta"
+    "@typescript-eslint/eslint-plugin": "^4.26.0",
+    "@typescript-eslint/parser": "^4.26.0",
+    "eslint": "^7.27.0",
+    "typescript": "^4.3.2"
   },
   "scripts": {
     "lint": "npm run lint:types && npm run lint:code",
