@@ -1,4 +1,3 @@
-// import { kebabToCamel } from "../../../utils/kebabToCamel.js";
 import { isValidAttributePair } from "./isValidNamespace.js";
 import type { TNamespace } from "./TNamespace.js";
 
