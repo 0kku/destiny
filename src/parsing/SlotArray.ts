@@ -33,6 +33,7 @@ export class SlotArray {
 
     this.#source = source;
     this.#source.bind(this.update);
+    // TODO: this.#source.bind(this.update, {dependents: [this]});
   }
 
   /**

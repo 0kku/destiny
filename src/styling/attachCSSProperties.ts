@@ -14,6 +14,9 @@ export function attachCSSProperties (
   },
 ): void {
   for (const [property, source] of Object.entries(styles)) {
-    source.bind(value => element.style.setProperty(property, value));
+    source.bind(
+      value => element.style.setProperty(property, value),
+      { dependents: [element] },
+    );
   }
 }

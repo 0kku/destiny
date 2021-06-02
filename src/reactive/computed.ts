@@ -1,7 +1,12 @@
 import { composeTemplateString } from "../utils/composeTemplateString.js";
 import { ReactivePrimitive, ReadonlyReactivePrimitive } from "./ReactivePrimitive.js";
 
-export let computeFunction: VoidFunction | undefined;
+export let computedConsumer: {
+  fn: VoidFunction,
+  consumer: ReadonlyReactivePrimitive<any>,
+} | undefined;
+
+const hold = new WeakMap<ReactivePrimitive<any>, VoidFunction>();
 
 /**
  * Takes a callback and returns a new readonly `ReactivePrimitive` whose value is updated with the return value of the callback whenever any of the reactive values used in the callback are updated.
@@ -23,16 +28,17 @@ export function computed<T> (
     return computed(() => composeTemplateString(callback, props));
   }
   const cb = callback;
-  computeFunction = fn;
-  const reactor = new ReactivePrimitive(cb());
-  computeFunction = undefined;
+  const consumer = new ReactivePrimitive<T>(undefined as unknown as T);
+  fn();
 
   function fn () {
-    computeFunction = fn;
+    computedConsumer = {fn, consumer};
     const newValue = cb();
-    computeFunction = undefined;
-    reactor.value = newValue;
+    computedConsumer = undefined;
+    consumer.value = newValue;
   }
 
-  return reactor.readonly;
+  hold.set(consumer, fn);
+
+  return consumer.readonly;
 }

@@ -38,9 +38,12 @@ export class TabView extends Component {
 
   connectedCallback (): void {
     const original = document.title;
-    route.bind(path => {
-      document.title = this.#tabs.find(v => v.path === path)?.title ?? original;
-    });
+    route.bind(
+      path => {
+        document.title = this.#tabs.find(v => v.path === path)?.title ?? original;
+      },
+      { dependents: [this] },
+    );
   }
 
   static styles = css`

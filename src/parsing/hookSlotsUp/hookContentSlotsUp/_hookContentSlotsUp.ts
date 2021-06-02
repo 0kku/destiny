@@ -23,6 +23,8 @@ export function hookContentSlotsUp (
       const slot = new Slot(contentSlot);
       item.bind(value => {
         slot.update(valueToFragment(value));
+      }, {
+        dependents: [slot],
       });
     } else if (item instanceof ReadonlyReactiveArray) {
       new SlotArray(contentSlot, item);

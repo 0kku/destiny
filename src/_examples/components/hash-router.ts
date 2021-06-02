@@ -28,14 +28,17 @@ export class HashRouter extends Component<{
 
   constructor () {
     super();
-    route.bind(currentRoute => {
-      const routeInfo = this.routes.find(({path}) => path === currentRoute);
-      if (routeInfo) {
-        this.#view.value = xml`<${import(routeInfo.content)} />`.content.firstElementChild!;
-      } else {
-        this.#view.value = this.#error404;
-      }
-    });
+    route.bind(
+      currentRoute => {
+        const routeInfo = this.routes.find(({path}) => path === currentRoute);
+        if (routeInfo) {
+          this.#view.value = xml`<${import(routeInfo.content)} />`.content.firstElementChild!;
+        } else {
+          this.#view.value = this.#error404;
+        }
+      },
+      { dependents: [this.#view] },
+    );
   }
 
   template = xml`

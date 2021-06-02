@@ -1,21 +1,22 @@
 import { isComponent } from "./isComponent.js";
 import { xml, Ref, Component } from "../mod.js";
+import { getElementData } from "./elementData.js";
+import { describeType } from "../utils/describeType.js";
 
 export class DestinyFallback extends Component {
   static captureProps = true;
   forwardProps = new Ref();
-  
-  declare assignedData: {
-    readonly prop: Map<"for", Promise<Record<string, typeof Component>>>,
-  } & typeof Component.prototype.assignedData;
 
   constructor () {
     super();
     queueMicrotask(async () => {
-      const module = await this.assignedData.prop.get("for")!;
-      const component = Object.values(module).shift();
-      if (!component || !isComponent(component)) {
-        throw new Error(`Invalid component constructor ${String(component)}`);
+      const module = await getElementData(this)!.prop.get("for");
+      if (typeof module !== "object" || !module) {
+        throw new TypeError(`Invalid type ${describeType(module)} supplied for prop:for`);
+      }
+      const component: unknown = Object.values(module).shift();
+      if (!isComponent(component)) {
+        throw new TypeError(`Invalid component constructor ${describeType(component)} supplied for prop:for`);
       }
       this.replaceWith(
         xml`

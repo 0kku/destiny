@@ -21,9 +21,9 @@ export function doOrBind (
         );
       });
     }
-    value.bind(whatToDo);
+    value.bind(whatToDo, {dependents: [element]});
   } else if (value instanceof ReadonlyReactivePrimitive) {
-    value.bind(whatToDo);
+    value.bind(whatToDo, {dependents: [element]});
   } else {
     whatToDo(value);
   }

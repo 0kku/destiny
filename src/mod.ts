@@ -6,6 +6,7 @@ export { reactiveObject            } from "./reactive/reactiveObject/reactiveObj
 export { reactive                  } from "./reactive/reactive.js";
 export { computed                  } from "./reactive/computed.js";
 export { Component                 } from "./componentLogic/Component.js";
+export { getElementData            } from "./componentLogic/elementData.js";
 export { register                  } from "./componentLogic/register.js";
 export { Ref                       } from "./componentLogic/Ref.js";
 export { classNames                } from "./reactive/classNames.js";

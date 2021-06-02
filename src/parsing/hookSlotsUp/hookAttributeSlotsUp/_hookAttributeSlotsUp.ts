@@ -1,7 +1,7 @@
 import { resolveSlotPropIndex } from "./resolveSlotPropIndex.js";
 import { parseAttributeName } from "./parseAttributeName.js";
 import { assignElementData } from "./elementData/_assignElementData.js";
-import type { Component } from "../../../componentLogic/Component.js";
+import { elementData } from "../../../componentLogic/elementData.js";
 import type { TElementData } from "./TElementData.js";
 
 /**
@@ -42,12 +42,9 @@ export function hookAttributeSlotsUp (
       values[namespace].set(attributeName, attrVal);
     }
     
-    if (captureProps) {
-      queueMicrotask(() => {
-        (element as Component).assignedData = values;
-      });
-    } else {
+    if (!captureProps) {
       assignElementData(element, values);
     }
+    elementData.set(element, values);
   }
 }

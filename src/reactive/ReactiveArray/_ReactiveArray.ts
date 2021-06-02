@@ -1,7 +1,7 @@
 import { ReactivePrimitive } from "../../mod.js";
 import { makeNonPrimitiveItemsReactive } from "./makeNonPrimitiveItemsReactive.js";
 import { updateFilteredArray } from "./updateFilteredArray.js";
-import { computed, computeFunction } from "../computed.js";
+import { computed, computedConsumer } from "../computed.js";
 import { flatten } from "./flatten.js";
 import { ReadonlyReactivePrimitive } from "../ReactivePrimitive.js";
 import type { TReactiveArrayCallback } from "../types/IReactiveArrayCallback.js";
@@ -63,8 +63,8 @@ export class ReadonlyReactiveArray<InputType> {
   readonly #__value: Array<TArrayValueType<InputType>>;
   /** A getter for an Array containing the current values of the ReactiveArray. Notifies computed values when it's being accessed. */
   get #value (): Array<TArrayValueType<InputType>> {
-    if (computeFunction) {
-      this.#callbacks.add(computeFunction);
+    if (computedConsumer) {
+      this.#callbacks.add(computedConsumer.fn);
     }
 
     return this.#__value;
@@ -209,9 +209,12 @@ export class ReadonlyReactiveArray<InputType> {
     callback: F,
   ): ReadonlyReactivePrimitive<ReturnType<F>> {
     const ref = new ReactivePrimitive(callback(...this.#argsForFullUpdate()));
-    this.bind((...args) => {
-      ref.value = callback(...args);
-    }, true);
+    this.bind(
+      (...args) => {
+        ref.value = callback(...args);
+      }, 
+      { noFirstRun: true },
+    );
     return ref.readonly;
   }
 
@@ -223,10 +226,14 @@ export class ReadonlyReactiveArray<InputType> {
    */
   bind (
     callback: TReactiveArrayCallback<TArrayValueType<InputType>>,
-    noFirstRun = false,
+    options: {
+      noFirstRun?: boolean,
+      // eslint-disable-next-line @typescript-eslint/ban-types
+      dependents?: ReadonlyArray<object>,
+    } = {},
   ): this {
     this.#callbacks.add(callback);
-    if (!noFirstRun) {
+    if (!options.noFirstRun) {
       callback(0, 0, ...this.#value);
     }
     return this;
@@ -333,12 +340,16 @@ export class ReadonlyReactiveArray<InputType> {
     const maskArray: TMask = [];
 
     dependencies.forEach(dependency => {
-      dependency.bind(() => updateFilteredArray(
-        callback,
-        this.#value,
-        filteredArray,
-        maskArray,
-      ), true);
+      // TODO: add dependents 
+      dependency.bind(
+        () => updateFilteredArray(
+          callback,
+          this.#value,
+          filteredArray,
+          maskArray,
+        ), 
+        { noFirstRun: true },
+      );
     });
 
     this.bind((start, deletes, ...items) => {
@@ -403,7 +414,7 @@ export class ReadonlyReactiveArray<InputType> {
     const newArr = new ReactiveArray(...flatten(this.#value));
     this.bind(
       () => newArr.value = flatten(this.#value),
-      false,
+      { noFirstRun: false },
     );
     return newArr.readonly;
   }
@@ -425,7 +436,7 @@ export class ReadonlyReactiveArray<InputType> {
     const newArr = new ReactiveArray(...flatMap());
     this.bind(
       () => newArr.value = flatMap(),
-      false,
+      { noFirstRun: false },
     );
 
     return newArr.readonly;
@@ -637,9 +648,12 @@ export class ReadonlyReactiveArray<InputType> {
     value: TArrayValueType<InputType>,
   ]> {
     const array = new ReactiveArray(...this.#value.entries());
-    this.bind((index, deleteCount, ...addedItems) => {
-      array.#splice(index, deleteCount, ...addedItems.entries());
-    }, true);
+    this.bind(
+      (index, deleteCount, ...addedItems) => {
+        array.#splice(index, deleteCount, ...addedItems.entries());
+      },
+      { noFirstRun: true },
+    );
 
     return array.readonly;
   }
@@ -649,9 +663,12 @@ export class ReadonlyReactiveArray<InputType> {
    */
   keys (): ReadonlyReactiveArray<number> {
     const array = new ReactiveArray(...this.#value.keys());
-    this.bind((index, deleteCount, ...addedItems) => {
-      array.#splice(index, deleteCount, ...addedItems.keys());
-    }, true);
+    this.bind(
+      (index, deleteCount, ...addedItems) => {
+        array.#splice(index, deleteCount, ...addedItems.keys());
+      },
+      { noFirstRun: true },
+    );
 
     return array.readonly;
   }
@@ -661,9 +678,12 @@ export class ReadonlyReactiveArray<InputType> {
    */
   values (): ReadonlyReactiveArray<TArrayValueType<InputType>> {
     const array = new ReactiveArray(...this.#value.values());
-    this.bind((index, deleteCount, ...addedItems) => {
-      array.#splice(index, deleteCount, ...addedItems.values());
-    }, true);
+    this.bind(
+      (index, deleteCount, ...addedItems) => {
+        array.#splice(index, deleteCount, ...addedItems.values());
+      },
+      { noFirstRun: true },
+    );
 
     return array.readonly;
   }

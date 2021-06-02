@@ -3,6 +3,7 @@ import { deferredElements } from "../parsing/deferredElements.js";
 import { assignElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/elementData/_assignElementData.js";
 import { supportsAdoptedStyleSheets } from "../styling/supportsAdoptedStyleSheets.js";
 import { arrayWrap } from "../utils/arrayWrap.js";
+import { getElementData } from "./elementData.js";
 import type { Ref, RefPromise } from "./Ref.js";
 import type { Renderable } from "../parsing/Renderable.js";
 import type { Slot } from "../parsing/Slot.js";
@@ -21,12 +22,6 @@ export interface Component<TProperties extends Record<string, unknown> = {}> ext
 export class Component extends HTMLElement {
   static captureProps = false;
   forwardProps?: Ref<HTMLElement> | RefPromise<HTMLElement>;
-  assignedData = {
-    prop: new Map<string, unknown>(),
-    on: new Map<string, unknown>(),
-    destiny: new Map<string, unknown>(),
-    attribute: new Map<string, unknown>(),
-  } as const;
   template: Renderable = xml`<slot />`;
   static styles: Array<CSSTemplate> | CSSTemplate = [];
 
@@ -39,7 +34,10 @@ export class Component extends HTMLElement {
     queueMicrotask(() => {
       if (this.forwardProps) {
         this.forwardProps.then(element => {
-          assignElementData(element, this.assignedData);
+          assignElementData(
+            element,
+            getElementData(this)!,
+          );
         });
       }
       shadow.appendChild(
