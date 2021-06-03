@@ -1,6 +1,6 @@
-import { Component, computed, xml, css, classNames } from "/dist/mod.js";
+import { Component, computed, xml, css, classNames } from "../../mod.ts";
 
-import { route, HashRouter } from "./hash-router.js";
+import { route, HashRouter } from "./hash-router.ts";
 
 export class TabView extends Component {
   #tabs = [

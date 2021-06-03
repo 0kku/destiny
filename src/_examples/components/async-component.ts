@@ -1,4 +1,4 @@
-import { Component, xml } from "/dist/mod.js";
+import { Component, xml } from "../../mod.ts";
 
 export class AsyncComponent extends Component {
   template = xml`

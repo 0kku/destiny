@@ -1,7 +1,7 @@
-import { Component, xml, css } from "/dist/mod.js";
-import type { TReactiveObject } from "/dist/mod.js";
+import { Component, xml, css } from "../../../mod.ts";
+import type { TReactiveObject } from "../../../mod.ts";
 
-import { inputStyles } from "../inputStyles.js";
+import { inputStyles } from "../inputStyles.ts";
 
 export class TaskItem extends Component<{
   item: TReactiveObject<{

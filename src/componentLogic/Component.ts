@@ -1,14 +1,14 @@
-import { register, xml, attachCSSProperties } from "../mod.js";
-import { deferredElements } from "../parsing/deferredElements.js";
-import { assignElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/elementData/_assignElementData.js";
-import { supportsAdoptedStyleSheets } from "../styling/supportsAdoptedStyleSheets.js";
-import { arrayWrap } from "../utils/arrayWrap.js";
-import { getElementData } from "./elementData.js";
-import type { Ref, RefPromise } from "./Ref.js";
-import type { Renderable } from "../parsing/Renderable.js";
-import type { Slot } from "../parsing/Slot.js";
-import type { ReadonlyReactivePrimitive } from "../reactive/ReactivePrimitive.js";
-import type { CSSTemplate } from "../styling/CSSTemplate.js";
+import { register, xml, attachCSSProperties } from "../mod.ts";
+import { deferredElements } from "../parsing/deferredElements.ts";
+import { assignElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/elementData/_assignElementData.ts";
+import { supportsAdoptedStyleSheets } from "../styling/supportsAdoptedStyleSheets.ts";
+import { arrayWrap } from "../utils/arrayWrap.ts";
+import { getElementData } from "./elementData.ts";
+import type { Ref, RefPromise } from "./Ref.ts";
+import type { Renderable } from "../parsing/Renderable.ts";
+import type { Slot } from "../parsing/Slot.ts";
+import type { ReadonlyReactivePrimitive } from "../reactive/ReactivePrimitive.ts";
+import type { CSSTemplate } from "../styling/CSSTemplate.ts";
 
 // @ts-ignore I don't know how to describe this type correctly
 // eslint-disable-next-line
@@ -45,6 +45,7 @@ export class Component extends HTMLElement {
       );
 
       if (supportsAdoptedStyleSheets) {
+        // @ts-ignore This does exist, but lib doesn't contain the declaration yet. We also used `destiny/src/globalThis.d.ts` to provide the typings when using Node, but there doesn't seem to be a way to include this in the `emit`
         shadow.adoptedStyleSheets = arrayWrap(new.target.styles).map(v => v.styleSheet);
       } else {
         shadow.append(...arrayWrap(new.target.styles).map(v => v.styleElement));

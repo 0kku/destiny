@@ -1,5 +1,5 @@
-import { hookSlotsUp } from "./hookSlotsUp/_hookSlotsUp.js";
-import { Renderable } from "./Renderable.js";
+import { hookSlotsUp } from "./hookSlotsUp/_hookSlotsUp.ts";
+import { Renderable } from "./Renderable.ts";
 
 export class TemplateResult extends Renderable {
   #template: HTMLTemplateElement;

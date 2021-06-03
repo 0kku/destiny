@@ -1,8 +1,8 @@
-import { attribute } from "./attribute.js";
-import { destiny } from "./destiny.js";
-import { prop } from "./prop.js";
-import { on } from "./on.js";
-import type { TElementData } from "../TElementData.js";
+import { attribute } from "./attribute.ts";
+import { destiny } from "./destiny.ts";
+import { prop } from "./prop.ts";
+import { on } from "./on.ts";
+import type { TElementData } from "../TElementData.ts";
 
 /**
  * Takes care of hooking up data to an element.

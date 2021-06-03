@@ -1,5 +1,5 @@
-import { Ref } from "../../../../mod.js";
-import { isObject } from "../../../../typeChecks/isObject.js";
+import { Ref } from "../../../../mod.ts";
+import { isObject } from "../../../../typeChecks/isObject.ts";
 
 /**
  * `destiny:ref` prop allows you to to give a `ReactivePrimitive` to

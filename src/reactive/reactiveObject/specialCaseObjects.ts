@@ -1,4 +1,4 @@
-import { TemplateResult } from "../../parsing/TemplateResult.js";
+import { TemplateResult } from "../../parsing/TemplateResult.ts";
 
 /**
  * Basically, because TS doesn't support nominal typing, we have to use this hack to exclude unwanted objects from our reactive methods.

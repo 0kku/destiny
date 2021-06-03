@@ -1,5 +1,5 @@
-import { inputStyles } from "../inputStyles.js";
-import { Component, xml, Ref } from "/dist/mod.js";
+import { inputStyles } from "../inputStyles.ts";
+import { Component, xml, Ref } from "../../../mod.ts";
 
 /**
  * An example of a component that forwards its props to a child.

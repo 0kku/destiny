@@ -1,4 +1,4 @@
-import type { TUnpreparedContentSlot } from "./TUnpreparedContentSlot.js";
+import type { TUnpreparedContentSlot } from "./TUnpreparedContentSlot.ts";
 
 function createPlaceholder (
   index: number,

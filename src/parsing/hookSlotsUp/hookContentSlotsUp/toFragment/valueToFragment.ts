@@ -1,7 +1,7 @@
-import { arrayToFragment } from "./arrayToFragment.js";
-import { nodeToFragment } from "./nodeToFragment.js";
-import { stringifyValue } from "../../stringifyValue.js";
-import { TemplateResult } from "../../../TemplateResult.js";
+import { arrayToFragment } from "./arrayToFragment.ts";
+import { nodeToFragment } from "./nodeToFragment.ts";
+import { stringifyValue } from "../../stringifyValue.ts";
+import { TemplateResult } from "../../../TemplateResult.ts";
 
 /**
  * A polymorphic helper which figures out the type of the input and determines a suitable way to convert it into a `DocumentFragment`.

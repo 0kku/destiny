@@ -1,4 +1,4 @@
-import type { ReactivePrimitive, TemplateResult } from "/dist/mod.js";
+import type { ReactivePrimitive, TemplateResult } from "../../../mod.ts";
 
 export type TWindow = {
   header: string,

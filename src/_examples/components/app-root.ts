@@ -1,6 +1,6 @@
-import { Component, xml, css } from "/dist/mod.js";
+import { Component, xml, css } from "../../mod.ts";
 
-import { TabView } from "./tab-view.js";
+import { TabView } from "./tab-view.ts";
 
 export class AppRoot extends Component {
   static styles = css`

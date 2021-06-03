@@ -1,5 +1,5 @@
-import { shouldBeRendered } from "../../stringifyValue.js";
-import { valueToFragment } from "./valueToFragment.js";
+import { shouldBeRendered } from "../../stringifyValue.ts";
+import { valueToFragment } from "./valueToFragment.ts";
 
 /**
  * Converts an array of items into a `DocumentFragment`.

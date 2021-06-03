@@ -1,4 +1,4 @@
-import { Component, reactive, xml, ReactivePrimitive } from "/dist/mod.js";
+import { Component, reactive, xml, ReactivePrimitive } from "../../mod.ts";
 
 function getHashRoute (
   url: string,

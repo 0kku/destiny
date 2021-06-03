@@ -1,8 +1,8 @@
-import { Component, xml, css, reactive } from "/dist/mod.js";
+import { Component, xml, css, reactive } from "../../../mod.ts";
 
-import { animateIn, animateOut } from "./animations.js";
-import { TaskItem } from "./task-item.js";
-import { inputStyles } from "../inputStyles.js";
+import { animateIn, animateOut } from "./animations.ts";
+import { TaskItem } from "./task-item.ts";
+import { inputStyles } from "../inputStyles.ts";
 
 type TInputChangeEvent = InputEvent & {
   currentTarget: HTMLInputElement,

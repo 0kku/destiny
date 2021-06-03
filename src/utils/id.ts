@@ -1,4 +1,4 @@
-import { pseudoRandomEncode } from "./pseudoRandomEncode.js";
+import { pseudoRandomEncode } from "./pseudoRandomEncode.ts";
 
 const idEncoder = pseudoRandomEncode(2n ** 20n, 387_420_489n);
 

@@ -1,7 +1,7 @@
-import { IterableWeakMap } from "../utils/IterableWeakMap.js";
-import { WeakMultiRef } from "../utils/WeakMultiRef.js";
-import { computedConsumer } from "./computed.js";
-import { concatIterators } from "../utils/concatIterators.js";
+import { IterableWeakMap } from "../utils/IterableWeakMap.ts";
+import { WeakMultiRef } from "../utils/WeakMultiRef.ts";
+import { computedConsumer } from "./computed.ts";
+import { concatIterators } from "../utils/concatIterators.ts";
 
 type TReactivePrimitiveCallback<T> = (newValue: T) => void;
 

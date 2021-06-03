@@ -1,5 +1,5 @@
-import { composeTemplateString } from "../utils/composeTemplateString.js";
-import { ReactivePrimitive, ReadonlyReactivePrimitive } from "./ReactivePrimitive.js";
+import { composeTemplateString } from "../utils/composeTemplateString.ts";
+import { ReactivePrimitive, ReadonlyReactivePrimitive } from "./ReactivePrimitive.ts";
 
 export let computedConsumer: {
   fn: VoidFunction,

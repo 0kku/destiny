@@ -1,7 +1,7 @@
-import { Component, xml, css, reactive, ReactivePrimitive } from "/dist/mod.js";
+import { Component, xml, css, reactive, ReactivePrimitive } from "../../../mod.ts";
 
-import { Window } from "./window.js";
-import type { TWindow } from "./TWindow.js";
+import { Window } from "./window.ts";
+import type { TWindow } from "./TWindow.ts";
 
 
 type TDirection = "n" | "s" | "e" | "w" | "ne" | "se" | "sw" | "nw";

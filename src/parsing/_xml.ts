@@ -1,6 +1,6 @@
-import { createTemplate } from "./createTemplate.js";
-import { TemplateCache } from "./TemplateCache.js";
-import { TemplateResult } from "./TemplateResult.js";
+import { createTemplate } from "./createTemplate.ts";
+import { TemplateCache } from "./TemplateCache.ts";
+import { TemplateResult } from "./TemplateResult.ts";
 
 const templateCache = new TemplateCache;
 

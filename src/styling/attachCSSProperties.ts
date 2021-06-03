@@ -1,4 +1,4 @@
-import type { ReadonlyReactivePrimitive } from "../reactive/ReactivePrimitive.js";
+import type { ReadonlyReactivePrimitive } from "../reactive/ReactivePrimitive.ts";
 
 /**
  * Synchonizes a CSS property of an element to a ReactivePrimitive.

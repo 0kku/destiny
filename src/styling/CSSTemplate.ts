@@ -1,3 +1,5 @@
+import "../globalTypes/CSSStyleSheet.ts"
+
 export class CSSTemplate {
   readonly cssText: string;
 

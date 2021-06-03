@@ -1,13 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 
-interface CSSStyleSheet {
-  replace(cssText: string): void,
-}
-
-interface ShadowRoot {
-  adoptedStyleSheets: ReadonlyArray<CSSStyleSheet>,
-}
-
 interface ImportMeta {
   url: string,
 }

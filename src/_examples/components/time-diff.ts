@@ -1,6 +1,6 @@
-import { Component, xml, reactive, computed } from "/dist/mod.js";
+import { Component, xml, reactive, computed } from "../../mod.ts";
 
-import { inputStyles } from "./inputStyles.js";
+import { inputStyles } from "./inputStyles.ts";
 
 function formatTimeFragment (
   input: number,

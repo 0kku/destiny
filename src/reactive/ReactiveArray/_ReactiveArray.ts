@@ -1,15 +1,15 @@
-import { ReactivePrimitive } from "../../mod.js";
-import { makeNonPrimitiveItemsReactive } from "./makeNonPrimitiveItemsReactive.js";
-import { updateFilteredArray } from "./updateFilteredArray.js";
-import { computed, computedConsumer } from "../computed.js";
-import { flatten } from "./flatten.js";
-import { ReadonlyReactivePrimitive } from "../ReactivePrimitive.js";
-import type { TReactiveArrayCallback } from "../types/IReactiveArrayCallback.js";
-import type { TArrayValueType } from "../types/IArrayValueType.js";
-import type { TReactiveEntity } from "../types/IReactiveEntity.js";
-import type { TUnwrapReactiveArray } from "./TUnwrapReactiveArray.js";
-import type { TArrayUpdateArguments } from "./TArrayUpdateArguments.js";
-import type { TMask } from "./TMask.js";
+import { ReactivePrimitive } from "../../mod.ts";
+import { makeNonPrimitiveItemsReactive } from "./makeNonPrimitiveItemsReactive.ts";
+import { updateFilteredArray } from "./updateFilteredArray.ts";
+import { computed, computedConsumer } from "../computed.ts";
+import { flatten } from "./flatten.ts";
+import { ReadonlyReactivePrimitive } from "../ReactivePrimitive.ts";
+import type { TReactiveArrayCallback } from "../types/IReactiveArrayCallback.ts";
+import type { TArrayValueType } from "../types/IArrayValueType.ts";
+import type { TReactiveEntity } from "../types/IReactiveEntity.ts";
+import type { TUnwrapReactiveArray } from "./TUnwrapReactiveArray.ts";
+import type { TArrayUpdateArguments } from "./TArrayUpdateArguments.ts";
+import type { TMask } from "./TMask.ts";
 
 type TSplice<InputType> = (
   start: number,

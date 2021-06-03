@@ -1,6 +1,6 @@
-// import { kebabToCamel } from "../../../utils/kebabToCamel.js";
-import { isValidNamespace } from "./isValidNamespace.js";
-import type { TNamespace } from "./TNamespace.js";
+// import { kebabToCamel } from "../../../utils/kebabToCamel.ts";
+import { isValidNamespace } from "./isValidNamespace.ts";
+import type { TNamespace } from "./TNamespace.ts";
 
 export function parseAttributeName (
   input: string,

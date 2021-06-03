@@ -1,7 +1,7 @@
-import { destinyUnmount } from "./destinyUnmount.js";
-import { destinyMount } from "./destinyMount.js";
-import { destinyRef } from "./destinyRef.js";
-import type { TElementData } from "../TElementData.js";
+import { destinyUnmount } from "./destinyUnmount.ts";
+import { destinyMount } from "./destinyMount.ts";
+import { destinyRef } from "./destinyRef.ts";
+import type { TElementData } from "../TElementData.ts";
 
 /**
  * Handler for destiny-namespaced attributes. See referenced methods for details.

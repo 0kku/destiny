@@ -1,4 +1,4 @@
-import type { TElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/TElementData";
+import type { TElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/TElementData.ts";
 
 export const elementData = new WeakMap<Element, TElementData>();
 

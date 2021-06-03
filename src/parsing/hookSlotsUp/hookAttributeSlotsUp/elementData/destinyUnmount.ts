@@ -1,4 +1,4 @@
-import { deferredElements } from "../../../deferredElements.js";
+import { deferredElements } from "../../../deferredElements.ts";
 
 /**
  * `destiny:unmount` takes a callback function which will be called

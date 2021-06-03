@@ -1,4 +1,4 @@
-import { Component } from "./Component.js";
+import { Component } from "./Component.ts";
 
 export function isComponent (
   input: unknown,

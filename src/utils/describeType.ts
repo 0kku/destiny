@@ -1,4 +1,4 @@
-import { safeStringifyObject } from "./safeStringifyObject.js";
+import { safeStringifyObject } from "./safeStringifyObject.ts";
 
 export function describeType (
   input: unknown,

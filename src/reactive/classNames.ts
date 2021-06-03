@@ -1,5 +1,5 @@
-import { computed } from "./computed.js";
-import { ReadonlyReactivePrimitive } from "./ReactivePrimitive.js";
+import { computed } from "./computed.ts";
+import { ReadonlyReactivePrimitive } from "./ReactivePrimitive.ts";
 
 export function classNames (
   input: Record<string, boolean | ReadonlyReactivePrimitive<boolean>>,

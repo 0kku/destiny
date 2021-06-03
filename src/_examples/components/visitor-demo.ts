@@ -1,6 +1,6 @@
-import { Component, xml, reactive } from "/dist/mod.js";
+import { Component, xml, reactive } from "../../mod.ts";
 
-import { inputStyles } from "./inputStyles.js";
+import { inputStyles } from "./inputStyles.ts";
 
 export class VisitorDemo extends Component {
   #who = reactive("visitor");

@@ -1,6 +1,6 @@
-import { deferredElements } from "./deferredElements.js";
-import { TemplateResult } from "./TemplateResult.js";
-import type { Component } from "../componentLogic/Component.js";
+import { deferredElements } from "./deferredElements.ts";
+import { TemplateResult } from "./TemplateResult.ts";
+import type { Component } from "../componentLogic/Component.ts";
 
 /** A counter for labling `Comment`s for `Slot`s. */
 let counter = 0;

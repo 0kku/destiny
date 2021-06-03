@@ -1,5 +1,5 @@
-import type { ReadonlyReactiveArray, ReadonlyReactivePrimitive } from "../../mod.js";
-import type { TReactiveObject } from "./IReactiveObject.js";
+import type { ReadonlyReactiveArray, ReadonlyReactivePrimitive } from "../../mod.ts";
+import type { TReactiveObject } from "./IReactiveObject.ts";
 
 export type TReactive<T> = (
   | ReadonlyReactiveArray<T>

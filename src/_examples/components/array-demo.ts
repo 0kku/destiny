@@ -1,4 +1,4 @@
-import { Component, reactive, xml, css, computed } from "/dist/mod.js";
+import { Component, reactive, xml, css, computed } from "../../mod.ts";
 
 const randomColor = () => (
   "#" + 

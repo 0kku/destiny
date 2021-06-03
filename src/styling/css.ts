@@ -1,6 +1,6 @@
-import { isReactive } from "../typeChecks/isReactive.js";
-import { CSSTemplate } from "./CSSTemplate.js";
-import { composeTemplateString } from "../utils/composeTemplateString.js";
+import { isReactive } from "../typeChecks/isReactive.ts";
+import { CSSTemplate } from "./CSSTemplate.ts";
+import { composeTemplateString } from "../utils/composeTemplateString.ts";
 
 export function css (
   strings: TemplateStringsArray,

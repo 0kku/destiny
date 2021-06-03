@@ -1,6 +1,6 @@
-import { Slot } from "./Slot.js";
-import type { ReadonlyReactiveArray } from "../mod.js";
-import type { TemplateResult } from "./TemplateResult.js";
+import { Slot } from "./Slot.ts";
+import type { ReadonlyReactiveArray } from "../mod.ts";
+import type { TemplateResult } from "./TemplateResult.ts";
 
 /**
  * Keeps track of `ReadonlyReactiveArray`s slotted into a template in the DOM. 

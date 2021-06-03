@@ -1,22 +1,31 @@
-export { ReactivePrimitive         } from "./reactive/ReactivePrimitive.js";
-export { ReadonlyReactivePrimitive } from "./reactive/ReactivePrimitive.js";
-export { ReactiveArray             } from "./reactive/ReactiveArray/_ReactiveArray.js";
-export { ReadonlyReactiveArray     } from "./reactive/ReactiveArray/_ReactiveArray.js";
-export { reactiveObject            } from "./reactive/reactiveObject/reactiveObject.js";
-export { reactive                  } from "./reactive/reactive.js";
-export { computed                  } from "./reactive/computed.js";
-export { Component                 } from "./componentLogic/Component.js";
-export { getElementData            } from "./componentLogic/elementData.js";
-export { register                  } from "./componentLogic/register.js";
-export { Ref                       } from "./componentLogic/Ref.js";
-export { classNames                } from "./reactive/classNames.js";
-export { xml, xml as html          } from "./parsing/_xml.js";
-export { css                       } from "./styling/css.js";
-export { CSSTemplate               } from "./styling/CSSTemplate.js";
-export { attachCSSProperties       } from "./styling/attachCSSProperties.js";
+export { ReactivePrimitive         } from "./reactive/ReactivePrimitive.ts";
+export { ReadonlyReactivePrimitive } from "./reactive/ReactivePrimitive.ts";
+export { ReactiveArray             } from "./reactive/ReactiveArray/_ReactiveArray.ts";
+export { ReadonlyReactiveArray     } from "./reactive/ReactiveArray/_ReactiveArray.ts";
+export { reactiveObject            } from "./reactive/reactiveObject/reactiveObject.ts";
+export { reactive                  } from "./reactive/reactive.ts";
+export { computed                  } from "./reactive/computed.ts";
+export { Component                 } from "./componentLogic/Component.ts";
+export { getElementData            } from "./componentLogic/elementData.ts";
+export { register                  } from "./componentLogic/register.ts";
+export { Ref                       } from "./componentLogic/Ref.ts";
+export { classNames                } from "./reactive/classNames.ts";
+export { xml, xml as html          } from "./parsing/_xml.ts";
+export { css                       } from "./styling/css.ts";
+export { CSSTemplate               } from "./styling/CSSTemplate.ts";
+export { attachCSSProperties       } from "./styling/attachCSSProperties.ts";
 
-export type { TReactiveValueType } from "./reactive/types/IReactiveValueType.js";
-export type { TReactiveObject    } from "./reactive/types/IReactiveObject.js";
-export type { TReactiveEntity    } from "./reactive/types/IReactiveEntity.js";
-export type { TReactive          } from "./reactive/types/IReactive.js";
-export type { TemplateResult     } from "./parsing/TemplateResult.js";
+export type { TReactiveValueType } from "./reactive/types/IReactiveValueType.ts";
+export type { TReactiveObject    } from "./reactive/types/IReactiveObject.ts";
+export type { TReactiveEntity    } from "./reactive/types/IReactiveEntity.ts";
+export type { TReactive          } from "./reactive/types/IReactive.ts";
+export type { TemplateResult     } from "./parsing/TemplateResult.ts";
+
+// purely so examples are included in the transpiling
+import "./_examples/main.ts"
+import "./_examples/components/visitor-demo.ts"
+import "./_examples/components/to-do/_to-do.ts"
+import "./_examples/components/array-demo.ts"
+import "./_examples/components/time-diff.ts"
+import "./_examples/components/async-demo.ts"
+import "./_examples/components/window-manager/_window-manager.ts"

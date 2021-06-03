@@ -1,5 +1,5 @@
-import { hookContentSlotsUp } from "./hookContentSlotsUp/_hookContentSlotsUp.js";
-import { hookAttributeSlotsUp } from "./hookAttributeSlotsUp/_hookAttributeSlotsUp.js";
+import { hookContentSlotsUp } from "./hookContentSlotsUp/_hookContentSlotsUp.ts";
+import { hookAttributeSlotsUp } from "./hookAttributeSlotsUp/_hookAttributeSlotsUp.ts";
 
 
 export type TValueProps = {

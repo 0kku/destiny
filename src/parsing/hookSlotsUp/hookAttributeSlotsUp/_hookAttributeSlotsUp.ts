@@ -1,8 +1,8 @@
-import { resolveSlotPropIndex } from "./resolveSlotPropIndex.js";
-import { parseAttributeName } from "./parseAttributeName.js";
-import { assignElementData } from "./elementData/_assignElementData.js";
-import { elementData } from "../../../componentLogic/elementData.js";
-import type { TElementData } from "./TElementData.js";
+import { resolveSlotPropIndex } from "./resolveSlotPropIndex.ts";
+import { parseAttributeName } from "./parseAttributeName.ts";
+import { assignElementData } from "./elementData/_assignElementData.ts";
+import { elementData } from "../../../componentLogic/elementData.ts";
+import type { TElementData } from "./TElementData.ts";
 
 /**
  * Goes through all the elements in a template that are flagged with the `destiny::attr` attribute and figures out what events need to be listened to, and how the DOM needs to be updated if any of the given props are reactive.

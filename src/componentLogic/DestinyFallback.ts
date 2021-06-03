@@ -1,7 +1,7 @@
-import { isComponent } from "./isComponent.js";
-import { xml, Ref, Component } from "../mod.js";
-import { getElementData } from "./elementData.js";
-import { describeType } from "../utils/describeType.js";
+import { isComponent } from "./isComponent.ts";
+import { xml, Ref, Component } from "../mod.ts";
+import { getElementData } from "./elementData.ts";
+import { describeType } from "../utils/describeType.ts";
 
 export class DestinyFallback extends Component {
   static captureProps = true;

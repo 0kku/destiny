@@ -1,4 +1,4 @@
-import type { TElementData } from "../TElementData.js";
+import type { TElementData } from "../TElementData.ts";
 
 /**
  * `on:<EventName>` adds an event listener. It either takes a

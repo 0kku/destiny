@@ -1,6 +1,6 @@
-import { Component, xml, css, computed } from "/dist/mod.js";
+import { Component, xml, css, computed } from "../../../mod.ts";
 
-import type { TWindow } from "./TWindow";
+import type { TWindow } from "./TWindow.ts";
 
 export class Window extends Component<{
   props: TWindow,

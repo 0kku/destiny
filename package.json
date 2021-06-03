@@ -4,19 +4,12 @@
   "version": "0.6.0",
   "main": "./dist/examples/main.js",
   "type": "module",
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.26.0",
-    "@typescript-eslint/parser": "^4.26.0",
-    "eslint": "^7.27.0",
-    "typescript": "^4.3.2"
-  },
   "scripts": {
-    "lint": "npm run lint:types && npm run lint:code",
-    "lint:code": "eslint src",
-    "lint:types": "tsc --noEmit",
+    "lint": "deno lint --ignore=dist",
+    "fmt": "deno fmt --ignore=dist",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "compile": "tsc",
-    "watch": "tsc -w"
+    "compile": "deno run --allow-read=. --allow-write=dist --unstable compile.ts",
+    "watch": "deno run --allow-read=. --allow-write=dist --unstable compile.ts --watch"
   },
   "keywords": [
     "javascript",
