@@ -1,3 +1,5 @@
+/// <reference path="./globalThis.d.ts" />
+
 export { ReactivePrimitive         } from "./reactive/ReactivePrimitive.js";
 export { ReadonlyReactivePrimitive } from "./reactive/ReactivePrimitive.js";
 export { ReactiveArray             } from "./reactive/ReactiveArray/_ReactiveArray.js";
