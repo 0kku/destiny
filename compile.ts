@@ -139,7 +139,16 @@ async function compile(file: string): Promise<string | void> {
   for (const filename of fileKeys) {
     write(filename, files[filename]);
   }
-  console.log("Finished compilation");
+}
+
+const watchTimeouts: Record<string, number> = {};
+function debounce(context: string, fn: () => Promise<void>) {
+  if (watchTimeouts[context]) {
+    clearTimeout(watchTimeouts[context]);
+  }
+  watchTimeouts[context] = setTimeout(function () {
+    fn();
+  }, 100);
 }
 
 //
@@ -152,6 +161,7 @@ const errorMsg = await compile("./src/mod.ts");
 if (errorMsg) {
   throw new Error(errorMsg);
 }
+console.log("Finished compilation");
 
 const args = Deno.args;
 if (args[0] === "--watch") {
@@ -165,11 +175,13 @@ if (args[0] === "--watch") {
     const path = Deno.build.os === "windows"
       ? relativeWin(".", paths[0])
       : paths[0];
-    const msg = await compile(path);
-    if (msg) {
-      console.error(msg);
-    } else {
-      console.log("Compiled " + path);
-    }
+    debounce(path, async () => {
+      const msg = await compile(path);
+      if (msg) {
+        console.error(msg);
+      } else {
+        console.log("Compiled " + path);
+      }
+    });
   }
 }
