@@ -1,4 +1,4 @@
-/// <reference path="./globalThis.d.ts" />
+import "./globalThis.d";
 
 export { ReactivePrimitive         } from "./reactive/ReactivePrimitive.js";
 export { ReadonlyReactivePrimitive } from "./reactive/ReactivePrimitive.js";
