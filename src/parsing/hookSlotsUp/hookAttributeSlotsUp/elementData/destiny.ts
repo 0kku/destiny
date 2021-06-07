@@ -1,6 +1,7 @@
 import { destinyUnmount } from "./destinyUnmount.js";
 import { destinyMount } from "./destinyMount.js";
 import { destinyRef } from "./destinyRef.js";
+import { destinyProps } from "./destinyProps.js";
 import type { TElementData } from "../TElementData.js";
 
 /**
@@ -22,6 +23,10 @@ export function destiny (
 
       case "unmount":
         destinyUnmount(element, value);
+      break;
+
+      case "props":
+        destinyProps(element, value);
       break;
 
       default:
