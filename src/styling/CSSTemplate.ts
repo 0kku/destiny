@@ -1,4 +1,6 @@
-import "../globalTypes/CSSStyleSheet.ts"
+interface ICSSStyleSheet extends CSSStyleSheet {
+  replace: (cssText: string) => void
+}
 
 export class CSSTemplate {
   readonly cssText: string;
@@ -20,7 +22,7 @@ export class CSSTemplate {
   get styleSheet (): CSSStyleSheet {
     if (!this.#stylesheet) {
       this.#stylesheet = new CSSStyleSheet;
-      this.#stylesheet.replace(this.cssText);
+      (this.#stylesheet as ICSSStyleSheet).replace(this.cssText);
     }
     return this.#stylesheet;
   }
