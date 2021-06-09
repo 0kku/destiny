@@ -332,7 +332,7 @@ export class ReadonlyReactiveArray<InputType> {
       index: number,
       array: Array<TArrayValueType<InputType>>,
     ) => boolean,
-    dependencies: ReadonlyArray<TReactiveEntity<unknown>> = [],
+    dependencies: ReadonlyArray<TReactiveEntity<any>> = [],
   ): ReadonlyReactiveArray<TArrayValueType<InputType>> {
     
     const filteredArray: ReactiveArray<TArrayValueType<InputType>> = new ReactiveArray;
@@ -348,7 +348,7 @@ export class ReadonlyReactiveArray<InputType> {
           filteredArray,
           maskArray,
         ), 
-        { noFirstRun: true },
+        { noFirstCall: true },
       );
     });
 
