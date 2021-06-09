@@ -348,7 +348,7 @@ export class ReadonlyReactiveArray<InputType> {
           filteredArray,
           maskArray,
         ), 
-        { noFirstCall: true },
+        { noFirstRun: true },
       );
     });
 

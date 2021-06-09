@@ -150,18 +150,18 @@ export class ReadonlyReactivePrimitive<T> {
   /**
    * Adds a callback to be called whenever the `value` of the `ReacativePrimitive` is updated.
    * @param callback the function to be called on updates
-   * @param options.noFirstCall   Set to true and the callback won't be fired right after being added.
+   * @param options.noFirstRun   Set to true and the callback won't be fired right after being added.
    * @param options.dependencies  An array of objects that are modified by the callback provided. The callback will be garbage collected if all the provided objects are collected. If no dependencies are provided, the callback will never be automatically garbage collected and you have to unbind it yourself to avoid leaking memory.
    */
   bind (
     callback: TReactivePrimitiveCallback<T>,
     options: {
-      noFirstCall?:  boolean,
+      noFirstRun?:  boolean,
       // eslint-disable-next-line @typescript-eslint/ban-types
       dependents?: ReadonlyArray<object>,
     } = {},
   ): this {
-    if (!options.noFirstCall) callback(this.value);
+    if (!options.noFirstRun) callback(this.value);
 
     if (options.dependents?.length) {
       const key = new WeakMultiRef(options.dependents);
