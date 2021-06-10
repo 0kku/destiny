@@ -2,30 +2,8 @@ import { ensureDirSync, fromFileUrlWin, relativeWin } from "./deps.ts";
 
 const encoder = new TextEncoder();
 
-function checkDiagnostics(diagnostics: Deno.Diagnostic[]): string | void {
-  // Check if there were errors when bundling the clients code
-  if (diagnostics && diagnostics.length) {
-    const diagnostic = diagnostics[0]; // we only really care about throwing the first error
-    const filename = diagnostic.fileName;
-    const start = diagnostic.start;
-    const messageText = diagnostic.messageText ??
-      // @ts-ignore Deno tells us `messageText` does not exist on `messageChain`, but it 100% is (bug with deno)
-      diagnostic.messageChain!.messageText;
-    const sourceLine = diagnostic.sourceLine;
-    const brief = diagnostic.messageChain
-      ? // @ts-ignore Deno tells us `messageText` does not exist on `messageChain`, but it 100% is (bug with deno)
-        diagnostic.messageChain.next![0].messageText
-      : "";
-    if (filename && start) {
-      return `${filename}:${start.line}:${start.character} - ${messageText}\n${brief}\n${sourceLine}\n`;
-    } else {
-      return `${messageText}\n${brief}\n`;
-    }
-  }
-}
-
 async function emit(file: string): Promise<{
-  diagnostics: Deno.Diagnostic[];
+  diagnostics: string;
   files: Record<string, string>;
 }> {
   const { diagnostics, files } = await Deno.emit(file, {
@@ -52,8 +30,9 @@ async function emit(file: string): Promise<{
       baseUrl: "./",
     },
   });
+  const formattedDiagnostics = Deno.formatDiagnostics(diagnostics);
   return {
-    diagnostics,
+    diagnostics: formattedDiagnostics,
     files,
   };
 }
@@ -123,9 +102,8 @@ function write(filename: string, fileContent: string): void {
 async function compile(file: string): Promise<string | void> {
   const { diagnostics, files } = await emit(file);
 
-  const errorMsg = checkDiagnostics(diagnostics);
-  if (errorMsg) {
-    return errorMsg;
+  if (diagnostics !== "") {
+    return diagnostics;
   }
 
   const fileKeys = Object.keys(files).filter((filename) => {
@@ -159,7 +137,8 @@ console.log("Starting compilation...");
 
 const errorMsg = await compile("./src/mod.ts");
 if (errorMsg) {
-  throw new Error(errorMsg);
+  console.error(errorMsg);
+  Deno.exit(1);
 }
 console.log("Finished compilation");
 
