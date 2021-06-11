@@ -9,7 +9,10 @@ import type { TReactiveObject } from "../types/IReactiveObject.js";
  * @param input The object whose properties are to be made reactive
  * @param parent Another reactive entity to which any reactive items created should report to when updating, so updates can correctly propagate to the highest level
  */
-export function reactiveObject<T extends Record<string, unknown>, K = unknown> (
+export function reactiveObject<
+  T extends Readonly<Record<string, unknown>>,
+  K = unknown,
+> (
   input: T,
   parent?: TReactiveEntity<K>,
 ): TReactiveObject<T> {
@@ -22,8 +25,11 @@ export function reactiveObject<T extends Record<string, unknown>, K = unknown> (
     Object
     .entries(input)
     .map(entry => (entry[1] = reactive(entry[1], {parent}), entry))
-  ) as TReactiveObject<T>;
+  ) as {
+    [key: string]: unknown,
+    [reactiveObjectFlag]: true,
+  };
   result[reactiveObjectFlag] = true;
 
-  return result;
+  return Object.freeze(result) as TReactiveObject<T>;
 }

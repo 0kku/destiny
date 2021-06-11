@@ -3,6 +3,6 @@ import type { TReactiveValueType } from "./IReactiveValueType.js";
 
 export type TReactiveObject<T extends Record<string, unknown> | unknown> = (
   {
-    [P in keyof T]: TReactiveValueType<T[P]>;
+    readonly [P in keyof T]: TReactiveValueType<T[P]>;
   } & TReactiveObjectFlag
 );
