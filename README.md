@@ -1,6 +1,9 @@
 # Destiny UI
 
-[![Discord](https://img.shields.io/discord/704026413870612511?color=738ad6&label=Discord&logo=discord&logoColor=fff "Chat on Discord")](https://discord.gg/WS7JWRj) [![Firefox 75.0+](https://img.shields.io/badge/Firefox-75.0+-brightgreen?logo=mozilla%20firefox&logoColor=white)](https://www.mozilla.org/en-US/exp/firefox/new/) [![Chromium 82.0+](https://img.shields.io/badge/Chromium-82.0+-brightgreen?logo=google%20chrome&logoColor=white)](https://www.chromium.org/) [![No support for Safari yet](https://img.shields.io/badge/Safari-14.1+-brightgreen?logo=safari&logoColor=white)](https://www.apple.com/safari/)
+[![Discord](https://img.shields.io/discord/704026413870612511?color=738ad6&label=Discord&logo=discord&logoColor=fff "Chat on Discord")](https://discord.gg/WS7JWRj)
+[![Firefox 75.0+](https://img.shields.io/badge/Firefox-75.0+-brightgreen?logo=firefox%20browser&logoColor=white)](https://www.mozilla.org/en-US/exp/firefox/new/)
+[![Chromium 82.0+](https://img.shields.io/badge/Chromium-82.0+-brightgreen?logo=google%20chrome&logoColor=white)](https://www.chromium.org/)
+[![Safari 14.1+](https://img.shields.io/badge/Safari-14.1+-brightgreen?logo=safari&logoColor=white)](https://www.apple.com/safari/)
 
 An experimental reactive UI library for JavaScript and TypeScript. Uses standard JS/TS syntax; no compiling required. Built on top of the native Web Components API and uses the native HTML parser for the templates. No vDOM.
 
