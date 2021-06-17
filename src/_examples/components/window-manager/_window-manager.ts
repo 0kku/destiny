@@ -1,4 +1,4 @@
-import { Component, xml, css, reactive, ReactivePrimitive } from "/dist/mod.js";
+import { Component, xml, css, reactive, ReactiveValue } from "/dist/mod.js";
 
 import { Window } from "./window.js";
 import type { TWindow } from "./TWindow.js";
@@ -59,7 +59,7 @@ export class WindowManager extends Component {
 
   #dragging = {
     target: this.#windows[0],
-    type: new ReactivePrimitive<TGrabType>(""),
+    type: new ReactiveValue<TGrabType>(""),
     positionStart: {
       x: 0,
       y: 0,

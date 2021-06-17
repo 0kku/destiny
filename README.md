@@ -36,7 +36,7 @@ To get syntax-highlighting for HTML templates, you can use an extension called [
 
 [Live demo (with source maps)](https://destiny.okku.dev/)
 
-You can convert anything to be reactive using the `reactive()` function. Their primitive value can be accessed via the `value` property. Setting `value` will cause the reactive item to dispatch events to all its listeners and dependents.
+You can convert anything to be reactive using the `reactive()` function. Their unboxed value can be accessed via the `value` property. Setting `value` will cause the reactive item to dispatch events to all its listeners and dependents.
 
 The `html` template tag will parse the content as XHTML and returns a `TemplateResult` object containing a `DocumentFragment`. Any reactive items given to it via `${}` slots are bound both ways. This means that when the value of the reactive element is changed later, the relevant part of the DOM is automatically updated. If a reactive item is bound to something that may change from user input, the value of the reactive item will be automatically updated accordingly as user input comes in.
 

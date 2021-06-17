@@ -1,8 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./globalThis.d.ts" />
 
-export { ReactivePrimitive         } from "./reactive/ReactivePrimitive.js";
-export { ReadonlyReactivePrimitive } from "./reactive/ReactivePrimitive.js";
+export { ReactiveValue             } from "./reactive/ReactiveValue.js";
+export { ReadonlyReactiveValue     } from "./reactive/ReactiveValue.js";
 export { ReactiveArray             } from "./reactive/ReactiveArray/_ReactiveArray.js";
 export { ReadonlyReactiveArray     } from "./reactive/ReactiveArray/_ReactiveArray.js";
 export { reactiveObject            } from "./reactive/reactiveObject/reactiveObject.js";

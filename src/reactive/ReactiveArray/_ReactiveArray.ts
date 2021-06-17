@@ -1,9 +1,8 @@
-import { ReactivePrimitive } from "../../mod.js";
+import { ReactiveValue, ReadonlyReactiveValue } from "../../mod.js";
 import { makeNonPrimitiveItemsReactive } from "./makeNonPrimitiveItemsReactive.js";
 import { updateFilteredArray } from "./updateFilteredArray.js";
 import { computed, computedConsumer } from "../computed.js";
 import { flatten } from "./flatten.js";
-import { ReadonlyReactivePrimitive } from "../ReactivePrimitive.js";
 import type { TReactiveArrayCallback } from "../types/IReactiveArrayCallback.js";
 import type { TArrayValueType } from "../types/IArrayValueType.js";
 import type { TReactiveEntity } from "../types/IReactiveEntity.js";
@@ -56,7 +55,7 @@ const internalArrays = new class {
 };
 
 /**
- * `ReadonlyReactiveArray`s are reactive values that contain multiple values and whose updates can be listened to. In general, `ReadonlyReactiveArray`s behave very similar to native `ReadonlyArray`s. The main difference is, that most primitive values are given as `ReactivePrimitive`s and methods will return a new readonly `ReadonlyReactiveArray`, whose values are tied to the original `ReadonlyReactiveArray`. The class also provides a few custom convenience methods.
+ * `ReadonlyReactiveArray`s are reactive values that contain multiple values and whose updates can be listened to. In general, `ReadonlyReactiveArray`s behave very similar to native `ReadonlyArray`s. The main difference is, that most primitive values are given as `ReactiveValue`s and methods will return a new `ReadonlyReactiveArray`, whose values are tied to the original `ReadonlyReactiveArray`. The class also provides a few custom convenience methods.
  */
 export class ReadonlyReactiveArray<InputType> {
   /** An Array containing the current values of the ReactiveArray */
@@ -70,14 +69,14 @@ export class ReadonlyReactiveArray<InputType> {
     return this.#__value;
   }
 
-  /** An Array containing ReactivePrimitives for each index of the ReadonlyReactiveArray */
-  readonly #indices: Array<ReactivePrimitive<number>>;
+  /** An Array containing ReactiveValues for each index of the ReadonlyReactiveArray */
+  readonly #indices: Array<ReactiveValue<number>>;
 
   /** A Set containing all the callbacks to be called whenever the ReadonlyReactiveArray is updated */
   readonly #callbacks: Set<TReactiveArrayCallback<TArrayValueType<InputType>>> = new Set;
 
-  /** Size of the ReactiveArray as a ReactivePrimitive */
-  readonly #length: ReadonlyReactivePrimitive<number>;
+  /** Size of the ReactiveArray as a ReactiveValue */
+  readonly #length: ReadonlyReactiveValue<number>;
 
   constructor (
     ...input: Array<InputType>
@@ -88,7 +87,7 @@ export class ReadonlyReactiveArray<InputType> {
     );
     this.#length = computed(() => this.#value.length);
     this.#indices = input.map(
-      (_, i) => new ReactivePrimitive(i),
+      (_, i) => new ReactiveValue(i),
     );
     splicers.set(this, (...args) => this.#splice(...args));
     internalArrays.set(this, this.#__value);
@@ -131,9 +130,9 @@ export class ReadonlyReactiveArray<InputType> {
   }
 
   /**
-   * The length of the ReactiveArray, as a ReactivePrimitive which updates as the array is modified.
+   * The length of the ReactiveArray, as a ReactiveValue which updates as the array is modified.
    */
-  get length (): ReadonlyReactivePrimitive<number> {
+  get length (): ReadonlyReactiveValue<number> {
     return this.#length;
   }
 
@@ -199,7 +198,7 @@ export class ReadonlyReactiveArray<InputType> {
   }
   
   /**
-   * Creates a new ReactivePrimitive which is bound to the array it's called on. The value of the ReactivePrimitive is determined by the callback function provided, and is called every time theh array updates to update the value of the returned ReactivePrimitive.
+   * Creates a new `ReactiveValue` which is bound to the array it's called on. The value of the `ReactiveValue` is determined by the callback function provided, and is called every time theh array updates to update the value of the returned `ReactiveValue`.
    * 
    * @param callback The function to be called when the array is updated. It's called with `(startIndex, deleteCount, ...addedItems)`.
    */
@@ -207,8 +206,8 @@ export class ReadonlyReactiveArray<InputType> {
     F extends TReactiveArrayCallback<TArrayValueType<InputType>, ReturnType<F>>,
   > (
     callback: F,
-  ): ReadonlyReactivePrimitive<ReturnType<F>> {
-    const ref = new ReactivePrimitive(callback(...this.#argsForFullUpdate()));
+  ): ReadonlyReactiveValue<ReturnType<F>> {
+    const ref = new ReactiveValue(callback(...this.#argsForFullUpdate()));
     this.bind(
       (...args) => {
         ref.value = callback(...args);
@@ -286,7 +285,7 @@ export class ReadonlyReactiveArray<InputType> {
   }
  
   /**
-   * Updates the indices of each item whose index changed due to the update. Indices of removed items will become `-1`. Also inserts in new indices as `ReactivePrimitive<number>` for any added items.
+   * Updates the indices of each item whose index changed due to the update. Indices of removed items will become `-1`. Also inserts in new indices as `ReactiveValue<number>` for any added items.
    * 
    * @param start Index at which the ReactiveArray started changing
    * @param deleteCount How many items were deleted
@@ -307,7 +306,7 @@ export class ReadonlyReactiveArray<InputType> {
     const removedIndices = this.#indices.splice(
       start,
       deleteCount,
-      ...items.map((_, i) => new ReactivePrimitive(i + start)),
+      ...items.map((_, i) => new ReactiveValue(i + start)),
     );
     for (const removedIndex of removedIndices) {
       removedIndex.value = -1;
@@ -324,7 +323,7 @@ export class ReadonlyReactiveArray<InputType> {
   }
 
   /**
-   * Similar to `Array::filter()`, except that it returns a readonly ReactiveArray, which is updated as the originating array is mutated. If you don't want this begavior, use `ReactiveArray.prototype.value.filter()` instead.
+   * Similar to `Array::filter()`, except that it returns a `ReadonlyReactiveArray`, which is updated as the originating array is mutated. If you don't want this begavior, use `ReadonlyReactiveArray.prototype.value.filter()` instead.
    */
   filter (
     callback: (
@@ -406,7 +405,7 @@ export class ReadonlyReactiveArray<InputType> {
   }
 
   /**
-   * Similar to `Array::flat()`, except that it does **not** accept a depth parameter, and it returns a readonly ReactiveArray which gets gets updated with new values as the originating array is updated.
+   * Similar to `Array::flat()`, except that it does **not** accept a depth parameter, and it returns a `ReadonlyReactiveArray` which gets gets updated with new values as the originating array is updated.
    * 
    * ! This metod does not optimize changes. When source canges in any way, it recomputes every value, even when it theoretically wouldn't need to.
    */
@@ -420,7 +419,7 @@ export class ReadonlyReactiveArray<InputType> {
   }
   
   /**
-   * Similar to `Array::flatMap()`, except that it returns a readonly ReactiveArray, which gets gets updated with new values as the originating array is updated. If you don't want this behavior, use `ReactiveArray.prototype.value.flatMap()` instead.
+   * Similar to `Array::flatMap()`, except that it returns a `ReadonlyReactiveArray`, which gets gets updated with new values as the originating array is updated. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.flatMap()` instead.
    * 
    * ! This metod does not optimize changes. When source canges in any way, it recomputes every value, even when it theoretically wouldn't need to.
    */
@@ -443,12 +442,12 @@ export class ReadonlyReactiveArray<InputType> {
   }
 
   /**
-   * Similar to `Array::map()`, except that it returns a readonly ReactiveArray, which gets gets updated with mapped values as the originating array is updated. If you don't want this behavior, use `ReactiveArray.prototype.value.map()` instead.
+   * Similar to `Array::map()`, except that it returns a `ReadonlyReactiveArray`, which gets gets updated with mapped values as the originating array is updated. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.map()` instead.
    */
   map<U> (
     callback: (
       value: TArrayValueType<InputType>,
-      index: ReadonlyReactivePrimitive<number>,
+      index: ReadonlyReactiveValue<number>,
       array: this,
     ) => U,
   ): ReadonlyReactiveArray<U> {
@@ -488,7 +487,7 @@ export class ReadonlyReactiveArray<InputType> {
   }
 
   /**
-   * Similar to `Array::slice()`, except that it returns a readonly ReactiveArray, whose values are bound to the orignating array. Furthermore, if the orignating array gets items inserted or removed in the range of the spliced section (inclusive), those items will get inserted to the returned array as well. If you don't want this behavior, use `ReactiveArray.prototype.value.slice()` instead.
+   * Similar to `Array::slice()`, except that it returns a `ReadonlyReactiveArray`, whose values are bound to the orignating array. Furthermore, if the orignating array gets items inserted or removed in the range of the spliced section (inclusive), those items will get inserted to the returned array as well. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.slice()` instead.
    * 
    * **Note:** `ReactiveArray::slice(0)` is not a suitable way to clone a reactive array. The output array is readonly, and values from the original array are piped into it. Use `ReactiveArray::clone()` instead.
    */
@@ -506,66 +505,66 @@ export class ReadonlyReactiveArray<InputType> {
   }
 
   /**
-   * Similar to `Array::indexOf()`, except that it returns a readonly `ReactivePrimitive<number>`, which is updated as the array changes. The array is not searched again when the array changes. If nothing is found, `ReadonlyReactivePrimitive<-1>` is returned, and it will never change. If something _is_ found, the index of that specific item will be kept up to date even when items are added or removed in a way that changes its index. If you don't want this behavior, use `ReactiveArray.prototype.value.indexOf()` instead. 
+   * Similar to `Array::indexOf()`, except that it returns a `ReadonlyReactiveValue<number>`, which is updated as the array changes. The array is not searched again when the array changes. If nothing is found, `ReadonlyReactiveValue<-1>` is returned, and it will never change. If something _is_ found, the index of that specific item will be kept up to date even when items are added or removed in a way that changes its index. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.indexOf()` instead. 
    * 
    * **NOTE:** _This method should **not** be used for checking if an array includes something: use `ReactiveArray::includes()` instead._
    */
   indexOf (
     ...args: Parameters<Array<TArrayValueType<InputType>>["indexOf"]>
-  ): ReadonlyReactivePrimitive<number> {
+  ): ReadonlyReactiveValue<number> {
     const index = this.#value.indexOf(...args);
     return index === -1
-      ? new ReadonlyReactivePrimitive(-1)
+      ? new ReadonlyReactiveValue(-1)
       : this.#indices[index].readonly;
   }
 
   /**
-   * Similar to `Array::lastIndexOf()`, except that it returns a readonly `ReactivePrimitive<number>`, which is updated as the array changes. The array is not searched again when the array changes. If nothing is found, `ReadonlyReactivePrimitive<-1>` is returned, and it will never change. If something _is_ found, the index of that specific item will be kept up to date even when items are added or removed in a way that changes its index. If you don't want this behavior, use `ReactiveArray.prototype.value.lastIndexOf()` instead.
+   * Similar to `Array::lastIndexOf()`, except that it returns a `ReadonlyReactiveValue<number>`, which is updated as the array changes. The array is not searched again when the array changes. If nothing is found, `ReadonlyReactiveValue<-1>` is returned, and it will never change. If something _is_ found, the index of that specific item will be kept up to date even when items are added or removed in a way that changes its index. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.lastIndexOf()` instead.
    */
   lastIndexOf (
     ...args: Parameters<Array<TArrayValueType<InputType>>["lastIndexOf"]>
-  ): ReadonlyReactivePrimitive<number> {
+  ): ReadonlyReactiveValue<number> {
     const index = this.#value.lastIndexOf(...args);
     return index === -1
-      ? new ReadonlyReactivePrimitive(-1)
+      ? new ReadonlyReactiveValue(-1)
       : this.#indices[index].readonly;
   }
 
   /**
-   * Similar to `Array::join()`, except that it returns a readonly `ReactivePrimitive<string>`, which is updated as the array changes. If you don't want this behavior, use `ReactiveArray.prototype.value.join()` instead.
+   * Similar to `Array::join()`, except that it returns a `ReadonlyReactiveValue<string>`, which is updated as the array changes. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.join()` instead.
    */
   join (
     ...args: Parameters<Array<TArrayValueType<InputType>>["join"]>
-  ): ReadonlyReactivePrimitive<string> {
+  ): ReadonlyReactiveValue<string> {
     return this.pipe(
       () => this.#value.join(...args),
     );
   }
 
   /**
-   * Similar to `Array::every()`, except that it returns a readonly `ReactivePrimitive<boolean>`, which is updated as the array changes. If you don't want this behavior, use `ReactiveArray.prototype.value.every()` instead.
+   * Similar to `Array::every()`, except that it returns a `ReadonlyReactiveValue<boolean>`, which is updated as the array changes. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.every()` instead.
    */
   every (
     ...args: Parameters<Array<TArrayValueType<InputType>>["every"]>
-  ): ReadonlyReactivePrimitive<boolean> {
+  ): ReadonlyReactiveValue<boolean> {
     return this.pipe(
       () => this.#value.every(...args),
     );
   }
 
   /**
-   * Similar to `Array::some()`, except that it returns a readonly `ReactivePrimitive<boolean>`, which is updated as the array changes. If you don't want this behavior, use `ReactiveArray.prototype.value.some()` instead.
+   * Similar to `Array::some()`, except that it returns a `ReadonlyReactiveValue<boolean>`, which is updated as the array changes. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.some()` instead.
    */
   some (
     ...args: Parameters<Array<TArrayValueType<InputType>>["some"]>
-  ): ReadonlyReactivePrimitive<boolean> {
+  ): ReadonlyReactiveValue<boolean> {
     return this.pipe(
       () => this.#value.some(...args),
     );
   }
 
   /**
-   * Returns a readonly `ReactivePrimitive<boolean>`, which is set to true when the callback returns true for some, but not all items in the array. Is updated as the array updates. This is a custom method, and a non-reactive variant is not available on the native Array prototype.
+   * Returns a `ReadonlyReactiveValue<boolean>`, which is set to true when the callback returns true for some, but not all items in the array. Is updated as the array updates. This is a custom method, and a non-reactive variant is not available on the native Array prototype.
    */
   exclusiveSome (
     cb: (
@@ -573,7 +572,7 @@ export class ReadonlyReactiveArray<InputType> {
       index: number,
       array: Array<TArrayValueType<InputType>>,
     ) => boolean,
-  ): ReadonlyReactivePrimitive<boolean> {
+  ): ReadonlyReactiveValue<boolean> {
     return this.pipe(
       () => {
         const mappedValues = this.#value.map(cb);
@@ -586,7 +585,7 @@ export class ReadonlyReactiveArray<InputType> {
   }
 
   /**
-   * Behaves akin to `Array::forEach()`, except will call the callback on newly added items as they're added. If you don't want this behavior, use `ReactiveArray.prototype.value.forEach()` instead.
+   * Behaves akin to `Array::forEach()`, except will call the callback on newly added items as they're added. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.forEach()` instead.
    */
   forEach (
     ...args: Parameters<Array<TArrayValueType<InputType>>["forEach"]>
@@ -601,20 +600,20 @@ export class ReadonlyReactiveArray<InputType> {
   }
 
   /**
-   * Similar to `Array::reduce()`, except that its return value is a readonly ReactivePrimitive and will be reevaluated every time the array changes. If you don't want this behavior, use `ReactiveArray.prototype.value.reduce()` for a non-reactive result.
+   * Similar to `Array::reduce()`, except that its return value is a `ReadonlyReactiveValue` and will be reevaluated every time the array changes. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.reduce()` for a non-reactive result.
    */
   reduce (
     ...args: Parameters<Array<TArrayValueType<InputType>>["reduce"]>
-  ): ReadonlyReactivePrimitive<ReturnType<Array<TArrayValueType<InputType>>["reduce"]>> {
+  ): ReadonlyReactiveValue<ReturnType<Array<TArrayValueType<InputType>>["reduce"]>> {
     return this.pipe(() => this.#value.reduce(...args));
   }
 
   /**
-   * Similar to `Array::reduceRight()`, except that its return value is a readonly ReactivePrimitive and will be reevaluated every time the array changes. If you don't want this behavior, use `ReactiveArray.prototype.value.reduceRight()` for a non-reactive result.
+   * Similar to `Array::reduceRight()`, except that its return value is a `ReadonlyReactiveValue` and will be reevaluated every time the array changes. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.reduceRight()` for a non-reactive result.
    */
   reduceRight (
     ...args: Parameters<Array<TArrayValueType<InputType>>["reduceRight"]>
-  ): ReadonlyReactivePrimitive<ReturnType<Array<TArrayValueType<InputType>>["reduceRight"]>> {
+  ): ReadonlyReactiveValue<ReturnType<Array<TArrayValueType<InputType>>["reduceRight"]>> {
     return this.pipe(() => this.#value.reduceRight(...args));
   }
 
@@ -628,20 +627,20 @@ export class ReadonlyReactiveArray<InputType> {
   }
 
   /**
-   * Similar to `Array::findIndex`, except that it returns a `ReactivePrimitive<number>` whose value is updated if the index of the item changes as other items are added or removed from the array. The array is not searched again as it's mutated, however. If nothing is found, `ReadonlyReactivePrimitive<-1>` is returned, and its value will never be updated. If you don't want this behavior, use `ReactiveArray.prototype.value.findIndex()` instead.
+   * Similar to `Array::findIndex`, except that it returns a `ReactiveValue<number>` whose value is updated if the index of the item changes as other items are added or removed from the array. The array is not searched again as it's mutated, however. If nothing is found, `ReadonlyReactiveValue<-1>` is returned, and its value will never be updated. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.findIndex()` instead.
    */
   findIndex (
     ...args: Parameters<Array<TArrayValueType<InputType>>["findIndex"]>
-  ): ReadonlyReactivePrimitive<ReturnType<Array<TArrayValueType<InputType>>["findIndex"]>> {
+  ): ReadonlyReactiveValue<ReturnType<Array<TArrayValueType<InputType>>["findIndex"]>> {
     const index = this.#value.findIndex(...args);
 
     return index === -1
-      ? new ReadonlyReactivePrimitive(-1)
+      ? new ReadonlyReactiveValue(-1)
       : this.#indices[index].readonly;
   }
 
   /**
-   * Works similar to `Array::entries()`. The difference is that it returns a readonly ReactiveArray containing the entries and is updated as the original array is updated. If you don't want this behavior, use `ReactiveArray.prototype.value.entries()` for a writable non-reactive array instead.
+   * Works similar to `Array::entries()`. The difference is that it returns a `ReadonlyReactiveArray` containing the entries and is updated as the original array is updated. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.entries()` for a writable non-reactive array instead.
    */
   entries (): ReadonlyReactiveArray<[
     index: number,
@@ -659,7 +658,7 @@ export class ReadonlyReactiveArray<InputType> {
   }
 
   /**
-   * Works similar to `Array::keys()`. The difference is that it returns a readonly ReactiveArray containing the keys and is updated as the original array is updated. If you don't want this behavior, use `ReactiveArray.prototype.value.keys()` for a writable non-reactive array instead.
+   * Works similar to `Array::keys()`. The difference is that it returns a `ReadonlyReactiveArray` containing the keys and is updated as the original array is updated. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.keys()` for a writable non-reactive array instead.
    */
   keys (): ReadonlyReactiveArray<number> {
     const array = new ReactiveArray(...this.#value.keys());
@@ -674,7 +673,7 @@ export class ReadonlyReactiveArray<InputType> {
   }
 
   /**
-   * Works similar to `Array::values()`. The difference is that it returns a readonly ReactiveArray containing the values and is updated as the original array is updated. If you don't want this behavior, use `ReactiveArray.prototype.value.values()` for a writable non-reactive array instead.
+   * Works similar to `Array::values()`. The difference is that it returns a `ReadonlyReactiveArray` containing the values and is updated as the original array is updated. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.values()` for a writable non-reactive array instead.
    */
   values (): ReadonlyReactiveArray<TArrayValueType<InputType>> {
     const array = new ReactiveArray(...this.#value.values());
@@ -689,11 +688,11 @@ export class ReadonlyReactiveArray<InputType> {
   }
 
   /**
-   * Works similar to `Array::includes()`. The difference is that it returns a readonly `ReactivePrimitive<boolean>` containing the result and is updated as the original array is updated. If you don't want this behavior, use `ReactiveArray.prototype.value.includes()` for a plain boolean instead.
+   * Works similar to `Array::includes()`. The difference is that it returns a `ReadonlyReactiveValue<boolean>` containing the result and is updated as the original array is updated. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.includes()` for a plain boolean instead.
    */
   includes (
     ...args: Parameters<Array<TArrayValueType<InputType>>["includes"]>
-  ): ReadonlyReactivePrimitive<boolean> {
+  ): ReadonlyReactiveValue<boolean> {
     return this.pipe(
       () => this.#value.includes(...args),
     );
@@ -702,7 +701,7 @@ export class ReadonlyReactiveArray<InputType> {
   /**
    * Conbines the array with one or more other arrays, or other values.
    * 
-   * Similar to `Array::concat()`, except that it returns a readonly ReactiveArray. It accepts arrays, ReactiveArrays, ReactivePrimitives, or other items as parameters. Any ReactiveArrays or ReactivePrimitives will be tracked, and the resulting ReacativeArray will be updated whenever they get updated.
+   * Similar to `Array::concat()`, except that it returns a `ReadonlyReactiveArray`. It accepts arrays, `ReactiveArray`s, `ReactiveValue`s, or other items as parameters. Any `ReactiveArray`s or `ReactiveValue`s will be tracked, and the resulting `ReadonlyReactiveArray` will be updated whenever they get updated.
    * 
    * @param items The items to be tacked onto the original array.
    */
@@ -710,7 +709,7 @@ export class ReadonlyReactiveArray<InputType> {
     U,
     K extends TArrayValueType<InputType> | U,
   > (
-    ...items: Array<K | Array<K> | ReactivePrimitive<K> | ReactiveArray<K>>
+    ...items: Array<K | Array<K> | ReactiveValue<K> | ReactiveArray<K>>
   ): ReadonlyReactiveArray<U | TArrayValueType<InputType>> {
     const newArr = this.clone() as ReactiveArray<TArrayValueType<InputType> | U>;
     this.bind((...args) => splicers.get(newArr)(...args));
@@ -741,7 +740,7 @@ export class ReadonlyReactiveArray<InputType> {
           ),
         );
         lengthTally.push(item.length);
-      } else if (item instanceof ReadonlyReactivePrimitive) {
+      } else if (item instanceof ReadonlyReactiveValue) {
         item.bind(
           value => newArr.splice(
             currentOffset(i),
@@ -777,7 +776,7 @@ export class ReadonlyReactiveArray<InputType> {
 }
 
 /**
- * `ReactiveArray`s are reactive values that contain multiple values which can be updated and whose updates can be listened to. In general, `ReactiveArray`s behave very similar to native `Array`s. The main difference is, that most primitive values are given as `ReactivePrimitive`s and any immutable methods will return a new readonly `ReactiveArray`, whose values are tied to the original `ReactiveArray`. The class also provides a few custom convenience methods.
+ * `ReactiveArray`s are reactive values that contain multiple values which can be updated and whose updates can be listened to. In general, `ReactiveArray`s behave very similar to native `Array`s. The main difference is, that most primitive values are given as `ReactiveValue`s and any immutable methods will return a new `ReadonlyReactiveArray`, whose values are tied to the original `ReactiveArray`. The class also provides a few custom convenience methods.
  */
 export class ReactiveArray<InputType> extends ReadonlyReactiveArray<InputType> {
   #value: ReadonlyArray<TArrayValueType<InputType>>;
@@ -933,7 +932,7 @@ export class ReactiveArray<InputType> extends ReadonlyReactiveArray<InputType> {
    */
   push (
     ...items: Array<InputType>
-  ): ReadonlyReactivePrimitive<number> {
+  ): ReadonlyReactiveValue<number> {
     this.splice(this.#value.length, 0, ...items);
  
     return this.length;
@@ -973,7 +972,7 @@ export class ReactiveArray<InputType> extends ReadonlyReactiveArray<InputType> {
    */
   unshift (
     ...items: Array<InputType>
-  ): ReadonlyReactivePrimitive<number> {
+  ): ReadonlyReactiveValue<number> {
     this.splice(0, 0, ...items);
     return this.length;
   }

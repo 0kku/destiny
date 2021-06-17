@@ -1,6 +1,6 @@
-import type { ReadonlyReactiveArray, ReactivePrimitive } from "../../mod.js";
+import type { ReadonlyReactiveArray, ReactiveValue } from "../../mod.js";
 
 export type TReactiveEntity<T> = (
-  | ReactivePrimitive<T>
+  | ReactiveValue<T>
   | ReadonlyReactiveArray<T>
 );

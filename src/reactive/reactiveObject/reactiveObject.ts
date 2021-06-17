@@ -18,7 +18,7 @@ export function reactiveObject<
 ): TReactiveObject<T> {
   // TS is incapable of figuring out the type correctly here, so it will throw a runtime error instead.
   if (![null, Object].includes(input.constructor as ObjectConstructor)) {
-    throw new TypeError(`Illegal object passed to reactiveObject. Reactive objects must be made with objects that have \`Object\` or \`null\` as their prototype, but it was \`${input.constructor.name}\`. Alternatively, wrap the object using ReactivePrimitive.`);
+    throw new TypeError(`Illegal object passed to reactiveObject. Reactive objects must be made with objects that have \`Object\` or \`null\` as their prototype, but it was \`${input.constructor.name}\`. Alternatively, wrap the object using ReactiveValue.`);
   }
   
   const result = Object.fromEntries(

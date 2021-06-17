@@ -7,7 +7,7 @@ import { getElementData } from "./elementData.js";
 import type { Ref, RefPromise } from "./Ref.js";
 import type { Renderable } from "../parsing/Renderable.js";
 import type { Slot } from "../parsing/Slot.js";
-import type { ReadonlyReactivePrimitive } from "../reactive/ReactivePrimitive.js";
+import type { ReadonlyReactiveValue } from "../reactive/ReactiveValue.js";
 import type { CSSTemplate } from "../styling/CSSTemplate.js";
 
 // @ts-ignore I don't know how to describe this type correctly
@@ -60,14 +60,14 @@ export class Component extends HTMLElement {
   }
 
   /**
-   * Synchonizes a CSS property of this element to a ReactivePrimitive.
+   * Synchonizes a CSS property of this element to a `ReactiveValue`.
    * 
    * @param property  CSS property to be synchronized
-   * @param source    A ReactivePrimitive whose value is to be used for the CSS Property
+   * @param source    A ReactiveValue whose value is to be used for the CSS Property
    */
   attachCSSProperties (
     styles: {
-      [Key: string]: ReadonlyReactivePrimitive<string>,
+      [Key: string]: ReadonlyReactiveValue<string>,
     },
   ): void {
     attachCSSProperties(this, styles);

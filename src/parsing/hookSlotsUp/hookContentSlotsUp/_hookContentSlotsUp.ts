@@ -1,4 +1,4 @@
-import { ReadonlyReactivePrimitive, ReadonlyReactiveArray } from "../../../mod.js";
+import { ReadonlyReactiveValue, ReadonlyReactiveArray } from "../../../mod.js";
 import { valueToFragment } from "./toFragment/valueToFragment.js";
 import { Slot } from "../../Slot.js";
 import { SlotArray } from "../../SlotArray.js";
@@ -19,7 +19,7 @@ export function hookContentSlotsUp (
   for (const contentSlot of contentSlots) {
     const index = contentSlot.getAttribute("destiny:content");
     const item = props[Number(index)];
-    if (item instanceof ReadonlyReactivePrimitive) {
+    if (item instanceof ReadonlyReactiveValue) {
       const slot = new Slot(contentSlot);
       item.bind(value => {
         slot.update(valueToFragment(value));

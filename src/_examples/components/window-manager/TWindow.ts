@@ -1,14 +1,14 @@
-import type { ReactivePrimitive, TemplateResult } from "/dist/mod.js";
+import type { ReactiveValue, TemplateResult } from "/dist/mod.js";
 
 export type TWindow = {
   header: string,
   content: TemplateResult,
   position: {
-    x: ReactivePrimitive<number>,
-    y: ReactivePrimitive<number>,
+    x: ReactiveValue<number>,
+    y: ReactiveValue<number>,
   },
   size: {
-    x: ReactivePrimitive<number>,
-    y: ReactivePrimitive<number>,
+    x: ReactiveValue<number>,
+    y: ReactiveValue<number>,
   },
 };

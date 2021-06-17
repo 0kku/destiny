@@ -1,4 +1,4 @@
-import { Component, reactive, xml, ReactivePrimitive } from "/dist/mod.js";
+import { Component, reactive, xml, ReactiveValue } from "/dist/mod.js";
 
 function getHashRoute (
   url: string,
@@ -24,7 +24,7 @@ export class HashRouter extends Component<{
       404 — route "${route}" not found
     </slot>
   `.content.firstElementChild!;
-  #view = new ReactivePrimitive(this.#error404);
+  #view = new ReactiveValue(this.#error404);
 
   constructor () {
     super();

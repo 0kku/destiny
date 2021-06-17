@@ -1,5 +1,5 @@
 import { computed } from "./computed.js";
-import { ReadonlyReactivePrimitive } from "./ReactivePrimitive.js";
+import { ReadonlyReactiveValue } from "./ReactiveValue.js";
 
 /**
  * This function can be used to create class name string for one or more class names controlled by static or reactive booleans.
@@ -28,13 +28,13 @@ import { ReadonlyReactivePrimitive } from "./ReactivePrimitive.js";
  * @returns A reactive string that updates when any of the inputs change
  */
 export function classNames (
-  input: Record<string, boolean | ReadonlyReactivePrimitive<boolean>>,
-): ReadonlyReactivePrimitive<string> {
+  input: Record<string, boolean | ReadonlyReactiveValue<boolean>>,
+): ReadonlyReactiveValue<string> {
   return computed(() =>
     Object
     .entries(input)
     .filter(([, value]) => 
-      value instanceof ReadonlyReactivePrimitive
+      value instanceof ReadonlyReactiveValue
       ? value.value
       : value
     )
