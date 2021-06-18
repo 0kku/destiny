@@ -2,6 +2,7 @@ import { IterableWeakMap } from "../utils/IterableWeakMap.js";
 import { WeakMultiRef } from "../utils/WeakMultiRef.js";
 import { computedConsumer } from "./computed.js";
 import { concatIterators } from "../utils/concatIterators.js";
+import type { ReadonlyReactiveArray } from "./ReactiveArray/_ReactiveArray.js";
 
 type TReactiveValueCallback<T> = (newValue: T) => void;
 
@@ -15,7 +16,7 @@ type TReactiveValueUpdater<T> = (
   options?: Partial<TReactiveValueUpdaterOptions<T>>,
 ) => void;
 
-const setValue = new class {
+export const internalSetReactiveValue = new class {
   #inner = new WeakMap<
     ReadonlyReactiveValue<any>
   >();
@@ -55,13 +56,13 @@ export class ReadonlyReactiveValue<T> {
   // eslint-disable-next-line @typescript-eslint/ban-types
   readonly #consumers = new IterableWeakMap<object, TReactiveValueCallback<T>>();
 
-  readonly dependencies = new Map<ReadonlyReactiveValue<any>, VoidFunction>();
+  readonly dependencies = new Map<ReadonlyReactiveValue<any> | ReadonlyReactiveArray<any>, VoidFunction>();
 
   constructor (
     initialValue: T,
   ) {
     this.#value = initialValue;
-    setValue.set(
+    internalSetReactiveValue.set(
       this,
       (...args) => this.#set(...args),
     );
@@ -208,7 +209,7 @@ export class ReadonlyReactiveValue<T> {
     callback: (value: T) => K,
   ): ReadonlyReactiveValue<K> {
     const reactor = new ReadonlyReactiveValue(callback(this.#value));
-    const fn = () => setValue.get(reactor)(callback(this.#value));
+    const fn = () => internalSetReactiveValue.get(reactor)(callback(this.#value));
     reactor.dependencies.set(this, fn);
     this.#consumers.set(
       reactor,
@@ -270,7 +271,7 @@ export class ReactiveValue<T> extends ReadonlyReactiveValue<T> {
     value: T,
     options?: Partial<TReactiveValueUpdaterOptions<T>>,
   ): this {
-    setValue.get(this)(value, options);
+    internalSetReactiveValue.get(this)(value, options);
 
     return this;
   }

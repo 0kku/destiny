@@ -3,6 +3,10 @@ import { makeNonPrimitiveItemsReactive } from "./makeNonPrimitiveItemsReactive.j
 import { updateFilteredArray } from "./updateFilteredArray.js";
 import { computed, computedConsumer } from "../computed.js";
 import { flatten } from "./flatten.js";
+import { IterableWeakMap } from "../../utils/IterableWeakMap.js";
+import { WeakMultiRef } from "../../utils/WeakMultiRef.js";
+import { concatIterators } from "../../utils/concatIterators.js";
+import { internalSetReactiveValue } from "../ReactiveValue.js";
 import type { TReactiveArrayCallback } from "../types/IReactiveArrayCallback.js";
 import type { TArrayValueType } from "../types/IArrayValueType.js";
 import type { TReactiveEntity } from "../types/IReactiveEntity.js";
@@ -54,6 +58,16 @@ const internalArrays = new class {
   }
 };
 
+const stronglyHeldDependencies = new Map<
+  TReactiveArrayCallback<TArrayValueType<any>>,
+  ReadonlyReactiveArray<any>
+>();
+
+const weaklyHeldDependencies = new IterableWeakMap<
+  WeakMultiRef,
+  ReadonlyReactiveArray<any>
+>();
+
 /**
  * `ReadonlyReactiveArray`s are reactive values that contain multiple values and whose updates can be listened to. In general, `ReadonlyReactiveArray`s behave very similar to native `ReadonlyArray`s. The main difference is, that most primitive values are given as `ReactiveValue`s and methods will return a new `ReadonlyReactiveArray`, whose values are tied to the original `ReadonlyReactiveArray`. The class also provides a few custom convenience methods.
  */
@@ -63,7 +77,14 @@ export class ReadonlyReactiveArray<InputType> {
   /** A getter for an Array containing the current values of the ReactiveArray. Notifies computed values when it's being accessed. */
   get #value (): Array<TArrayValueType<InputType>> {
     if (computedConsumer) {
-      this.#callbacks.add(computedConsumer.fn);
+      const {fn, consumer} = computedConsumer;
+      consumer.dependencies.set(this, fn);
+      this.#consumers.set(
+        consumer, 
+        fn,
+      );
+
+      // this.#callbacks.add(computedConsumer.fn);
     }
 
     return this.#__value;
@@ -74,6 +95,9 @@ export class ReadonlyReactiveArray<InputType> {
 
   /** A Set containing all the callbacks to be called whenever the ReadonlyReactiveArray is updated */
   readonly #callbacks: Set<TReactiveArrayCallback<TArrayValueType<InputType>>> = new Set;
+
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  readonly #consumers = new IterableWeakMap<object, TReactiveArrayCallback<TArrayValueType<InputType>>>();
 
   /** Size of the ReactiveArray as a ReactiveValue */
   readonly #length: ReadonlyReactiveValue<number>;
@@ -202,19 +226,20 @@ export class ReadonlyReactiveArray<InputType> {
    * 
    * @param callback The function to be called when the array is updated. It's called with `(startIndex, deleteCount, ...addedItems)`.
    */
-  pipe<
+  pipe <
     F extends TReactiveArrayCallback<TArrayValueType<InputType>, ReturnType<F>>,
   > (
     callback: F,
   ): ReadonlyReactiveValue<ReturnType<F>> {
-    const ref = new ReactiveValue(callback(...this.#argsForFullUpdate()));
-    this.bind(
-      (...args) => {
-        ref.value = callback(...args);
-      }, 
-      { noFirstRun: true },
+    const reactor = new ReadonlyReactiveValue(callback(...this.#argsForFullUpdate()));
+    const fn = () => internalSetReactiveValue.get(reactor)(callback(...this.#argsForFullUpdate()));
+    reactor.dependencies.set(this, fn);
+    this.#consumers.set(
+      reactor,
+      fn,
     );
-    return ref.readonly;
+
+    return reactor;
   }
 
   /**
@@ -231,10 +256,19 @@ export class ReadonlyReactiveArray<InputType> {
       dependents?: ReadonlyArray<object>,
     } = {},
   ): this {
-    this.#callbacks.add(callback);
     if (!options.noFirstRun) {
       callback(0, 0, ...this.#value);
     }
+
+    if (options.dependents?.length) {
+      const key = new WeakMultiRef(options.dependents);
+      this.#consumers.set(key, callback);
+      weaklyHeldDependencies.set(key, this);
+    } else {
+      this.#callbacks.add(callback);
+      stronglyHeldDependencies.set(callback, this);
+    }
+
     return this;
   }
 
@@ -247,6 +281,8 @@ export class ReadonlyReactiveArray<InputType> {
     callback: TReactiveArrayCallback<TArrayValueType<InputType>>,
   ): this {
     this.#callbacks.delete(callback);
+    stronglyHeldDependencies.delete(callback);
+
     return this;
   }
 
@@ -279,7 +315,11 @@ export class ReadonlyReactiveArray<InputType> {
     deleteCount: number,
     newItems: ReadonlyArray<TArrayValueType<InputType>> = [],
   ): void {
-    for (const callback of this.#callbacks) {
+    const callbacks = concatIterators(
+      this.#callbacks.values(),
+      this.#consumers.values(),
+    );
+    for (const callback of callbacks) {
       callback(start, deleteCount, ...newItems);
     }
   }
@@ -339,7 +379,6 @@ export class ReadonlyReactiveArray<InputType> {
     const maskArray: TMask = [];
 
     dependencies.forEach(dependency => {
-      // TODO: add dependents 
       dependency.bind(
         () => updateFilteredArray(
           callback,
@@ -347,59 +386,67 @@ export class ReadonlyReactiveArray<InputType> {
           filteredArray,
           maskArray,
         ), 
-        { noFirstRun: true },
+        {
+          noFirstRun: true,
+          dependents: [filteredArray],
+        },
       );
     });
 
-    this.bind((start, deletes, ...items) => {
-      if (deletes === 0 && items.length === 0) {
-        updateFilteredArray(
-          callback,
-          this.#value,
-          filteredArray,
-          maskArray,
-        );
-      }
+    this.bind(
+      (start, deletes, ...items) => {
+        if (deletes === 0 && items.length === 0) {
+          updateFilteredArray(
+            callback,
+            this.#value,
+            filteredArray,
+            maskArray,
+          );
+        }
 
-      const lastInMask = maskArray.slice(0, start).reverse().find(v => v.show);
-      const newItems: Array<TArrayValueType<InputType>> = [];
-      let currentIndex = (lastInMask?.index ?? -1);
-      const deletedMaskEntries =
-        deletes
-        ? maskArray.splice(start, deletes)
-        : []
-      ;
-      for (const [i, item] of items.entries()) {
-        const sourceIndex = start + i;
-        const showThis = callback(item, sourceIndex, this.#value);
-        if (showThis) {
-          currentIndex++;
+        const lastInMask = maskArray.slice(0, start).reverse().find(v => v.show);
+        const newItems: Array<TArrayValueType<InputType>> = [];
+        let currentIndex = (lastInMask?.index ?? -1);
+        const deletedMaskEntries =
+          deletes
+          ? maskArray.splice(start, deletes)
+          : []
+        ;
+        for (const [i, item] of items.entries()) {
+          const sourceIndex = start + i;
+          const showThis = callback(item, sourceIndex, this.#value);
+          if (showThis) {
+            currentIndex++;
+          }
+          const current = {
+            index: currentIndex,
+            show: showThis,
+          };
+          maskArray.splice(sourceIndex, 0, current);
+          if (showThis) {
+            newItems.push(item);
+          }
         }
-        const current = {
-          index: currentIndex,
-          show: showThis,
-        };
-        maskArray.splice(sourceIndex, 0, current);
-        if (showThis) {
-          newItems.push(item);
-        }
-      }
 
-      const deletedItemCount = deletedMaskEntries.filter(v => v.show).length;
-      if (newItems.length || deletedItemCount) {
-        filteredArray.#splice(
-          (lastInMask?.index ?? -1) + 1,
-          deletedItemCount,
-          ...newItems,
-        );
-      }
-      const shiftTailBy = newItems.length - deletedItemCount;
-      if (shiftTailBy) {
-        for (let i = start + items.length; i < maskArray.length; i++) {
-          maskArray[i].index += shiftTailBy;
+        const deletedItemCount = deletedMaskEntries.filter(v => v.show).length;
+        if (newItems.length || deletedItemCount) {
+          filteredArray.#splice(
+            (lastInMask?.index ?? -1) + 1,
+            deletedItemCount,
+            ...newItems,
+          );
         }
-      }
-    });
+        const shiftTailBy = newItems.length - deletedItemCount;
+        if (shiftTailBy) {
+          for (let i = start + items.length; i < maskArray.length; i++) {
+            maskArray[i].index += shiftTailBy;
+          }
+        }
+      },
+      {
+        dependents: [filteredArray],
+      },
+    );
     
     return filteredArray.readonly;
   }
@@ -410,12 +457,15 @@ export class ReadonlyReactiveArray<InputType> {
    * ! This metod does not optimize changes. When source canges in any way, it recomputes every value, even when it theoretically wouldn't need to.
    */
   flat (): ReadonlyReactiveArray<TUnwrapReactiveArray<TArrayValueType<InputType>>> {
-    const newArr = new ReactiveArray(...flatten(this.#value));
+    const newArray = new ReactiveArray(...flatten(this.#value));
     this.bind(
-      () => newArr.value = flatten(this.#value),
-      { noFirstRun: false },
+      () => newArray.value = flatten(this.#value),
+      {
+        noFirstRun: false,
+        dependents: [newArray],
+      },
     );
-    return newArr.readonly;
+    return newArray.readonly;
   }
   
   /**
@@ -432,13 +482,16 @@ export class ReadonlyReactiveArray<InputType> {
   ): ReadonlyReactiveArray<TUnwrapReactiveArray<U>> {
     const flatMap = () => flatten(this.#value.flatMap(callback));
 
-    const newArr = new ReactiveArray(...flatMap());
+    const newArray = new ReactiveArray(...flatMap());
     this.bind(
-      () => newArr.value = flatMap(),
-      { noFirstRun: false },
+      () => newArray.value = flatMap(),
+      {
+        noFirstRun: false,
+        dependents: [newArray],
+      },
     );
 
-    return newArr.readonly;
+    return newArray.readonly;
   }
 
   /**
@@ -460,7 +513,7 @@ export class ReadonlyReactiveArray<InputType> {
       this,
     );
 
-    const newArr = new ReadonlyReactiveArray(
+    const newArray = new ReadonlyReactiveArray(
       ...this.#value.map(cb),
     );
     this.#callbacks.add(
@@ -468,7 +521,7 @@ export class ReadonlyReactiveArray<InputType> {
         index,
         deleteCount,
         ...values
-      ) => splicers.get(newArr)(
+      ) => splicers.get(newArray)(
         index,
         deleteCount,
         ...values.map(
@@ -476,7 +529,8 @@ export class ReadonlyReactiveArray<InputType> {
         ),
       ),
     );
-    return newArr;
+
+    return newArray;
   }
 
   /**
@@ -495,13 +549,16 @@ export class ReadonlyReactiveArray<InputType> {
     start = 0,
     end = this.#value.length - 1,
   ): ReadonlyReactiveArray<TArrayValueType<InputType>> {
-    const newArr = new ReactiveArray(
+    const newArray = new ReactiveArray(
       ...this.#value.slice(start, end),
     );
     this.bind(
-      () => newArr.value = this.#value.slice(start, end),
+      () => newArray.value = this.#value.slice(start, end),
+      {
+        dependents: [newArray],
+      },
     );
-    return newArr.readonly;
+    return newArray.readonly;
   }
 
   /**
@@ -646,45 +703,54 @@ export class ReadonlyReactiveArray<InputType> {
     index: number,
     value: TArrayValueType<InputType>,
   ]> {
-    const array = new ReactiveArray(...this.#value.entries());
+    const newArray = new ReactiveArray(...this.#value.entries());
     this.bind(
       (index, deleteCount, ...addedItems) => {
-        array.#splice(index, deleteCount, ...addedItems.entries());
+        newArray.#splice(index, deleteCount, ...addedItems.entries());
       },
-      { noFirstRun: true },
+      {
+        noFirstRun: true,
+        dependents: [newArray],
+      },
     );
 
-    return array.readonly;
+    return newArray.readonly;
   }
 
   /**
    * Works similar to `Array::keys()`. The difference is that it returns a `ReadonlyReactiveArray` containing the keys and is updated as the original array is updated. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.keys()` for a writable non-reactive array instead.
    */
   keys (): ReadonlyReactiveArray<number> {
-    const array = new ReactiveArray(...this.#value.keys());
+    const newArray = new ReactiveArray(...this.#value.keys());
     this.bind(
       (index, deleteCount, ...addedItems) => {
-        array.#splice(index, deleteCount, ...addedItems.keys());
+        newArray.#splice(index, deleteCount, ...addedItems.keys());
       },
-      { noFirstRun: true },
+      {
+        noFirstRun: true,
+        dependents: [newArray],
+      },
     );
 
-    return array.readonly;
+    return newArray.readonly;
   }
 
   /**
    * Works similar to `Array::values()`. The difference is that it returns a `ReadonlyReactiveArray` containing the values and is updated as the original array is updated. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.values()` for a writable non-reactive array instead.
    */
   values (): ReadonlyReactiveArray<TArrayValueType<InputType>> {
-    const array = new ReactiveArray(...this.#value.values());
+    const newArray = new ReactiveArray(...this.#value.values());
     this.bind(
       (index, deleteCount, ...addedItems) => {
-        array.#splice(index, deleteCount, ...addedItems.values());
+        newArray.#splice(index, deleteCount, ...addedItems.values());
       },
-      { noFirstRun: true },
+      {
+        noFirstRun: true,
+        dependents: [newArray],
+      },
     );
 
-    return array.readonly;
+    return newArray.readonly;
   }
 
   /**
@@ -711,8 +777,13 @@ export class ReadonlyReactiveArray<InputType> {
   > (
     ...items: Array<K | Array<K> | ReactiveValue<K> | ReactiveArray<K>>
   ): ReadonlyReactiveArray<U | TArrayValueType<InputType>> {
-    const newArr = this.clone() as ReactiveArray<TArrayValueType<InputType> | U>;
-    this.bind((...args) => splicers.get(newArr)(...args));
+    const newArray = this.clone() as ReactiveArray<TArrayValueType<InputType> | U>;
+    this.bind(
+      (...args) => splicers.get(newArray)(...args),
+      {
+        dependents: [newArray],
+      },
+    );
     const lengthTally: Array<{value: number}> = [
       this.length,
     ];
@@ -733,26 +804,32 @@ export class ReadonlyReactiveArray<InputType> {
             index,
             deleteCount,
             ...values
-          ) => newArr.splice(
+          ) => newArray.splice(
             currentOffset(i, index),
             deleteCount,
             ...values
           ),
+          {
+            dependents: [newArray],
+          }
         );
         lengthTally.push(item.length);
       } else if (item instanceof ReadonlyReactiveValue) {
         item.bind(
-          value => newArr.splice(
+          value => newArray.splice(
             currentOffset(i),
             1,
             value,
           ),
+          {
+            dependents: [newArray],
+          }
         );
         lengthTally.push({
           value: 1,
         });
       } else if (Array.isArray(item)) {
-        newArr.splice(
+        newArray.splice(
           currentOffset(i),
           0,
           ...item,
@@ -761,7 +838,7 @@ export class ReadonlyReactiveArray<InputType> {
           value: item.length,
         });
       } else {
-        newArr.splice(
+        newArray.splice(
           currentOffset(i),
           0,
           item,
@@ -771,7 +848,7 @@ export class ReadonlyReactiveArray<InputType> {
         });
       }
     }
-    return newArr;
+    return newArray;
   }
 }
 
@@ -781,14 +858,21 @@ export class ReadonlyReactiveArray<InputType> {
 export class ReactiveArray<InputType> extends ReadonlyReactiveArray<InputType> {
   #value: ReadonlyArray<TArrayValueType<InputType>>;
 
+  /** Cache for readonly getter */
   #readonly: ReadonlyReactiveArray<InputType> | undefined = undefined;
+
+   /** Readonly version of the instance that can't be mutated from the outside, but will be updated as the original instance updates. */
   get readonly (): ReadonlyReactiveArray<InputType> {
     return this.#readonly ?? (this.#readonly = (() => {
-      const newArr = new ReadonlyReactiveArray<InputType>();
+      const newArray = new ReadonlyReactiveArray<InputType>();
       this.bind(
-        (...args) => splicers.get(newArr)(...args),
+        (...args) => splicers.get(newArray)(...args),
+        {
+          dependents: [newArray],
+        },
       );
-      return newArr;
+
+      return newArray;
     })());
   }
 

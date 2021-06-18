@@ -64,8 +64,9 @@ function reactive<T, K = unknown> (
   }
 
   if (parent) {
-    ref.bind(() => parent.update());
-    // TODO set dependents
+    ref.bind(
+      () => parent.update(),
+    );
   }
 
   return ref;
