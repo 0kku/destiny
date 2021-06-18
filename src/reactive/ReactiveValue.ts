@@ -179,9 +179,11 @@ export class ReadonlyReactiveValue<T> {
 
   unbind (
     callback: TReactiveValueCallback<T>,
-  ): void {
+  ): this {
     this.#callbacks.delete(callback);
     stronglyHeldDependencies.delete(callback);
+
+    return this;
   }
 
   /** The current value of the ReadonlyReactiveValue. */
