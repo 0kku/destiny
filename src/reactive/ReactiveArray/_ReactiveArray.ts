@@ -735,13 +735,19 @@ export class ReadonlyReactiveArray<InputType> {
   }
 
   /**
-   * Works similar to `Array::keys()`. The difference is that it returns a `ReadonlyReactiveArray` containing the keys and is updated as the original array is updated. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.keys()` for a writable non-reactive array instead.
+   * Works similar to `Array::keys()`. The difference is that it returns a `ReadonlyReactiveArray` containing the keys and is updated as the original array is updated. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.keys()` for an iterator of non-reactive values instead.
    */
-  keys (): ReadonlyReactiveArray<number> {
-    const newArray = new ReactiveArray(...this.#value.keys());
+  keys (): ReadonlyReactiveArray<ReadonlyReactiveValue<number>> {
+    const newArray = new ReactiveArray(
+      ...this.#indices.map(index => index.readonly),
+    );
     this.bind(
       (index, deleteCount, ...addedItems) => {
-        newArray.#splice(index, deleteCount, ...addedItems.keys());
+        newArray.#splice(
+          index,
+          deleteCount,
+          ...addedItems.map((_, i) => this.#indices[index + i].readonly),
+        );
       },
       {
         noFirstRun: true,
@@ -753,7 +759,7 @@ export class ReadonlyReactiveArray<InputType> {
   }
 
   /**
-   * Works similar to `Array::values()`. The difference is that it returns a `ReadonlyReactiveArray` containing the values and is updated as the original array is updated. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.values()` for a writable non-reactive array instead.
+   * Works similar to `Array::values()`. The difference is that it returns a `ReadonlyReactiveArray` containing the values and is updated as the original array is updated. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.values()` for an iterator of non-reactive values instead.
    */
   values (): ReadonlyReactiveArray<TArrayValueType<InputType>> {
     const newArray = new ReactiveArray(...this.#value.values());
