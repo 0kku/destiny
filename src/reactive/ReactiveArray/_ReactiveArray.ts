@@ -697,16 +697,33 @@ export class ReadonlyReactiveArray<InputType> {
   }
 
   /**
-   * Works similar to `Array::entries()`. The difference is that it returns a `ReadonlyReactiveArray` containing the entries and is updated as the original array is updated. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.entries()` for a writable non-reactive array instead.
+   * Works similar to `Array::entries()`. The difference is that it returns a `ReadonlyReactiveArray` containing the entries and is updated as the original array is updated. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.entries()` for an iterator of non-reactive values instead.
    */
   entries (): ReadonlyReactiveArray<[
-    index: number,
+    index: ReadonlyReactiveValue<number>,
     value: TArrayValueType<InputType>,
   ]> {
-    const newArray = new ReactiveArray(...this.#value.entries());
+    type TEntryType = [
+      index: ReadonlyReactiveValue<number>,
+      value: TArrayValueType<InputType>,
+    ];
+
+    const newArray = new ReactiveArray(
+      ...this.#value.map((value, i): TEntryType => [
+        this.#indices[i].readonly,
+        value,
+      ]),
+    );
     this.bind(
       (index, deleteCount, ...addedItems) => {
-        newArray.#splice(index, deleteCount, ...addedItems.entries());
+        newArray.#splice(
+          index,
+          deleteCount,
+          ...addedItems.map((value, i): TEntryType => [
+            this.#indices[index + i].readonly,
+            value,
+          ]),
+        );
       },
       {
         noFirstRun: true,
