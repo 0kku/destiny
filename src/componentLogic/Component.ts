@@ -1,13 +1,15 @@
-import { register, xml, attachCSSProperties } from "../mod.js";
+import { register, xml, attachCSSProperties, html } from "../mod.js";
 import { deferredElements } from "../parsing/deferredElements.js";
 import { assignElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/elementData/_assignElementData.js";
 import { supportsAdoptedStyleSheets } from "../styling/supportsAdoptedStyleSheets.js";
 import { arrayWrap } from "../utils/arrayWrap.js";
 import { getElementData } from "./elementData.js";
+import { isReactive } from "../typeChecks/isReactive.js";
 import type { Ref, RefPromise } from "./Ref.js";
 import type { Renderable } from "../parsing/Renderable.js";
 import type { Slot } from "../parsing/Slot.js";
 import type { ReadonlyReactiveValue } from "../reactive/ReactiveValue.js";
+import type { ReadonlyReactiveArray } from "../reactive/ReactiveArray/_ReactiveArray.js";
 import type { CSSTemplate } from "../styling/CSSTemplate.js";
 
 // @ts-ignore I don't know how to describe this type correctly
@@ -22,7 +24,11 @@ export interface Component<TProperties extends Record<string, unknown> = {}> ext
 export class Component extends HTMLElement {
   static captureProps = false;
   forwardProps?: Ref<HTMLElement> | RefPromise<HTMLElement>;
-  template: Renderable = xml`<slot />`;
+  template: (
+    | Renderable
+    | ReadonlyReactiveValue<any>
+    | ReadonlyReactiveArray<any>
+  ) = xml`<slot />`;
   static styles: Array<CSSTemplate> | CSSTemplate = [];
 
   constructor () {
@@ -40,8 +46,11 @@ export class Component extends HTMLElement {
           );
         });
       }
+
       shadow.appendChild(
-        this.template.content,
+        isReactive(this.template)
+        ? html`${this.template}`.content
+        : this.template.content,
       );
 
       if (supportsAdoptedStyleSheets) {
