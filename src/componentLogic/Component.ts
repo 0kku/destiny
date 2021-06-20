@@ -12,16 +12,15 @@ import type { ReadonlyReactiveValue } from "../reactive/ReactiveValue.js";
 import type { ReadonlyReactiveArray } from "../reactive/ReactiveArray/_ReactiveArray.js";
 import type { CSSTemplate } from "../styling/CSSTemplate.js";
 
-// @ts-ignore I don't know how to describe this type correctly
-// eslint-disable-next-line
-export interface Component<TProperties extends Record<string, unknown> = {}> extends TProperties {
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+interface ComponentImplementation {
   destinySlot?: Slot,
 }
 
 /**
  * A class for creating new custom elements in Destiny UI.
  */
-export class Component extends HTMLElement {
+class ComponentImplementation extends HTMLElement {
   static captureProps = false;
   forwardProps?: Ref<HTMLElement> | RefPromise<HTMLElement>;
   template: (
@@ -33,7 +32,7 @@ export class Component extends HTMLElement {
 
   constructor () {
     super();
-    if (new.target === Component) {
+    if (new.target === ComponentImplementation) {
       throw new TypeError("Can't initialize abstract class.");
     }
     const shadow = this.attachShadow({ mode: "open" });
@@ -118,3 +117,21 @@ export class Component extends HTMLElement {
     return this.tagName;
   }
 }
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export type Component<
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  TProperties extends Record<string, unknown> = {}
+> = (
+  & ComponentImplementation
+  & TProperties
+);
+
+type TComponentConstructor = (
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  & (new <TProperties extends Record<string, unknown> = {}> () => Component<TProperties>)
+  & typeof ComponentImplementation
+);
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const Component = ComponentImplementation as TComponentConstructor;
