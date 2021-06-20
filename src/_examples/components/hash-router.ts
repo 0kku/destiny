@@ -1,4 +1,4 @@
-import { Component, reactive, html, ReactiveValue } from "/dist/mod.js";
+import { Component, reactive, html, computed } from "/dist/mod.js";
 
 function getHashRoute (
   url: string,
@@ -18,28 +18,18 @@ export class HashRouter extends Component<{
     content: string,
   }>,
 }> {
-
   #error404 = html`
     <slot name="404">
       404 — route "${route}" not found
     </slot>
   `;
-  #view = new ReactiveValue(this.#error404);
 
-  constructor () {
-    super();
-    route.bind(
-      currentRoute => {
-        const routeInfo = this.routes.find(({path}) => path === currentRoute);
-        if (routeInfo) {
-          this.#view.value = html`<${import(routeInfo.content)} />`;
-        } else {
-          this.#view.value = this.#error404;
-        }
-      },
-      { dependents: [this.#view] },
+  template = computed(() => {
+    const routeInfo = this.routes.find(({path}) => path === route.value);
+    return (
+      routeInfo
+      ? html`<${import(routeInfo.content)} />`
+      : this.#error404
     );
-  }
-
-  template = this.#view;
+  });
 }
