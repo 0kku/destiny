@@ -26,9 +26,9 @@ export class DestinyFallback extends Component {
       if (typeof module !== "object" || !module) {
         throw new TypeError(`Invalid type ${describeType(module)} supplied for prop:for`);
       }
-      const component: unknown = Object.values(module).shift();
+      const component = (module as {default?: unknown}).default;
       if (!isComponent(component)) {
-        throw new TypeError(`Invalid component constructor ${describeType(component)} supplied for prop:for`);
+        throw new TypeError(`Invalid component constructor ${describeType(component)} supplied for prop:for. Expected type is a module with a Component as the default export.`);
       }
       this.#view.value = xml`
         <${component}

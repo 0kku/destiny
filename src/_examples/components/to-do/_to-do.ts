@@ -1,14 +1,14 @@
 import { Component, html, css, reactive } from "/dist/mod.js";
 
+import TaskItem from "./task-item.js";
 import { animateIn, animateOut } from "./animations.js";
-import { TaskItem } from "./task-item.js";
 import { inputStyles } from "../inputStyles.js";
 
 type TInputChangeEvent = InputEvent & {
   currentTarget: HTMLInputElement,
 };
 
-export class Todo extends Component {
+export default class Todo extends Component {
   #newValue = reactive("");
   #items = reactive([
     {

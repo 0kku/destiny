@@ -8,7 +8,7 @@ const randomColor = () => (
   .padStart(6, "0")
 );
 
-export class ArrayDemo extends Component {
+export default class ArrayDemo extends Component {
   #items = reactive(Array.from({length: 256}, randomColor));
   frame = (): void => {
     const randomIndex = Math.floor(

@@ -1,6 +1,6 @@
 import { Component, html } from "/dist/mod.js";
 
-export class AsyncDemo extends Component {
+export default class AsyncDemo extends Component {
   #AsyncComponent = import("./async-component.js");
 
   template = html`

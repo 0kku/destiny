@@ -12,7 +12,7 @@ window.addEventListener("hashchange", e => {
   route.value = getHashRoute(e.newURL);
 });
 
-export class HashRouter extends Component<{
+export default class HashRouter extends Component<{
   routes: Array<{
     path: string,
     content: string,

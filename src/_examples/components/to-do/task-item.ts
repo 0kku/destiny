@@ -3,7 +3,7 @@ import type { TReactiveObject } from "/dist/mod.js";
 
 import { inputStyles } from "../inputStyles.js";
 
-export class TaskItem extends Component<{
+export default class TaskItem extends Component<{
   item: TReactiveObject<{
     title: string,
     done: boolean,

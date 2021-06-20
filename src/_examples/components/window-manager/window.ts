@@ -2,7 +2,7 @@ import { Component, html, css, computed } from "/dist/mod.js";
 
 import type { TWindow } from "./TWindow";
 
-export class Window extends Component<{
+export default class Window extends Component<{
   props: TWindow,
 }> {
   constructor () {

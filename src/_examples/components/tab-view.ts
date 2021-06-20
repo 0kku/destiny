@@ -1,8 +1,8 @@
 import { Component, computed, html, css, classNames } from "/dist/mod.js";
 
-import { route, HashRouter } from "./hash-router.js";
+import HashRouter, { route } from "./hash-router.js";
 
-export class TabView extends Component {
+export default class TabView extends Component {
   #tabs = [
     {
       path: "/",

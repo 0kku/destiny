@@ -1,6 +1,6 @@
 import { Component, html, css, reactive, ReactiveValue } from "/dist/mod.js";
 
-import { Window } from "./window.js";
+import Window from "./window.js";
 import type { TWindow } from "./TWindow.js";
 
 
@@ -29,7 +29,7 @@ function grabTypeToCursorType (v: TGrabType) {
   }
 }
 
-export class WindowManager extends Component {
+export default class WindowManager extends Component {
   #windows: Array<TWindow> = [
     {
       header: "Foo",

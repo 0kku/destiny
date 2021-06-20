@@ -2,7 +2,7 @@ import { Component, html, reactive } from "/dist/mod.js";
 
 import { inputStyles } from "./inputStyles.js";
 
-export class VisitorDemo extends Component {
+export default class VisitorDemo extends Component {
   #who = reactive("visitor");
   #count = reactive(0);
   #timer = setInterval(() => {
