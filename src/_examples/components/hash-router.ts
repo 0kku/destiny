@@ -28,7 +28,13 @@ export default class HashRouter extends Component<{
     const routeInfo = this.routes.find(({path}) => path === route.value);
     return (
       routeInfo
-      ? html`<${import(routeInfo.content)} prop:fallback=${html`Loading…`} />`
+      ? html`
+        <${import(routeInfo.content)}
+          prop:fallback=${html`Loading…`}
+          prop:catch=${(err: Error) => html`
+            Error loading page: ${err.message}`
+          }
+        />`
       : this.#error404
     );
   });
