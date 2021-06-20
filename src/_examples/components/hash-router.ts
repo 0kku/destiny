@@ -28,7 +28,7 @@ export class HashRouter extends Component<{
     const routeInfo = this.routes.find(({path}) => path === route.value);
     return (
       routeInfo
-      ? html`<${import(routeInfo.content)} />`
+      ? html`<${import(routeInfo.content)} prop:fallback=${html`Loading…`} />`
       : this.#error404
     );
   });
