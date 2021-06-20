@@ -1,4 +1,4 @@
-import { Component, xml, css, computed } from "/dist/mod.js";
+import { Component, html, css, computed } from "/dist/mod.js";
 
 import type { TWindow } from "./TWindow";
 
@@ -91,7 +91,7 @@ export class Window extends Component<{
     }
   `;
 
-  template = xml`
+  template = html`
     <header>
       ${this.props.header}
     </header>

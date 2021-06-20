@@ -1,4 +1,4 @@
-import { Component, computed, xml, css, classNames } from "/dist/mod.js";
+import { Component, computed, html, css, classNames } from "/dist/mod.js";
 
 import { route, HashRouter } from "./hash-router.js";
 
@@ -81,9 +81,9 @@ export class TabView extends Component {
     }
   `;
 
-  template = xml`
+  template = html`
     <nav>
-      ${this.#tabs.map(({path, title}) => xml`
+      ${this.#tabs.map(({path, title}) => html`
         <a
           href=${computed`#${path}`}
           class=${classNames({

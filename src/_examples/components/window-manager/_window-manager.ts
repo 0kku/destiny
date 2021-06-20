@@ -1,4 +1,4 @@
-import { Component, xml, css, reactive, ReactiveValue } from "/dist/mod.js";
+import { Component, html, css, reactive, ReactiveValue } from "/dist/mod.js";
 
 import { Window } from "./window.js";
 import type { TWindow } from "./TWindow.js";
@@ -33,7 +33,7 @@ export class WindowManager extends Component {
   #windows: Array<TWindow> = [
     {
       header: "Foo",
-      content: xml`Hello, World!`,
+      content: html`Hello, World!`,
       position: {
         x: reactive(0),
         y: reactive(0),
@@ -45,7 +45,7 @@ export class WindowManager extends Component {
     },
     {
       header: "Bar",
-      content: xml`Lorem ipsum`,
+      content: html`Lorem ipsum`,
       position: {
         x: reactive(400),
         y: reactive(50),
@@ -167,8 +167,8 @@ export class WindowManager extends Component {
     }
   `;
 
-  template = xml`
-    ${this.#windows.map(win => xml`
+  template = html`
+    ${this.#windows.map(win => html`
       <${Window} prop:props=${win} />
     `)}
   `;

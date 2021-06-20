@@ -1,7 +1,7 @@
-import { Component, xml } from "/dist/mod.js";
+import { Component, html } from "/dist/mod.js";
 
 export class AsyncComponent extends Component {
-  template = xml`
+  template = html`
     foo
     <slot />
     bar

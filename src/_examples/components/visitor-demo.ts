@@ -1,4 +1,4 @@
-import { Component, xml, reactive } from "/dist/mod.js";
+import { Component, html, reactive } from "/dist/mod.js";
 
 import { inputStyles } from "./inputStyles.js";
 
@@ -15,7 +15,7 @@ export class VisitorDemo extends Component {
 
   static styles = inputStyles;
 
-  template = xml`
+  template = html`
     <label>
       What's your name? <input type="text" value=${this.#who} />
     </label>

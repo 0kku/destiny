@@ -1,4 +1,4 @@
-import { Component, xml, reactive, computed } from "/dist/mod.js";
+import { Component, html, reactive, computed } from "/dist/mod.js";
 
 import { inputStyles } from "./inputStyles.js";
 
@@ -35,8 +35,8 @@ export class TimeDiff extends Component {
 
   static styles = inputStyles;
 
-  template = xml`
-    ${this.#tasks.map(task => xml`
+  template = html`
+    ${this.#tasks.map(task => html`
       <div>
         <label>
           Start:

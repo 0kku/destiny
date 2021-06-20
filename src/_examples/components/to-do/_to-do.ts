@@ -1,4 +1,4 @@
-import { Component, xml, css, reactive } from "/dist/mod.js";
+import { Component, html, css, reactive } from "/dist/mod.js";
 
 import { animateIn, animateOut } from "./animations.js";
 import { TaskItem } from "./task-item.js";
@@ -51,10 +51,10 @@ export class Todo extends Component {
     `,
   ];
 
-  template = xml`
+  template = html`
     <h1>${this.#items.filter(v => v.done.value).length}/${this.#items.length} tasks compelete</h1>
     <ul>
-      ${this.#items.map((item, i) => xml`
+      ${this.#items.map((item, i) => html`
         <${TaskItem}
           prop:item=${item}
           prop:removeItem=${() => this.#items.splice(i.value, 1)}
@@ -62,7 +62,7 @@ export class Todo extends Component {
           destiny:unmount=${animateOut}
         />
       `)}
-      ${this.#items.length.falsy(xml`
+      ${this.#items.length.falsy(html`
         <li
           destiny:mount=${animateIn}
           destiny:unmount=${animateOut}
