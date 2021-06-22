@@ -11,5 +11,5 @@ export function isValidNamespace (
 export function isValidAttributePair (
   input: ReadonlyArray<string>,
 ): input is [TNamespace, string] {
-  return input.length === 2 && isValidNamespace(input[0]);
+  return input.length === 2 && isValidNamespace(input[0]!);
 }

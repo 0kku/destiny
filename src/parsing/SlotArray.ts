@@ -1,4 +1,5 @@
 import { Slot } from "./Slot.js";
+import { throwExpression } from "../utils/throwExpression.js";
 import type { ReadonlyReactiveArray } from "../mod.js";
 import type { TemplateResult } from "./TemplateResult.js";
 
@@ -55,7 +56,8 @@ export class SlotArray {
       if (!this.#domArray.length || where > this.#domArray.length - 1) {
         this.#endAnchor.before(slotPlaceholder);
       } else {
-        this.#domArray[where].insertBeforeThis(slotPlaceholder);
+        this.#domArray[where]?.insertBeforeThis(slotPlaceholder)
+        ?? throwExpression("Tried to insert to DOM at an invalid position", RangeError);
       }
       this.#domArray.splice(where, 0, new Slot(slotPlaceholder, fragment));
     });
@@ -75,7 +77,7 @@ export class SlotArray {
       this.#domArray.length,
     );
     for (let i = from; i < to; i++) {
-      void this.#domArray[i].remove();
+      void this.#domArray[i]?.remove();
     }
     this.#domArray.splice(from, count);
   }

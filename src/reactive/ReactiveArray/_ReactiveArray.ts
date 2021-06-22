@@ -13,6 +13,7 @@ import type { TReactiveEntity } from "../types/IReactiveEntity.js";
 import type { TUnwrapReactiveArray } from "./TUnwrapReactiveArray.js";
 import type { TArrayUpdateArguments } from "./TArrayUpdateArguments.js";
 import type { TMask } from "./TMask.js";
+import { throwExpression } from "/dist/utils/throwExpression.js";
 
 type TSplice<InputType> = (
   start: number,
@@ -189,7 +190,7 @@ export class ReadonlyReactiveArray<InputType> {
    */
   get (
     index: number,
-  ): TArrayValueType<InputType> {
+  ): TArrayValueType<InputType> | undefined {
     const i = (
       index < 0
       ? this.#value.length + index
@@ -339,7 +340,7 @@ export class ReadonlyReactiveArray<InputType> {
     const shiftedBy = items.length - deleteCount;
     if (shiftedBy) {
       for (let i = start + deleteCount; i < this.#indices.length; i++) {
-        this.#indices[i].value += shiftedBy;
+        this.#indices[i]!.value += shiftedBy;
       }
     }
  
@@ -439,7 +440,7 @@ export class ReadonlyReactiveArray<InputType> {
         const shiftTailBy = newItems.length - deletedItemCount;
         if (shiftTailBy) {
           for (let i = start + items.length; i < maskArray.length; i++) {
-            maskArray[i].index += shiftTailBy;
+            maskArray[i]!.index += shiftTailBy;
           }
         }
       },
@@ -509,7 +510,7 @@ export class ReadonlyReactiveArray<InputType> {
       i: number
     ) => callback(
       v,
-      this.#indices[i].readonly,
+      this.#indices[i]?.readonly ?? throwExpression("Internal error: lost track of index"),
       this,
     );
 
@@ -570,9 +571,7 @@ export class ReadonlyReactiveArray<InputType> {
     ...args: Parameters<Array<TArrayValueType<InputType>>["indexOf"]>
   ): ReadonlyReactiveValue<number> {
     const index = this.#value.indexOf(...args);
-    return index === -1
-      ? new ReadonlyReactiveValue(-1)
-      : this.#indices[index].readonly;
+    return this.#indices[index]?.readonly ?? new ReadonlyReactiveValue(-1);
   }
 
   /**
@@ -582,9 +581,7 @@ export class ReadonlyReactiveArray<InputType> {
     ...args: Parameters<Array<TArrayValueType<InputType>>["lastIndexOf"]>
   ): ReadonlyReactiveValue<number> {
     const index = this.#value.lastIndexOf(...args);
-    return index === -1
-      ? new ReadonlyReactiveValue(-1)
-      : this.#indices[index].readonly;
+    return this.#indices[index]?.readonly ?? new ReadonlyReactiveValue(-1);
   }
 
   /**
@@ -693,7 +690,7 @@ export class ReadonlyReactiveArray<InputType> {
 
     return index === -1
       ? new ReadonlyReactiveValue(-1)
-      : this.#indices[index].readonly;
+      : this.#indices[index]?.readonly ?? throwExpression("Internal error: lost track of index");
   }
 
   /**
@@ -710,7 +707,7 @@ export class ReadonlyReactiveArray<InputType> {
 
     const newArray = new ReactiveArray(
       ...this.#value.map((value, i): TEntryType => [
-        this.#indices[i].readonly,
+        this.#indices[i]?.readonly ?? throwExpression("Internal error: lost track of index"),
         value,
       ]),
     );
@@ -720,7 +717,7 @@ export class ReadonlyReactiveArray<InputType> {
           index,
           deleteCount,
           ...addedItems.map((value, i): TEntryType => [
-            this.#indices[index + i].readonly,
+            this.#indices[index + i]?.readonly ?? throwExpression("Internal error: lost track of index"),
             value,
           ]),
         );
@@ -746,7 +743,9 @@ export class ReadonlyReactiveArray<InputType> {
         newArray.#splice(
           index,
           deleteCount,
-          ...addedItems.map((_, i) => this.#indices[index + i].readonly),
+          ...addedItems.map((_, i) => 
+            this.#indices[index + i]?.readonly ?? throwExpression("Internal error: lost track of index")
+          ),
         );
       },
       {
@@ -816,7 +815,7 @@ export class ReadonlyReactiveArray<InputType> {
     ) {
       let tally = index;
       for (let i = 0; i < cutoff; i++) {
-        tally += lengthTally[i].value;
+        tally += lengthTally[i]?.value ?? throwExpression("Internal error: failed to concatenate", RangeError);
       }
       return tally;
     }
@@ -978,10 +977,11 @@ export class ReactiveArray<InputType> extends ReadonlyReactiveArray<InputType> {
       .flatMap((v, i, a) =>  callback(v, i, a) ? [] : i)
       .reduce<Array<[number, number]>>(
         (acc, indexToDelete) => {
-          if (!acc.length || acc[0][0] + acc[0][1] !== indexToDelete) {
+          const [first] = acc;
+          if (!first || first[0] + first[1] !== indexToDelete) {
             acc.unshift([indexToDelete,  1]);
           } else {
-            acc[0][1]++;
+            first[1]++;
           }
           return acc;
         },
@@ -1011,11 +1011,11 @@ export class ReactiveArray<InputType> extends ReadonlyReactiveArray<InputType> {
       })
       .reduce<Array<[number, number, ...Array<TArrayValueType<InputType>>]>>(
         (acc, {index, value}) => {
-          if (!acc.length || acc[0][0] + acc[0][1] !== index) {
+          if (!acc.length || acc[0]![0] + acc[0]![1] !== index) {
             acc.unshift([index, 1, value]);
           } else {
-            acc[0][1]++;
-            acc[0].push(value);
+            acc[0]![1]++;
+            acc[0]!.push(value);
           }
           return acc;
         },
@@ -1030,7 +1030,7 @@ export class ReactiveArray<InputType> extends ReadonlyReactiveArray<InputType> {
   /**
    * Works just like `Array::pop()`. Removes the last element from an array and returns it.
    */
-  pop (): TArrayValueType<InputType> {
+  pop (): TArrayValueType<InputType> | undefined {
     return this.splice(-1, 1)[0];
   }
  
@@ -1057,7 +1057,7 @@ export class ReactiveArray<InputType> extends ReadonlyReactiveArray<InputType> {
   /**
    * Works just like `Array.shift()`. Removes the first element from an array and returns it.
    */
-  shift (): TArrayValueType<InputType> {
+  shift (): TArrayValueType<InputType> | undefined {
     return this.splice(0, 1)[0];
   }
  

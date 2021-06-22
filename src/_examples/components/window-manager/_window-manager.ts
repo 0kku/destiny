@@ -58,7 +58,7 @@ export default class WindowManager extends Component {
   ];
 
   #dragging = {
-    target: this.#windows[0],
+    target: this.#windows[0]!,
     type: new ReactiveValue<TGrabType>(""),
     positionStart: {
       x: 0,
