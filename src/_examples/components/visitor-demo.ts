@@ -13,9 +13,9 @@ export default class VisitorDemo extends Component {
     clearInterval(this.#timer);
   }
 
-  static styles = inputStyles;
+  static override styles = inputStyles;
 
-  template = html`
+  override template = html`
     <label>
       What's your name? <input type="text" value=${this.#who} />
     </label>

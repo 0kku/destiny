@@ -24,7 +24,7 @@ export default class HashRouter extends Component<{
     </slot>
   `;
 
-  template = computed(() => {
+  override template = computed(() => {
     const routeInfo = this.routes.find(({path}) => path === route.value);
     return (
       routeInfo

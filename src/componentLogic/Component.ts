@@ -81,7 +81,7 @@ class ComponentImplementation extends HTMLElement {
     attachCSSProperties(this, styles);
   }
 
-  replaceWith (
+  override replaceWith (
     ...nodes: Array<string | Node>
   ): void {
     if (this.destinySlot) {

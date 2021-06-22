@@ -16,7 +16,7 @@ export default class TaskItem extends Component<{
     this.setAttribute("role", "listitem");
   }
 
-  static styles = [
+  static override styles = [
     inputStyles,
     css`
       :host {
@@ -50,7 +50,7 @@ export default class TaskItem extends Component<{
     `,
   ];
 
-  template = html`
+  override template = html`
     <form
       class="edit-task"
       on:submit=${(e: Event) => {

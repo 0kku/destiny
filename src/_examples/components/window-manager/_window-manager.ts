@@ -155,7 +155,7 @@ export default class WindowManager extends Component {
     });
   }
 
-  static styles = css`
+  static override styles = css`
     :host {
       position: relative;
       display: block;
@@ -167,7 +167,7 @@ export default class WindowManager extends Component {
     }
   `;
 
-  template = html`
+  override template = html`
     ${this.#windows.map(win => html`
       <${Window} prop:props=${win} />
     `)}

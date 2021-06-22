@@ -23,7 +23,7 @@ export default class ArrayDemo extends Component {
     cancelAnimationFrame(this.#timer);
   }
 
-  static styles = css`
+  static override styles = css`
     ul {
       list-style: none;
       padding: 0;
@@ -46,7 +46,7 @@ export default class ArrayDemo extends Component {
     }
   `;
 
-  template = html`
+  override template = html`
     <ul>
       ${this.#items.map((text, i) => html`
         <li style=${computed`background-color: ${text};`}>

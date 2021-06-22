@@ -7,8 +7,8 @@ import { componentOrComponentModule } from "./componentOrComponentModule.js";
 import type { Renderable } from "../parsing/Renderable.js";
 
 export class DestinyFallback extends Component {
-  static captureProps = true;
-  forwardProps = new Ref();
+  static override captureProps = true;
+  override forwardProps = new Ref();
 
   #view = new ReactiveValue<Renderable>(xml``);
 
@@ -51,5 +51,5 @@ export class DestinyFallback extends Component {
     });
   }
 
-  template = this.#view;
+  override template = this.#view;
 }

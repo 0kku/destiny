@@ -18,7 +18,7 @@ export default class Window extends Component<{
     });
   }
 
-  static styles = css`
+  static override styles = css`
     :host {
       background: #333;
       display: block;
@@ -91,7 +91,7 @@ export default class Window extends Component<{
     }
   `;
 
-  template = html`
+  override template = html`
     <header>
       ${this.props.header}
     </header>

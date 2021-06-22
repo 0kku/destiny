@@ -1,7 +1,7 @@
 import { Component, html } from "/dist/mod.js";
 
 export default class AsyncComponent extends Component {
-  template = html`
+  override template = html`
     foo
     <slot />
     bar

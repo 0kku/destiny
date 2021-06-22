@@ -46,7 +46,7 @@ export default class TabView extends Component {
     );
   }
 
-  static styles = css`
+  static override styles = css`
     nav {
       padding: 0;
       padding-left: var(--m);
@@ -81,7 +81,7 @@ export default class TabView extends Component {
     }
   `;
 
-  template = html`
+  override template = html`
     <nav>
       ${this.#tabs.map(({path, title}) => html`
         <a

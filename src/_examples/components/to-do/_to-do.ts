@@ -28,7 +28,7 @@ export default class Todo extends Component {
     },
   ]);
 
-  static styles = [
+  static override styles = [
     inputStyles,
     css`
       ul {
@@ -51,7 +51,7 @@ export default class Todo extends Component {
     `,
   ];
 
-  template = html`
+  override template = html`
     <h1>${this.#items.filter(v => v.done.value).length}/${this.#items.length} tasks compelete</h1>
     <ul>
       ${this.#items.map((item, i) => html`

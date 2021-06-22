@@ -277,12 +277,12 @@ export class ReactiveValue<T> extends ReadonlyReactiveValue<T> {
   }
   
   /** The current value of the ReactiveValue. */
-  get value (): T {
+  override get value (): T {
     return super.value; 
   }
 
   /** The current `value` of the `ReactiveValue` */
-  set value (
+  override set value (
     value: T,
   ) {
     this.set(value);

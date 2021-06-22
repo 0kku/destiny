@@ -3,7 +3,7 @@ import { Component, html, css } from "/dist/mod.js";
 import TabView from "./tab-view.js";
 
 export class AppRoot extends Component {
-  static styles = css`
+  static override styles = css`
     :host {
       --element-color:       #777;
       --element-hover-color: #888;
@@ -17,7 +17,7 @@ export class AppRoot extends Component {
     }
   `;
 
-  template = html`
+  override template = html`
     <${TabView} />
   `;
 }

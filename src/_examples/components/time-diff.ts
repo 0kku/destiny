@@ -33,9 +33,9 @@ function createTask () {
 export default class TimeDiff extends Component {
   #tasks = reactive([createTask()]); //initialize an array of tasks, with one task in it
 
-  static styles = inputStyles;
+  static override styles = inputStyles;
 
-  template = html`
+  override template = html`
     ${this.#tasks.map(task => html`
       <div>
         <label>
