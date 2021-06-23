@@ -2,6 +2,7 @@ import { IterableWeakMap } from "../utils/IterableWeakMap.js";
 import { WeakMultiRef } from "../utils/WeakMultiRef.js";
 import { computedConsumer } from "./computed.js";
 import { concatIterators } from "../utils/concatIterators.js";
+import { PassReactiveValue } from "./PassReactiveValue.js";
 import type { ReadonlyReactiveArray } from "./ReactiveArray/_ReactiveArray.js";
 
 type TReactiveValueCallback<T> = (newValue: T) => void;
@@ -246,6 +247,13 @@ export class ReadonlyReactiveValue<T> {
     valueWhenTruthy: K,
   ): ReadonlyReactiveValue<T | K> {
     return this.pipe(v => v ? valueWhenTruthy : valueWhenFalsy);
+  }
+
+  /**
+   * Returns a reference to the reactive value, which can be used to pass it as a prop to a template without binding or unboxing. The reference gets unwrapped by the tempalte automatically, and you will receive the ReactiveValue itself on the other side.
+   */
+  get pass (): PassReactiveValue<T> {
+    return new PassReactiveValue(this);
   }
 }
 

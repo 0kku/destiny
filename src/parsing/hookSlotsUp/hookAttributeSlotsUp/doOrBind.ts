@@ -1,6 +1,7 @@
 import { ReactiveValue } from "../../../mod.js";
 import { matchChangeWatcher } from "./matchChangeWatcher.js";
 import { ReadonlyReactiveValue } from "../../../reactive/ReactiveValue.js";
+import { PassReactiveValue } from "../../../reactive/PassReactiveValue.js";
 import type { TWatchedAttribute } from "./matchChangeWatcher.js";
 
 export function doOrBind (
@@ -24,6 +25,8 @@ export function doOrBind (
     value.bind(whatToDo, {dependents: [element]});
   } else if (value instanceof ReadonlyReactiveValue) {
     value.bind(whatToDo, {dependents: [element]});
+  } else if (value instanceof PassReactiveValue) {
+    whatToDo(value.deref);
   } else {
     whatToDo(value);
   }
