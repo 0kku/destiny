@@ -1,7 +1,8 @@
 import { reactive } from "../reactive.js";
 import { reactiveObjectFlag } from "./reactiveObjectFlag.js";
-import type { TReactiveEntity } from "../types/TReactiveEntity.js";
 import type { TReactiveObject } from "./TReactiveObject.js";
+import type { ReactiveValue } from "../ReactiveValue/ReactiveValue.js";
+import type { ReadonlyReactiveArray } from "../ReactiveArray/_ReactiveArray.js";
 
 /**
  * Takes an object, and passes each of its enumerable properties to `reactive()`, which makes the entire structure reactive recursively.
@@ -14,7 +15,7 @@ export function reactiveObject<
   K = unknown,
 > (
   input: T,
-  parent?: TReactiveEntity<K>,
+  parent?: ReactiveValue<K> | ReadonlyReactiveArray<K>,
 ): TReactiveObject<T> {
   // TS is incapable of figuring out the type correctly here, so it will throw a runtime error instead.
   if (![null, Object].includes(input.constructor as ObjectConstructor)) {

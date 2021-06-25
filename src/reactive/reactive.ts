@@ -29,7 +29,7 @@ function reactive<T, K = unknown> (
 function reactive<K = unknown> (
   initialValue: unknown,
   options?: {
-    parent?: TReactiveEntity<K>,
+    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K>,
   },
 ): TReactive<unknown>;
 function reactive<T, K = unknown> (
