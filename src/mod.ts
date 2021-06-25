@@ -1,8 +1,8 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./globalThis.d.ts" />
 
-export { ReactiveValue             } from "./reactive/ReactiveValue.js";
-export { ReadonlyReactiveValue     } from "./reactive/ReactiveValue.js";
+export { ReactiveValue             } from "./reactive/ReactiveValue/ReactiveValue.js";
+export { ReadonlyReactiveValue     } from "./reactive/ReactiveValue/ReactiveValue.js";
 export { ReactiveArray             } from "./reactive/ReactiveArray/_ReactiveArray.js";
 export { ReadonlyReactiveArray     } from "./reactive/ReactiveArray/_ReactiveArray.js";
 export { reactiveObject            } from "./reactive/reactiveObject/reactiveObject.js";
@@ -18,8 +18,8 @@ export { css                       } from "./styling/css.js";
 export { CSSTemplate               } from "./styling/CSSTemplate.js";
 export { attachCSSProperties       } from "./styling/attachCSSProperties.js";
 
-export type { TReactiveValueType } from "./reactive/types/IReactiveValueType.js";
-export type { TReactiveObject    } from "./reactive/types/IReactiveObject.js";
-export type { TReactiveEntity    } from "./reactive/types/IReactiveEntity.js";
-export type { TReactive          } from "./reactive/types/IReactive.js";
+export type { TReactiveValueType } from "./reactive/types/TReactiveValueType.js";
+export type { TReactiveObject    } from "./reactive/reactiveObject/TReactiveObject.js";
+export type { TReactiveEntity    } from "./reactive/types/TReactiveEntity.js";
+export type { TReactive          } from "./reactive/types/TReactive.js";
 export type { TemplateResult     } from "./parsing/TemplateResult.js";

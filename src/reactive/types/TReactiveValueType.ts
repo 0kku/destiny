@@ -1,7 +1,7 @@
 import type { ReactiveArray, ReactiveValue } from "../../mod.js";
 import type { TSpecialCaseObject } from "../reactiveObject/specialCaseObjects.js";
-import type { TReactiveObject } from "./IReactiveObject.js";
-import type { TReactive } from "./IReactive.js";
+import type { TReactiveObject } from "../reactiveObject/TReactiveObject.js";
+import type { TReactive } from "./TReactive.js";
 
 export type TReactiveValueType<T> = (
   T extends TReactive<unknown> ? T :

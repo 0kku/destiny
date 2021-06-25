@@ -1,7 +1,7 @@
 import { xml, Ref, Component } from "../mod.js";
 import { getElementData } from "./elementData.js";
 import { describeType } from "../utils/describeType.js";
-import { ReactiveValue } from "../reactive/ReactiveValue.js";
+import { ReactiveValue } from "../reactive/ReactiveValue/ReactiveValue.js";
 import { isRenderable } from "../typeChecks/isRenderable.js";
 import { componentOrComponentModule } from "./componentOrComponentModule.js";
 import type { Renderable } from "../parsing/Renderable.js";

@@ -1,7 +1,7 @@
 import { reactive } from "../reactive.js";
 import { reactiveObjectFlag } from "./reactiveObjectFlag.js";
-import type { TReactiveEntity } from "../types/IReactiveEntity.js";
-import type { TReactiveObject } from "../types/IReactiveObject.js";
+import type { TReactiveEntity } from "../types/TReactiveEntity.js";
+import type { TReactiveObject } from "./TReactiveObject.js";
 
 /**
  * Takes an object, and passes each of its enumerable properties to `reactive()`, which makes the entire structure reactive recursively.

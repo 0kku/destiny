@@ -2,9 +2,9 @@ import { ReactiveArray, ReadonlyReactiveArray, ReactiveValue, reactiveObject } f
 import { isSpecialCaseObject } from "./reactiveObject/specialCaseObjects.js";
 import { isReactive } from "../typeChecks/isReactive.js";
 import { isObject } from "../typeChecks/isObject.js";
-import type { TReactiveValueType } from "./types/IReactiveValueType.js";
-import type { TReactiveEntity } from "./types/IReactiveEntity.js";
-import type { TReactive } from "./types/IReactive.js";
+import type { TReactiveValueType } from "./types/TReactiveValueType.js";
+import type { TReactiveEntity } from "./types/TReactiveEntity.js";
+import type { TReactive } from "./types/TReactive.js";
 
 /**
  * A polymorphic convenience function that will convert any value into a reactive entity recursively. `Array`s are converted into `ReactiveArray`s. `Object`s whose prototype is `Object` get their keys converted into reactive items using the same algorithm `ReactiveArray`s use (see `reactiveObject.ts` for more details). Other values are converted into `ReactiveValue`s.

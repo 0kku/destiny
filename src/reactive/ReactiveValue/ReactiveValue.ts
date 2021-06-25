@@ -1,9 +1,9 @@
-import { IterableWeakMap } from "../utils/IterableWeakMap.js";
-import { WeakMultiRef } from "../utils/WeakMultiRef.js";
-import { computedConsumer } from "./computed.js";
-import { concatIterators } from "../utils/concatIterators.js";
+import { IterableWeakMap } from "../../utils/IterableWeakMap.js";
+import { WeakMultiRef } from "../../utils/WeakMultiRef.js";
+import { computedConsumer } from "../computed.js";
+import { concatIterators } from "../../utils/concatIterators.js";
 import { PassReactiveValue } from "./PassReactiveValue.js";
-import type { ReadonlyReactiveArray } from "./ReactiveArray/_ReactiveArray.js";
+import type { ReadonlyReactiveArray } from "../ReactiveArray/_ReactiveArray.js";
 
 type TReactiveValueCallback<T> = (newValue: T) => void;
 

@@ -8,7 +8,7 @@ import { isReactive } from "../typeChecks/isReactive.js";
 import type { Ref, RefPromise } from "./Ref.js";
 import type { Renderable } from "../parsing/Renderable.js";
 import type { Slot } from "../parsing/Slot.js";
-import type { ReadonlyReactiveValue } from "../reactive/ReactiveValue.js";
+import type { ReadonlyReactiveValue } from "../reactive/ReactiveValue/ReactiveValue.js";
 import type { ReadonlyReactiveArray } from "../reactive/ReactiveArray/_ReactiveArray.js";
 import type { CSSTemplate } from "../styling/CSSTemplate.js";
 

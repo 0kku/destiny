@@ -1,5 +1,5 @@
 import { computed } from "./computed.js";
-import { ReadonlyReactiveValue } from "./ReactiveValue.js";
+import { ReadonlyReactiveValue } from "./ReactiveValue/ReactiveValue.js";
 
 /**
  * This function can be used to create class name string for one or more class names controlled by static or reactive booleans.
