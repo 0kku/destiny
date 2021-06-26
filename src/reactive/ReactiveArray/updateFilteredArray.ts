@@ -1,7 +1,7 @@
+import { throwExpression } from "../../utils/throwExpression.js";
 import type { ReactiveArray } from "./_ReactiveArray.js";
 import type { TMask } from "./TMask.js";
 import type { TMaskEntry } from "./TMaskEntry.js";
-import { throwExpression } from "/dist/utils/throwExpression.js";
 
 type TUpdateQueueEntry<T> = TMaskEntry & {value: T};
 type TUpdateQueue<T> = Array<TUpdateQueueEntry<T>>;

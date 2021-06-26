@@ -1,6 +1,6 @@
 import { reactive } from "../reactive.js";
 import { reactivePropertiesFlag } from "./reactivePropertiesFlag.js";
-import { describeType } from "/dist/utils/describeType.js";
+import { describeType } from "../../utils/describeType.js";
 import type { TMakeReactiveProperties } from "./TMakeReactiveProperties.js";
 import type { ReactiveValue } from "../ReactiveValue/ReactiveValue.js";
 import type { ReadonlyReactiveArray } from "../ReactiveArray/_ReactiveArray.js";

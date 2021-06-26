@@ -7,13 +7,13 @@ import { IterableWeakMap } from "../../utils/IterableWeakMap.js";
 import { WeakMultiRef } from "../../utils/WeakMultiRef.js";
 import { concatIterators } from "../../utils/concatIterators.js";
 import { internalSetReactiveValue } from "../ReactiveValue/ReactiveValue.js";
+import { throwExpression } from "../../utils/throwExpression.js";
 import type { TReactiveArrayCallback } from "./TReactiveArrayCallback.js";
 import type { TArrayValueType } from "./TArrayValueType.js";
 import type { TReactiveEntity } from "../types/TReactiveEntity.js";
 import type { TUnwrapReactiveArray } from "./TUnwrapReactiveArray.js";
 import type { TArrayUpdateArguments } from "./TArrayUpdateArguments.js";
 import type { TMask } from "./TMask.js";
-import { throwExpression } from "/dist/utils/throwExpression.js";
 
 type TSplice<InputType> = (
   start: number,
