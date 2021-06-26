@@ -1,10 +1,10 @@
 import { Component, html, css } from "/dist/mod.js";
-import type { TReactiveObject } from "/dist/mod.js";
+import type { TReactiveValueType } from "/dist/mod.js";
 
 import { inputStyles } from "../inputStyles.js";
 
 export default class TaskItem extends Component<{
-  item: TReactiveObject<{
+  item: TReactiveValueType<{
     title: string,
     done: boolean,
     editing: boolean,

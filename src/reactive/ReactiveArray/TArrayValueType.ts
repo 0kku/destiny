@@ -1,4 +1,4 @@
-import type { TSpecialCaseObject } from "../reactiveObject/specialCaseObjects.js";
+import type { TSpecialCaseObject } from "../reactiveProperties/specialCaseObjects.js";
 import type { TReactiveValueType } from "../types/TReactiveValueType.js";
 import type { TPrimitive } from "../types/TPrimitive.js";
 

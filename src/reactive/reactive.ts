@@ -1,5 +1,5 @@
-import { ReactiveArray, ReadonlyReactiveArray, ReactiveValue, reactiveObject } from "../mod.js";
-import { isSpecialCaseObject } from "./reactiveObject/specialCaseObjects.js";
+import { ReactiveArray, ReadonlyReactiveArray, ReactiveValue, makeReactiveProperties } from "../mod.js";
+import { isSpecialCaseObject } from "./reactiveProperties/specialCaseObjects.js";
 import { isReactive } from "../typeChecks/isReactive.js";
 import { isObject } from "../typeChecks/isObject.js";
 import type { TReactiveValueType } from "./types/TReactiveValueType.js";
@@ -7,7 +7,7 @@ import type { TReactiveEntity } from "./types/TReactiveEntity.js";
 import type { TReactive } from "./types/TReactive.js";
 
 /**
- * A polymorphic convenience function that will convert any value into a reactive entity recursively. `Array`s are converted into `ReactiveArray`s. `Object`s whose prototype is `Object` get their keys converted into reactive items using the same algorithm `ReactiveArray`s use (see `reactiveObject.ts` for more details). Other values are converted into `ReactiveValue`s.
+ * A polymorphic convenience function that will convert any value into a reactive entity recursively. `Array`s are converted into `ReactiveArray`s. `Object`s whose prototype is `Object` get their keys converted into reactive items using the same algorithm `ReactiveArray`s use (see `makeReactiveProperties.ts` for more details). Other values are converted into `ReactiveValue`s.
  * 
  * @param initialValue The value to be made reactive
  * @param options.fallback A fallback value to be displayed when the initial value is a pending `Promise`
@@ -56,8 +56,8 @@ function reactive<T, K = unknown> (
     } else if (isSpecialCaseObject(initialValue)) {
       ref = new ReactiveValue<unknown>(initialValue);
     } else {
-      // reactiveObjects don't get callbacks bound to them: the callbacks are attached to each field separately.
-      return reactiveObject(initialValue, options.parent);
+      // objects passed to makeReactiveProperties don't get callbacks bound to them: the callbacks are attached to each field separately.
+      return makeReactiveProperties(initialValue, options.parent);
     }
   } else {
     ref = new ReactiveValue<unknown>(initialValue);

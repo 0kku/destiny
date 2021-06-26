@@ -5,7 +5,7 @@ export { ReactiveValue             } from "./reactive/ReactiveValue/ReactiveValu
 export { ReadonlyReactiveValue     } from "./reactive/ReactiveValue/ReactiveValue.js";
 export { ReactiveArray             } from "./reactive/ReactiveArray/_ReactiveArray.js";
 export { ReadonlyReactiveArray     } from "./reactive/ReactiveArray/_ReactiveArray.js";
-export { reactiveObject            } from "./reactive/reactiveObject/reactiveObject.js";
+export { makeReactiveProperties    } from "./reactive/reactiveProperties/makeReactiveProperties.js";
 export { reactive                  } from "./reactive/reactive.js";
 export { computed                  } from "./reactive/computed.js";
 export { Component                 } from "./componentLogic/Component.js";
@@ -18,8 +18,8 @@ export { css                       } from "./styling/css.js";
 export { CSSTemplate               } from "./styling/CSSTemplate.js";
 export { attachCSSProperties       } from "./styling/attachCSSProperties.js";
 
-export type { TReactiveValueType } from "./reactive/types/TReactiveValueType.js";
-export type { TReactiveObject    } from "./reactive/reactiveObject/TReactiveObject.js";
-export type { TReactiveEntity    } from "./reactive/types/TReactiveEntity.js";
-export type { TReactive          } from "./reactive/types/TReactive.js";
-export type { TemplateResult     } from "./parsing/TemplateResult.js";
+export type { TReactiveValueType      } from "./reactive/types/TReactiveValueType.js";
+export type { TMakeReactiveProperties } from "./reactive/reactiveProperties/TMakeReactiveProperties.js";
+export type { TReactiveEntity         } from "./reactive/types/TReactiveEntity.js";
+export type { TReactive               } from "./reactive/types/TReactive.js";
+export type { TemplateResult          } from "./parsing/TemplateResult.js";

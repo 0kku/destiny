@@ -1,5 +1,5 @@
 import { reactive, ReadonlyReactiveArray } from "../../mod.js";
-import { isSpecialCaseObject } from "../reactiveObject/specialCaseObjects.js";
+import { isSpecialCaseObject } from "../reactiveProperties/specialCaseObjects.js";
 import { isReactive } from "../../typeChecks/isReactive.js";
 import { isObject } from "../../typeChecks/isObject.js";
 import type { TArrayValueType } from "./TArrayValueType.js";
