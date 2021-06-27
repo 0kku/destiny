@@ -5,6 +5,7 @@ import { supportsAdoptedStyleSheets } from "../styling/supportsAdoptedStyleSheet
 import { arrayWrap } from "../utils/arrayWrap.js";
 import { getElementData } from "./elementData.js";
 import { isReactive } from "../typeChecks/isReactive.js";
+import { elementData } from "./elementData.js";
 import type { Ref, RefPromise } from "./Ref.js";
 import type { Renderable } from "../parsing/Renderable.js";
 import type { Slot } from "../parsing/Slot.js";
@@ -35,15 +36,40 @@ class ComponentImplementation extends HTMLElement {
     if (new.target === ComponentImplementation) {
       throw new TypeError("Can't initialize abstract class.");
     }
+
+    const data = getElementData(this);
+    if (data && this.forwardProps) {
+      this.forwardProps.then(element => {
+        elementData.set(element, data);
+        assignElementData(
+          element,
+          data,
+        );
+      });
+    }
+
     const shadow = this.attachShadow({ mode: "open" });
     queueMicrotask(() => {
-      if (this.forwardProps) {
-        this.forwardProps.then(element => {
-          assignElementData(
-            element,
-            getElementData(this)!,
-          );
-        });
+      // Upgrade values that have an associated setter but were assigned before the setters existed:
+      if (data) {
+        for (const [key, value] of data.prop) {
+          // eslint-disable-next-line @typescript-eslint/ban-types
+          let proto = this.constructor.prototype as Function | undefined;
+          let descriptor: PropertyDescriptor | undefined;
+
+          while (!descriptor && proto && proto !== HTMLElement) {
+            descriptor = Object.getOwnPropertyDescriptor(
+              proto,
+              key,
+            );
+            // eslint-disable-next-line @typescript-eslint/ban-types
+            proto = Object.getPrototypeOf(proto) as Function;
+          }
+          if (!descriptor?.set) continue;
+          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+          delete this[key as keyof this];
+          this[key as keyof this] = value as this[keyof this];
+        }
       }
 
       shadow.appendChild(
