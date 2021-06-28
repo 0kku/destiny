@@ -1,4 +1,5 @@
-import { ReadonlyReactiveArray, ReadonlyReactiveValue } from "../mod.js";
+import { ReadonlyReactiveValue } from "../reactive/ReactiveValue/ReactiveValue.js";
+import { ReadonlyReactiveArray } from "../reactive/ReactiveArray/_ReadonlyReactiveArray.js";
 import { reactivePropertiesFlag } from "../reactive/reactiveProperties/reactivePropertiesFlag.js";
 import type { TReactive } from "../reactive/types/TReactive.js";
 

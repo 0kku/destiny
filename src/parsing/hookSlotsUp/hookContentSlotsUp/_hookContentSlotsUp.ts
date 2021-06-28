@@ -1,7 +1,8 @@
-import { ReadonlyReactiveValue, ReadonlyReactiveArray } from "../../../mod.js";
 import { valueToFragment } from "./toFragment/valueToFragment.js";
 import { Slot } from "../../Slot.js";
 import { SlotArray } from "../../SlotArray.js";
+import { ReadonlyReactiveValue } from "../../../reactive/ReactiveValue/ReactiveValue.js";
+import { ReadonlyReactiveArray } from "../../../reactive/ReactiveArray/_ReadonlyReactiveArray.js";
 
 /**
  * Goes through all the elements in a template that are flagged with the `destiny:content` attribute and figures out how the DOM needs to be updated if any of the given props are reactive.

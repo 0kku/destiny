@@ -1,4 +1,6 @@
-import { xml, Ref, Component } from "../mod.js";
+import { Component } from "./Component.js";
+import { xml } from "../parsing/_xml.js";
+import { Ref } from "./Ref.js";
 import { getElementData } from "./elementData.js";
 import { describeType } from "../utils/describeType.js";
 import { ReactiveValue } from "../reactive/ReactiveValue/ReactiveValue.js";

@@ -1,6 +1,6 @@
 import { isComponent } from "./isComponent.js";
 import { describeType } from "../utils/describeType.js";
-import type { Component } from "../mod.js";
+import type { Component } from "./Component.js";
 
 export function componentOrComponentModule (
   module: unknown,

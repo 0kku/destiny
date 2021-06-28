@@ -1,4 +1,4 @@
-import { Ref } from "../../../../mod.js";
+import { Ref } from "../../../../componentLogic/Ref.js";
 import { isObject } from "../../../../typeChecks/isObject.js";
 
 /**

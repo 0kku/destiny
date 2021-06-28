@@ -1,7 +1,7 @@
 import { Slot } from "./Slot.js";
 import { throwExpression } from "../utils/throwExpression.js";
-import type { ReadonlyReactiveArray } from "../mod.js";
 import type { TemplateResult } from "./TemplateResult.js";
+import type { ReadonlyReactiveArray } from "../reactive/ReactiveArray/_ReadonlyReactiveArray.js";
 
 /**
  * Keeps track of `ReadonlyReactiveArray`s slotted into a template in the DOM. 

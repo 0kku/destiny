@@ -1,4 +1,7 @@
-import { register, xml, attachCSSProperties, html } from "../mod.js";
+// import { xml } from "../parsing/_xml.js";
+import { xml } from "../mod.js";
+import { register } from "./register.js";
+import { attachCSSProperties } from "../styling/attachCSSProperties.js";
 import { deferredElements } from "../parsing/deferredElements.js";
 import { assignElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/elementData/_assignElementData.js";
 import { supportsAdoptedStyleSheets } from "../styling/supportsAdoptedStyleSheets.js";
@@ -74,7 +77,7 @@ class ComponentImplementation extends HTMLElement {
 
       shadow.appendChild(
         isReactive(this.template)
-        ? html`${this.template}`.content
+        ? xml`${this.template}`.content
         : this.template.content,
       );
 

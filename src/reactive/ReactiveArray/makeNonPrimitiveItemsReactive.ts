@@ -1,8 +1,9 @@
-import { reactive, ReadonlyReactiveArray } from "../../mod.js";
+import { reactive } from "../reactive.js";
 import { isSpecialCaseObject } from "../reactiveProperties/specialCaseObjects.js";
 import { isReactive } from "../../typeChecks/isReactive.js";
 import { isObject } from "../../typeChecks/isObject.js";
 import type { TArrayValueType } from "./TArrayValueType.js";
+import type { ReadonlyReactiveArray } from "./_ReadonlyReactiveArray.js";
 
 /**
  * Converts a given array of values into a reactive entity recursively if it's not to be treated as a primitive. I.E. `Array`s and most `Object`s will be converted, but primitive values will not. This is useful for `ReactiveArrays`, whose direct children are managed directly by the class itself, but whose deeply nested descendants need to be tracked separately.

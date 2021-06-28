@@ -1,8 +1,8 @@
 import { ReadonlyReactiveArray } from "./_ReadonlyReactiveArray.js";
 import { splicers } from "./splicers.js";
 import { internalArrays } from "./internalArrays.js";
-import type { ReadonlyReactiveValue } from "../../mod.js";
 import type { TArrayValueType } from "./TArrayValueType.js";
+import type { ReadonlyReactiveValue } from "../ReactiveValue/ReactiveValue.js";
 
 /**
  * `ReactiveArray`s are reactive values that contain multiple values which can be updated and whose updates can be listened to. In general, `ReactiveArray`s behave very similar to native `Array`s. The main difference is, that most primitive values are given as `ReactiveValue`s and any immutable methods will return a new `ReadonlyReactiveArray`, whose values are tied to the original `ReactiveArray`. The class also provides a few custom convenience methods.

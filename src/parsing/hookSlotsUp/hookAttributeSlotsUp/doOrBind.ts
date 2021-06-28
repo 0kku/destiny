@@ -1,6 +1,5 @@
-import { ReactiveValue } from "../../../mod.js";
 import { matchChangeWatcher } from "./matchChangeWatcher.js";
-import { ReadonlyReactiveValue } from "../../../reactive/ReactiveValue/ReactiveValue.js";
+import { ReactiveValue, ReadonlyReactiveValue } from "../../../reactive/ReactiveValue/ReactiveValue.js";
 import { PassReactiveValue } from "../../../reactive/ReactiveValue/PassReactiveValue.js";
 import type { TWatchedAttribute } from "./matchChangeWatcher.js";
 

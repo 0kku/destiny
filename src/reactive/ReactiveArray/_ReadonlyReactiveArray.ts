@@ -1,12 +1,12 @@
-import { ReactiveValue, ReadonlyReactiveValue, ReactiveArray, computed } from "../../mod.js";
+import { ReactiveArray } from "./_ReactiveArray.js";
 import { weaklyHeldDependencies, stronglyHeldDependencies } from "./arrayDependencyCaches.js";
 import { makeNonPrimitiveItemsReactive } from "./makeNonPrimitiveItemsReactive.js";
 import { internalArrays } from "./internalArrays.js";
 import { splicers } from "./splicers.js";
 import { flatten } from "./flatten.js";
 import { updateFilteredArray } from "./updateFilteredArray.js";
-import { computedConsumer } from "../computed.js";
-import { internalSetReactiveValue } from "../ReactiveValue/ReactiveValue.js";
+import { computed, computedConsumer } from "../computed.js";
+import { internalSetReactiveValue, ReactiveValue, ReadonlyReactiveValue } from "../ReactiveValue/ReactiveValue.js";
 import { concatIterators } from "../../utils/concatIterators.js";
 import { throwExpression } from "../../utils/throwExpression.js";
 import { IterableWeakMap } from "../../utils/IterableWeakMap.js";
