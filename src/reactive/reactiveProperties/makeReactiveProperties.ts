@@ -3,7 +3,7 @@ import { reactivePropertiesFlag } from "./reactivePropertiesFlag.js";
 import { describeType } from "../../utils/describeType.js";
 import type { TMakeReactiveProperties } from "./TMakeReactiveProperties.js";
 import type { ReactiveValue } from "../ReactiveValue/ReactiveValue.js";
-import type { ReadonlyReactiveArray } from "../ReactiveArray/_ReactiveArray.js";
+import type { ReadonlyReactiveArray } from "../ReactiveArray/_ReadonlyReactiveArray.js";
 
 /**
  * Takes an object, and passes each of its enumerable properties to `reactive()`, which makes the entire structure reactive recursively.

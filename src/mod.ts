@@ -4,7 +4,7 @@
 export { ReactiveValue             } from "./reactive/ReactiveValue/ReactiveValue.js";
 export { ReadonlyReactiveValue     } from "./reactive/ReactiveValue/ReactiveValue.js";
 export { ReactiveArray             } from "./reactive/ReactiveArray/_ReactiveArray.js";
-export { ReadonlyReactiveArray     } from "./reactive/ReactiveArray/_ReactiveArray.js";
+export { ReadonlyReactiveArray     } from "./reactive/ReactiveArray/_ReadonlyReactiveArray.js";
 export { makeReactiveProperties    } from "./reactive/reactiveProperties/makeReactiveProperties.js";
 export { reactive                  } from "./reactive/reactive.js";
 export { computed                  } from "./reactive/computed.js";
