@@ -8,12 +8,12 @@ export { ReadonlyReactiveArray     } from "./reactive/ReactiveArray/_ReadonlyRea
 export { makeReactiveProperties    } from "./reactive/reactiveProperties/makeReactiveProperties.js";
 export { reactive                  } from "./reactive/reactive.js";
 export { computed                  } from "./reactive/computed.js";
+export { xml, xml as html          } from "./parsing/_xml.js";
 export { Component                 } from "./componentLogic/Component.js";
 export { getElementData            } from "./componentLogic/elementData.js";
 export { register                  } from "./componentLogic/register.js";
 export { Ref                       } from "./componentLogic/Ref.js";
 export { classNames                } from "./reactive/classNames.js";
-export { xml, xml as html          } from "./parsing/_xml.js";
 export { css                       } from "./styling/css.js";
 export { CSSTemplate               } from "./styling/CSSTemplate.js";
 export { attachCSSProperties       } from "./styling/attachCSSProperties.js";
