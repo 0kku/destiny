@@ -1,4 +1,4 @@
-import { ReadonlyReactiveArray } from "./_ReactiveArray.ts";
+import { ReadonlyReactiveArray } from "./_ReadonlyReactiveArray.ts";
 import type { TUnwrapReactiveArray } from "./TUnwrapReactiveArray.ts";
 
 type TUnwrapArray<Input> = (
@@ -8,7 +8,7 @@ type TUnwrapArray<Input> = (
 );
 
 export const flatten = <
-  Input extends ReadonlyArray<unknown>
+  Input extends ReadonlyArray<unknown>,
 >(
   input: Input,
 ): Array<TUnwrapReactiveArray<TUnwrapArray<Input>>> => {

@@ -1,6 +1,7 @@
 import { Slot } from "./Slot.ts";
-import type { ReadonlyReactiveArray } from "../mod.ts";
+import { throwExpression } from "../utils/throwExpression.ts";
 import type { TemplateResult } from "./TemplateResult.ts";
+import type { ReadonlyReactiveArray } from "../reactive/ReactiveArray/_ReadonlyReactiveArray.ts";
 
 /**
  * Keeps track of `ReadonlyReactiveArray`s slotted into a template in the DOM. 
@@ -32,8 +33,12 @@ export class SlotArray {
     );
 
     this.#source = source;
-    this.#source.bind(this.update);
-    // TODO: this.#source.bind(this.update, {dependents: [this]});
+    this.#source.bind(
+      this.update,
+      {
+        dependents: [this],
+      },
+    );
   }
 
   /**
@@ -51,7 +56,9 @@ export class SlotArray {
       if (!this.#domArray.length || where > this.#domArray.length - 1) {
         this.#endAnchor.before(slotPlaceholder);
       } else {
-        this.#domArray[where].insertBeforeThis(slotPlaceholder);
+        const target = this.#domArray[where];
+        if (!target) throwExpression(`Tried to insert to DOM at an invalid position ${where} at an array of length ${this.#domArray.length}`, RangeError);
+        target.insertBeforeThis(slotPlaceholder);
       }
       this.#domArray.splice(where, 0, new Slot(slotPlaceholder, fragment));
     });
@@ -71,7 +78,7 @@ export class SlotArray {
       this.#domArray.length,
     );
     for (let i = from; i < to; i++) {
-      void this.#domArray[i].remove();
+      void this.#domArray[i]?.remove();
     }
     this.#domArray.splice(from, count);
   }

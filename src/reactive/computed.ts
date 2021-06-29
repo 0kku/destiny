@@ -1,34 +1,35 @@
 import { composeTemplateString } from "../utils/composeTemplateString.ts";
-import { ReactivePrimitive, ReadonlyReactivePrimitive } from "./ReactivePrimitive.ts";
+import { ReactiveValue } from "./ReactiveValue/_ReactiveValue.ts";
+import type { ReadonlyReactiveValue } from "./ReactiveValue/_ReadonlyReactiveValue.ts";
 
 export let computedConsumer: {
   fn: VoidFunction,
-  consumer: ReadonlyReactivePrimitive<any>,
+  consumer: ReadonlyReactiveValue<any>,
 } | undefined;
 
-const hold = new WeakMap<ReactivePrimitive<any>, VoidFunction>();
+const hold = new WeakMap<ReactiveValue<any>, VoidFunction>();
 
 /**
- * Takes a callback and returns a new readonly `ReactivePrimitive` whose value is updated with the return value of the callback whenever any of the reactive values used in the callback are updated.
+ * Takes a callback and returns a new `ReadonlyReactiveValue` whose value is updated with the return value of the callback whenever any of the reactive values used in the callback are updated.
  * 
  * @param callback The function that computes the value
  */
 export function computed (
   callback: TemplateStringsArray,
   ...props: Array<unknown>
-): ReadonlyReactivePrimitive<string>;
+): ReadonlyReactiveValue<string>;
 export function computed<T> (
   callback: () => T,
-): ReadonlyReactivePrimitive<T>;
+): ReadonlyReactiveValue<T>;
 export function computed<T> (
   callback: (() => T) | TemplateStringsArray,
   ...props: Array<unknown>
-): ReadonlyReactivePrimitive<string> | ReadonlyReactivePrimitive<T> {
+): ReadonlyReactiveValue<string> | ReadonlyReactiveValue<T> {
   if ("raw" in callback) {
     return computed(() => composeTemplateString(callback, props));
   }
   const cb = callback;
-  const consumer = new ReactivePrimitive<T>(undefined as unknown as T);
+  const consumer = new ReactiveValue<T>(undefined as unknown as T);
   fn();
 
   function fn () {

@@ -9,6 +9,7 @@ export const specialCaseObjects = [
   RegExp,
   DocumentFragment,
   TemplateResult,
+  Node,
 ] as const;
 
 export function isSpecialCaseObject (

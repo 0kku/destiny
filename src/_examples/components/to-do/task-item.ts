@@ -1,10 +1,10 @@
-import { Component, xml, css } from "../../../mod.ts";
-import type { TReactiveObject } from "../../../mod.ts";
+import { Component, html, css } from "../../../mod.ts";
+import type { TReactiveValueType } from "../../../mod.ts";
 
 import { inputStyles } from "../inputStyles.ts";
 
-export class TaskItem extends Component<{
-  item: TReactiveObject<{
+export default class TaskItem extends Component<{
+  item: TReactiveValueType<{
     title: string,
     done: boolean,
     editing: boolean,
@@ -16,7 +16,7 @@ export class TaskItem extends Component<{
     this.setAttribute("role", "listitem");
   }
 
-  static styles = [
+  static override styles = [
     inputStyles,
     css`
       :host {
@@ -50,7 +50,7 @@ export class TaskItem extends Component<{
     `,
   ];
 
-  template = xml`
+  override template = html`
     <form
       class="edit-task"
       on:submit=${(e: Event) => {
@@ -59,7 +59,7 @@ export class TaskItem extends Component<{
       }}
     >
       ${this.item.editing.pipe(editing => !editing
-        ? xml`
+        ? html`
           <label>
             <span class="task-checkbox">
               <input
@@ -81,7 +81,7 @@ export class TaskItem extends Component<{
             on:click=${() => this.item.editing.value = true}
           />
         `
-        : xml`
+        : html`
           <input
             type="text"
             prop:value=${this.item.title}

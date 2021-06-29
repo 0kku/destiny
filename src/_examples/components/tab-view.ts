@@ -1,8 +1,8 @@
-import { Component, computed, xml, css, classNames } from "../../mod.ts";
+import { Component, computed, html, css, classNames } from "../../mod.ts";
 
-import { route, HashRouter } from "./hash-router.ts";
+import HashRouter, { route } from "./hash-router.ts";
 
-export class TabView extends Component {
+export default class TabView extends Component {
   #tabs = [
     {
       path: "/",
@@ -46,7 +46,7 @@ export class TabView extends Component {
     );
   }
 
-  static styles = css`
+  static override styles = css`
     nav {
       padding: 0;
       padding-left: var(--m);
@@ -81,9 +81,9 @@ export class TabView extends Component {
     }
   `;
 
-  template = xml`
+  override template = html`
     <nav>
-      ${this.#tabs.map(({path, title}) => xml`
+      ${this.#tabs.map(({path, title}) => html`
         <a
           href=${computed`#${path}`}
           class=${classNames({

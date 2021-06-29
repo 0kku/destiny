@@ -1,6 +1,7 @@
-import { ReactivePrimitive } from "../../../mod.ts";
 import { matchChangeWatcher } from "./matchChangeWatcher.ts";
-import { ReadonlyReactivePrimitive } from "../../../reactive/ReactivePrimitive.ts";
+import { ReactiveValue } from "../../../reactive/ReactiveValue/_ReactiveValue.ts";
+import { ReadonlyReactiveValue } from "../../../reactive/ReactiveValue/_ReadonlyReactiveValue.ts";
+import { PassReactiveValue } from "../../../reactive/ReactiveValue/PassReactiveValue.ts";
 import type { TWatchedAttribute } from "./matchChangeWatcher.ts";
 
 export function doOrBind (
@@ -9,7 +10,7 @@ export function doOrBind (
   value: unknown,
   whatToDo: (value: unknown) => void,
 ): void {
-  if (value instanceof ReactivePrimitive) {
+  if (value instanceof ReactiveValue) {
     const changeWatcher = matchChangeWatcher(key);
     if (changeWatcher) {
       element.addEventListener(changeWatcher, e => {
@@ -22,8 +23,10 @@ export function doOrBind (
       });
     }
     value.bind(whatToDo, {dependents: [element]});
-  } else if (value instanceof ReadonlyReactivePrimitive) {
+  } else if (value instanceof ReadonlyReactiveValue) {
     value.bind(whatToDo, {dependents: [element]});
+  } else if (value instanceof PassReactiveValue) {
+    whatToDo(value.deref);
   } else {
     whatToDo(value);
   }

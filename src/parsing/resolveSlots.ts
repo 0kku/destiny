@@ -26,7 +26,7 @@ export function resolveSlots (
         slots: [...matches].map((match) => ({
           index: Number(match[1]),
           start: match.index,
-          end: match.index + match[0].length,
+          end: match.index + match[0]!.length,
         })),
       };
       if (fragment.slots.length) {

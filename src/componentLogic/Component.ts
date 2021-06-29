@@ -1,47 +1,83 @@
-import { register, xml, attachCSSProperties } from "../mod.ts";
+import { xml } from "../parsing/_xml.ts";
+import { register } from "./register.ts";
+import { attachCSSProperties } from "../styling/attachCSSProperties.ts";
 import { deferredElements } from "../parsing/deferredElements.ts";
 import { assignElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/elementData/_assignElementData.ts";
 import { supportsAdoptedStyleSheets } from "../styling/supportsAdoptedStyleSheets.ts";
 import { arrayWrap } from "../utils/arrayWrap.ts";
 import { getElementData } from "./elementData.ts";
+import { isReactive } from "../typeChecks/isReactive.ts";
+import { elementData } from "./elementData.ts";
 import type { Ref, RefPromise } from "./Ref.ts";
 import type { Renderable } from "../parsing/Renderable.ts";
 import type { Slot } from "../parsing/Slot.ts";
-import type { ReadonlyReactivePrimitive } from "../reactive/ReactivePrimitive.ts";
+import type { ReadonlyReactiveValue } from "../reactive/ReactiveValue/_ReadonlyReactiveValue.ts";
+import type { ReadonlyReactiveArray } from "../reactive/ReactiveArray/_ReadonlyReactiveArray.ts";
 import type { CSSTemplate } from "../styling/CSSTemplate.ts";
 
-// @ts-ignore I don't know how to describe this type correctly
-// eslint-disable-next-line
-export interface Component<TProperties extends Record<string, unknown> = {}> extends TProperties {
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+interface ComponentImplementation {
   destinySlot?: Slot,
 }
 
 /**
  * A class for creating new custom elements in Destiny UI.
  */
-export class Component extends HTMLElement {
+class ComponentImplementation extends HTMLElement {
   static captureProps = false;
   forwardProps?: Ref<HTMLElement> | RefPromise<HTMLElement>;
-  template: Renderable = xml`<slot />`;
+  template: (
+    | Renderable
+    | ReadonlyReactiveValue<any>
+    | ReadonlyReactiveArray<any>
+  ) = xml`<slot />`;
   static styles: Array<CSSTemplate> | CSSTemplate = [];
 
   constructor () {
     super();
-    if (new.target === Component) {
+    if (new.target === ComponentImplementation) {
       throw new TypeError("Can't initialize abstract class.");
     }
+
+    const data = getElementData(this);
+    if (data && this.forwardProps) {
+      this.forwardProps.then(element => {
+        elementData.set(element, data);
+        assignElementData(
+          element,
+          data,
+        );
+      });
+    }
+
     const shadow = this.attachShadow({ mode: "open" });
     queueMicrotask(() => {
-      if (this.forwardProps) {
-        this.forwardProps.then(element => {
-          assignElementData(
-            element,
-            getElementData(this)!,
-          );
-        });
+      // Upgrade values that have an associated setter but were assigned before the setters existed:
+      if (data) {
+        for (const [key, value] of data.prop) {
+          // eslint-disable-next-line @typescript-eslint/ban-types
+          let proto = this.constructor.prototype as Function | undefined;
+          let descriptor: PropertyDescriptor | undefined;
+
+          while (!descriptor && proto && proto !== HTMLElement) {
+            descriptor = Object.getOwnPropertyDescriptor(
+              proto,
+              key,
+            );
+            // eslint-disable-next-line @typescript-eslint/ban-types
+            proto = Object.getPrototypeOf(proto) as Function;
+          }
+          if (!descriptor?.set) continue;
+          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+          delete this[key as keyof this];
+          this[key as keyof this] = value as this[keyof this];
+        }
       }
+
       shadow.appendChild(
-        this.template.content,
+        isReactive(this.template)
+        ? xml`${this.template}`.content
+        : this.template.content,
       );
 
       if (supportsAdoptedStyleSheets) {
@@ -61,20 +97,20 @@ export class Component extends HTMLElement {
   }
 
   /**
-   * Synchonizes a CSS property of this element to a ReactivePrimitive.
+   * Synchonizes a CSS property of this element to a `ReactiveValue`.
    * 
    * @param property  CSS property to be synchronized
-   * @param source    A ReactivePrimitive whose value is to be used for the CSS Property
+   * @param source    A ReactiveValue whose value is to be used for the CSS Property
    */
   attachCSSProperties (
     styles: {
-      [Key: string]: ReadonlyReactivePrimitive<string>,
+      [Key: string]: ReadonlyReactiveValue<string>,
     },
   ): void {
     attachCSSProperties(this, styles);
   }
 
-  replaceWith (
+  override replaceWith (
     ...nodes: Array<string | Node>
   ): void {
     if (this.destinySlot) {
@@ -110,3 +146,21 @@ export class Component extends HTMLElement {
     return this.tagName;
   }
 }
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export type Component<
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  TProperties extends Record<string, unknown> = {}
+> = (
+  & ComponentImplementation
+  & TProperties
+);
+
+type TComponentConstructor = (
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  & (new <TProperties extends Record<string, unknown> = {}> () => Component<TProperties>)
+  & typeof ComponentImplementation
+);
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const Component = ComponentImplementation as TComponentConstructor;

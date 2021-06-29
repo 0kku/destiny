@@ -1,4 +1,4 @@
-import { Component, reactive, xml, css, computed } from "../../mod.ts";
+import { Component, reactive, html, css, computed } from "../../mod.ts";
 
 const randomColor = () => (
   "#" + 
@@ -8,7 +8,7 @@ const randomColor = () => (
   .padStart(6, "0")
 );
 
-export class ArrayDemo extends Component {
+export default class ArrayDemo extends Component {
   #items = reactive(Array.from({length: 256}, randomColor));
   frame = (): void => {
     const randomIndex = Math.floor(
@@ -23,7 +23,7 @@ export class ArrayDemo extends Component {
     cancelAnimationFrame(this.#timer);
   }
 
-  static styles = css`
+  static override styles = css`
     ul {
       list-style: none;
       padding: 0;
@@ -46,9 +46,9 @@ export class ArrayDemo extends Component {
     }
   `;
 
-  template = xml`
+  override template = html`
     <ul>
-      ${this.#items.map((text, i) => xml`
+      ${this.#items.map((text, i) => html`
         <li style=${computed`background-color: ${text};`}>
           ${i}
         </li>

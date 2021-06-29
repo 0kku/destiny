@@ -12,7 +12,7 @@ export function createTemplate (
   [first, ...strings]: TemplateStringsArray,
   props: Array<unknown>,
 ): TParseResult {
-  let string = first;
+  let string = first!;
   const tagProps = new Map<number, unknown>();
   for (const [i, fragment] of strings.entries()) {
     const prop = props[i];

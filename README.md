@@ -1,8 +1,11 @@
 # Destiny UI
 
-[![Discord](https://img.shields.io/badge/chat-Discord-%23738ad6?logo=discord&logoColor=white "Chat on Discord")](https://discord.gg/WS7JWRj) ![alpha](https://img.shields.io/badge/-alpha-red) [![Firefox 75.0+](https://img.shields.io/badge/Firefox-75.0+-brightgreen?logo=mozilla%20firefox&logoColor=white)](https://www.mozilla.org/en-US/exp/firefox/new/) [![Chromium 82.0+](https://img.shields.io/badge/Chromium-82.0+-brightgreen?logo=google%20chrome&logoColor=white)](https://www.chromium.org/) [![No support for Safari yet](https://img.shields.io/badge/Safari-no%20support%20yet-red?logo=safari&logoColor=white)](https://www.apple.com/safari/)
+[![Discord](https://img.shields.io/discord/704026413870612511?color=738ad6&label=Discord&logo=discord&logoColor=fff "Chat on Discord")](https://discord.gg/WS7JWRj)
+[![Firefox 75.0+](https://img.shields.io/badge/Firefox-75.0+-brightgreen?logo=firefox%20browser&logoColor=white)](https://www.mozilla.org/en-US/exp/firefox/new/)
+[![Chromium 82.0+](https://img.shields.io/badge/Chromium-82.0+-brightgreen?logo=google%20chrome&logoColor=white)](https://www.chromium.org/)
+[![Safari 14.1+](https://img.shields.io/badge/Safari-14.1+-brightgreen?logo=safari&logoColor=white)](https://www.apple.com/safari/)
 
-A reactive UI library for JavaScript and TypeScript. Uses standard JS/TS syntax; no compiling required. Built on top of the native Web Components API and uses the native HTML parser for the templates. No vDOM.
+An experimental reactive UI library for JavaScript and TypeScript. Uses standard JS/TS syntax; no compiling required. Built on top of the native Web Components API and uses the native HTML parser for the templates. No vDOM.
 
 ## Goals
 
@@ -33,7 +36,7 @@ To get syntax-highlighting for HTML templates, you can use an extension called [
 
 [Live demo (with source maps)](https://destiny.okku.dev/)
 
-You can convert anything to be reactive using the `reactive()` function. Their primitive value can be accessed via the `value` property. Setting `value` will cause the reactive item to dispatch events to all its listeners.
+You can convert anything to be reactive using the `reactive()` function. Their unboxed value can be accessed via the `value` property. Setting `value` will cause the reactive item to dispatch events to all its listeners and dependents.
 
 The `html` template tag will parse the content as XHTML and returns a `TemplateResult` object containing a `DocumentFragment`. Any reactive items given to it via `${}` slots are bound both ways. This means that when the value of the reactive element is changed later, the relevant part of the DOM is automatically updated. If a reactive item is bound to something that may change from user input, the value of the reactive item will be automatically updated accordingly as user input comes in.
 
@@ -98,8 +101,8 @@ See [the wiki](https://github.com/0kku/destiny/wiki) for documentation.
 
 ## Supported platforms
 
-Current versions target newest stable release of SpiderMonkey (Firefox) and V8 (Chromium). JavaScriptCore (Safari) support coming soon.
+Current versions target newest stable release of SpiderMonkey (Firefox), V8 (Chromium), and JavaScriptCore (Safari).
 
-Versions ≥1.0 will target the latest two releases of Firefox and Chromium, and the latest release of Safari. Hopefully.
+Versions ≥1.0 will target the latest two releases of Firefox and Chromium, and the latest release of Safari.
 
 Chakra (Internet Explorer & old Edge) will not be supported. Ever. New Edge uses V8, so it's supported.

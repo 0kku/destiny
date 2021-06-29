@@ -1,6 +1,6 @@
-import { Component, xml, css, reactive, ReactivePrimitive } from "../../../mod.ts";
+import { Component, html, css, reactive, ReactiveValue } from "../../../mod.ts";
 
-import { Window } from "./window.ts";
+import Window from "./window.ts";
 import type { TWindow } from "./TWindow.ts";
 
 
@@ -29,11 +29,11 @@ function grabTypeToCursorType (v: TGrabType) {
   }
 }
 
-export class WindowManager extends Component {
+export default class WindowManager extends Component {
   #windows: Array<TWindow> = [
     {
       header: "Foo",
-      content: xml`Hello, World!`,
+      content: html`Hello, World!`,
       position: {
         x: reactive(0),
         y: reactive(0),
@@ -45,7 +45,7 @@ export class WindowManager extends Component {
     },
     {
       header: "Bar",
-      content: xml`Lorem ipsum`,
+      content: html`Lorem ipsum`,
       position: {
         x: reactive(400),
         y: reactive(50),
@@ -58,8 +58,8 @@ export class WindowManager extends Component {
   ];
 
   #dragging = {
-    target: this.#windows[0],
-    type: new ReactivePrimitive<TGrabType>(""),
+    target: this.#windows[0]!,
+    type: new ReactiveValue<TGrabType>(""),
     positionStart: {
       x: 0,
       y: 0,
@@ -155,7 +155,7 @@ export class WindowManager extends Component {
     });
   }
 
-  static styles = css`
+  static override styles = css`
     :host {
       position: relative;
       display: block;
@@ -167,8 +167,8 @@ export class WindowManager extends Component {
     }
   `;
 
-  template = xml`
-    ${this.#windows.map(win => xml`
+  override template = html`
+    ${this.#windows.map(win => html`
       <${Window} prop:props=${win} />
     `)}
   `;

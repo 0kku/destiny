@@ -1,7 +1,7 @@
-import { Component, xml } from "../../mod.ts";
+import { Component, html } from "../../mod.ts";
 
-export class AsyncComponent extends Component {
-  template = xml`
+export default class AsyncComponent extends Component {
+  override template = html`
     foo
     <slot />
     bar

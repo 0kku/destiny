@@ -1,14 +1,14 @@
-import { Ref } from "../../../../mod.ts";
+import { Ref } from "../../../../componentLogic/Ref.ts";
 import { isObject } from "../../../../typeChecks/isObject.ts";
 
 /**
- * `destiny:ref` prop allows you to to give a `ReactivePrimitive` to
+ * `destiny:ref` prop allows you to to give a `ReactiveValue` to
  * the templater, which will then store the created element into
  * it once render is complete.
  * 
  * Example usage:
  * ```js
- * const ref = new DestinyPrimitive;
+ * const ref = new ReactiveValue;
  *
  * ref.pipe(element => {
  *   console.log(element.innerHTML); // "Hello!";

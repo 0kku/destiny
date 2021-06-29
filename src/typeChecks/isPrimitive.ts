@@ -1,7 +1,7 @@
-import type { TPrimitive } from "../reactive/types/IPrimitive.ts";
+import type { TPrimitive } from "../reactive/types/TPrimitive.ts";
 
 /**
- * Checks if a given value is one of the seven primitive types in JavaScript.
+ * Checks if a given value is one of the primitive types in JavaScript.
  * @param input The value to be checked
  */
 export function isPrimitive (

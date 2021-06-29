@@ -1,4 +1,4 @@
-import type { ReadonlyReactiveArray } from "./_ReactiveArray.ts";
+import type { ReadonlyReactiveArray } from "./_ReadonlyReactiveArray.ts";
 
 export type TUnwrapReactiveArray<Input> = (
   Input extends ReadonlyReactiveArray<infer V>

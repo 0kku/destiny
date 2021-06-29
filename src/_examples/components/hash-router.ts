@@ -1,4 +1,4 @@
-import { Component, reactive, xml, ReactivePrimitive } from "../../mod.ts";
+import { Component, reactive, html, computed } from "../../mod.ts";
 
 function getHashRoute (
   url: string,
@@ -12,36 +12,30 @@ window.addEventListener("hashchange", e => {
   route.value = getHashRoute(e.newURL);
 });
 
-export class HashRouter extends Component<{
+export default class HashRouter extends Component<{
   routes: Array<{
     path: string,
     content: string,
   }>,
 }> {
-
-  #error404 = xml`
+  #error404 = html`
     <slot name="404">
       404 — route "${route}" not found
     </slot>
-  `.content.firstElementChild!;
-  #view = new ReactivePrimitive(this.#error404);
-
-  constructor () {
-    super();
-    route.bind(
-      currentRoute => {
-        const routeInfo = this.routes.find(({path}) => path === currentRoute);
-        if (routeInfo) {
-          this.#view.value = xml`<${import(routeInfo.content)} />`.content.firstElementChild!;
-        } else {
-          this.#view.value = this.#error404;
-        }
-      },
-      { dependents: [this.#view] },
-    );
-  }
-
-  template = xml`
-    ${this.#view}
   `;
+
+  override template = computed(() => {
+    const routeInfo = this.routes.find(({path}) => path === route.value);
+    return (
+      routeInfo
+      ? html`
+        <${import(routeInfo.content)}
+          prop:fallback=${html`Loading…`}
+          prop:catch=${(err: Error) => html`
+            Error loading page: ${err.message}`
+          }
+        />`
+      : this.#error404
+    );
+  });
 }

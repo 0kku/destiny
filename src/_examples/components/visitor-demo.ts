@@ -1,8 +1,8 @@
-import { Component, xml, reactive } from "../../mod.ts";
+import { Component, html, reactive } from "../../mod.ts";
 
 import { inputStyles } from "./inputStyles.ts";
 
-export class VisitorDemo extends Component {
+export default class VisitorDemo extends Component {
   #who = reactive("visitor");
   #count = reactive(0);
   #timer = setInterval(() => {
@@ -13,9 +13,9 @@ export class VisitorDemo extends Component {
     clearInterval(this.#timer);
   }
 
-  static styles = inputStyles;
+  static override styles = inputStyles;
 
-  template = xml`
+  override template = html`
     <label>
       What's your name? <input type="text" value=${this.#who} />
     </label>

@@ -1,6 +1,7 @@
 import { destinyUnmount } from "./destinyUnmount.ts";
 import { destinyMount } from "./destinyMount.ts";
 import { destinyRef } from "./destinyRef.ts";
+import { destinyProps } from "./destinyProps.ts";
 import type { TElementData } from "../TElementData.ts";
 
 /**
@@ -22,6 +23,10 @@ export function destiny (
 
       case "unmount":
         destinyUnmount(element, value);
+      break;
+
+      case "props":
+        destinyProps(element, value);
       break;
 
       default:

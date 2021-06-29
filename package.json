@@ -3,6 +3,7 @@
   "description": "A reactive UI library for JavaScript and TypeScript.",
   "version": "0.6.0",
   "main": "./dist/examples/main.js",
+  "types": "./src/mod.ts",
   "type": "module",
   "scripts": {
     "lint": "deno lint --ignore=dist",

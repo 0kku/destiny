@@ -1,7 +1,8 @@
-import { ReadonlyReactivePrimitive, ReadonlyReactiveArray } from "../../../mod.ts";
 import { valueToFragment } from "./toFragment/valueToFragment.ts";
 import { Slot } from "../../Slot.ts";
 import { SlotArray } from "../../SlotArray.ts";
+import { ReadonlyReactiveValue } from "../../../reactive/ReactiveValue/_ReadonlyReactiveValue.ts";
+import { ReadonlyReactiveArray } from "../../../reactive/ReactiveArray/_ReadonlyReactiveArray.ts";
 
 /**
  * Goes through all the elements in a template that are flagged with the `destiny:content` attribute and figures out how the DOM needs to be updated if any of the given props are reactive.
@@ -19,7 +20,7 @@ export function hookContentSlotsUp (
   for (const contentSlot of contentSlots) {
     const index = contentSlot.getAttribute("destiny:content");
     const item = props[Number(index)];
-    if (item instanceof ReadonlyReactivePrimitive) {
+    if (item instanceof ReadonlyReactiveValue) {
       const slot = new Slot(contentSlot);
       item.bind(value => {
         slot.update(valueToFragment(value));

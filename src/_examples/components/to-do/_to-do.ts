@@ -1,14 +1,14 @@
-import { Component, xml, css, reactive } from "../../../mod.ts";
+import { Component, html, css, reactive } from "../../../mod.ts";
 
+import TaskItem from "./task-item.ts";
 import { animateIn, animateOut } from "./animations.ts";
-import { TaskItem } from "./task-item.ts";
 import { inputStyles } from "../inputStyles.ts";
 
 type TInputChangeEvent = InputEvent & {
   currentTarget: HTMLInputElement,
 };
 
-export class Todo extends Component {
+export default class Todo extends Component {
   #newValue = reactive("");
   #items = reactive([
     {
@@ -28,7 +28,7 @@ export class Todo extends Component {
     },
   ]);
 
-  static styles = [
+  static override styles = [
     inputStyles,
     css`
       ul {
@@ -51,10 +51,10 @@ export class Todo extends Component {
     `,
   ];
 
-  template = xml`
+  override template = html`
     <h1>${this.#items.filter(v => v.done.value).length}/${this.#items.length} tasks compelete</h1>
     <ul>
-      ${this.#items.map((item, i) => xml`
+      ${this.#items.map((item, i) => html`
         <${TaskItem}
           prop:item=${item}
           prop:removeItem=${() => this.#items.splice(i.value, 1)}
@@ -62,7 +62,7 @@ export class Todo extends Component {
           destiny:unmount=${animateOut}
         />
       `)}
-      ${this.#items.length.falsy(xml`
+      ${this.#items.length.falsy(html`
         <li
           destiny:mount=${animateIn}
           destiny:unmount=${animateOut}

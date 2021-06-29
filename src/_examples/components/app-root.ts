@@ -1,9 +1,9 @@
-import { Component, xml, css } from "../../mod.ts";
+import { Component, html, css } from "../../../mod.ts";
 
-import { TabView } from "./tab-view.ts";
+import TabView from "./tab-view.ts";
 
 export class AppRoot extends Component {
-  static styles = css`
+  static override styles = css`
     :host {
       --element-color:       #777;
       --element-hover-color: #888;
@@ -17,7 +17,7 @@ export class AppRoot extends Component {
     }
   `;
 
-  template = xml`
+  override template = html`
     <${TabView} />
   `;
 }

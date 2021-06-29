@@ -1,15 +1,16 @@
+import { Component, html, Ref } from "../../../mod.ts";
+
 import { inputStyles } from "../inputStyles.ts";
-import { Component, xml, Ref } from "../../../mod.ts";
 
 /**
  * An example of a component that forwards its props to a child.
  */
-export class TextField extends Component {
-  forwardProps = new Ref;
-  static captureProps = true;
-  static styles = inputStyles;
+export default class TextField extends Component {
+  override forwardProps = new Ref;
+  static override captureProps = true;
+  static override styles = inputStyles;
 
-  template = xml`
+  override template = html`
     <input type="text" destiny:ref=${this.forwardProps} />
   `;
 }

@@ -1,11 +1,12 @@
-import { reactive, ReadonlyReactiveArray } from "../../mod.ts";
-import { isSpecialCaseObject } from "../reactiveObject/specialCaseObjects.ts";
+import { reactive } from "../reactive.ts";
+import { isSpecialCaseObject } from "../reactiveProperties/specialCaseObjects.ts";
 import { isReactive } from "../../typeChecks/isReactive.ts";
 import { isObject } from "../../typeChecks/isObject.ts";
-import type { TArrayValueType } from "../types/IArrayValueType.ts";
+import type { TArrayValueType } from "./TArrayValueType.ts";
+import type { ReadonlyReactiveArray } from "./_ReadonlyReactiveArray.ts";
 
 /**
- * Converts a given array of values into a reactive value recursively if it's not to be treated as a primitive. I.E. `Array`s and most `Object`s will be converted, but primitive values will not. This is useful for `ReactiveArrays`, whose direct children are managed directly by the class itself, but whose deeply nested descendants need to be tracked separately.
+ * Converts a given array of values into a reactive entity recursively if it's not to be treated as a primitive. I.E. `Array`s and most `Object`s will be converted, but primitive values will not. This is useful for `ReactiveArrays`, whose direct children are managed directly by the class itself, but whose deeply nested descendants need to be tracked separately.
  * @param items The items to be converted
  * @param parent Another reactive object to whom any reactive items created should report to when updating, so updates can correctly propagate to the highest level
  */

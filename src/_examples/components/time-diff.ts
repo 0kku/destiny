@@ -1,4 +1,4 @@
-import { Component, xml, reactive, computed } from "../../mod.ts";
+import { Component, html, reactive, computed } from "../../../mod.ts";
 
 import { inputStyles } from "./inputStyles.ts";
 
@@ -30,13 +30,13 @@ function createTask () {
   };
 }
 
-export class TimeDiff extends Component {
+export default class TimeDiff extends Component {
   #tasks = reactive([createTask()]); //initialize an array of tasks, with one task in it
 
-  static styles = inputStyles;
+  static override styles = inputStyles;
 
-  template = xml`
-    ${this.#tasks.map(task => xml`
+  override template = html`
+    ${this.#tasks.map(task => html`
       <div>
         <label>
           Start:

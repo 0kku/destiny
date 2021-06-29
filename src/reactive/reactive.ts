@@ -1,13 +1,16 @@
-import { ReactiveArray, ReadonlyReactiveArray, ReactivePrimitive, reactiveObject } from "../mod.ts";
-import { isSpecialCaseObject } from "./reactiveObject/specialCaseObjects.ts";
+import { ReactiveValue } from "./ReactiveValue/_ReactiveValue.ts";
+import { ReactiveArray } from "./ReactiveArray/_ReactiveArray.ts";
+import { makeReactiveProperties } from "./reactiveProperties/makeReactiveProperties.ts";
+import { isSpecialCaseObject } from "./reactiveProperties/specialCaseObjects.ts";
 import { isReactive } from "../typeChecks/isReactive.ts";
 import { isObject } from "../typeChecks/isObject.ts";
-import type { TReactiveValueType } from "./types/IReactiveValueType.ts";
-import type { TReactiveEntity } from "./types/IReactiveEntity.ts";
-import type { TReactive } from "./types/IReactive.ts";
+import type { TReactiveValueType } from "./types/TReactiveValueType.ts";
+import type { TReactiveEntity } from "./types/TReactiveEntity.ts";
+import type { TReactive } from "./types/TReactive.ts";
+import type { ReadonlyReactiveArray } from "./ReactiveArray/_ReadonlyReactiveArray.ts";
 
 /**
- * A polymorphic convenience function that will convert any value into a reactive value recursively. `Array`s are converted into `ReactiveArray`s. Most `Object`s get their keys converted into reactive items using the same algorithm (see `reactiveObject.ts` for more details). Other values are converted into `ReactivePrimitive`s.
+ * A polymorphic convenience function that will convert any value into a reactive entity recursively. `Array`s are converted into `ReactiveArray`s. `Object`s whose prototype is `Object` get their keys converted into reactive items using the same algorithm `ReactiveArray`s use (see `makeReactiveProperties.ts` for more details). Other values are converted into `ReactiveValue`s.
  * 
  * @param initialValue The value to be made reactive
  * @param options.fallback A fallback value to be displayed when the initial value is a pending `Promise`
@@ -17,26 +20,26 @@ function reactive<T extends Promise<unknown>, K = unknown> (
   initialValue: T,
   options: {
     fallback: T extends Promise<infer V> ? V : never,
-    parent?: ReactivePrimitive<K> | ReadonlyReactiveArray<K>,
+    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K>,
   },
-): ReactivePrimitive<T extends Promise<infer V> ? V : never>;
+): ReactiveValue<T extends Promise<infer V> ? V : never>;
 function reactive<T, K = unknown> (
   initialValue: T,
   options?: {
-    parent?: ReactivePrimitive<K> | ReadonlyReactiveArray<K>,
+    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K>,
   },
 ): TReactiveValueType<T>;
 function reactive<K = unknown> (
   initialValue: unknown,
   options?: {
-    parent?: TReactiveEntity<K>,
+    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K>,
   },
 ): TReactive<unknown>;
 function reactive<T, K = unknown> (
   initialValue: T,
   options: {
     fallback?: T,
-    parent?: ReactivePrimitive<K> | ReadonlyReactiveArray<K>,
+    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K>,
   } = {},
 ): unknown {
   if (isReactive(initialValue as unknown)) {
@@ -50,22 +53,23 @@ function reactive<T, K = unknown> (
     if (Array.isArray(initialValue)) {
       ref = new ReactiveArray(...initialValue);
     } else if (initialValue instanceof Promise) {
-      const temp = new ReactivePrimitive(options.fallback);
+      const temp = new ReactiveValue(options.fallback);
       void initialValue.then(value => temp.value = value as T);
-      ref = temp as ReactivePrimitive<unknown>;
+      ref = temp as ReactiveValue<unknown>;
     } else if (isSpecialCaseObject(initialValue)) {
-      ref = new ReactivePrimitive<unknown>(initialValue);
+      ref = new ReactiveValue<unknown>(initialValue);
     } else {
-      // reactiveObjects don't get callbacks bound to them: the callbacks are attached to each field separately.
-      return reactiveObject(initialValue, options.parent);
+      // objects passed to makeReactiveProperties don't get callbacks bound to them: the callbacks are attached to each field separately.
+      return makeReactiveProperties(initialValue, options.parent);
     }
   } else {
-    ref = new ReactivePrimitive<unknown>(initialValue);
+    ref = new ReactiveValue<unknown>(initialValue);
   }
 
   if (parent) {
-    ref.bind(() => parent.update());
-    // TODO set dependents
+    ref.bind(
+      () => parent.update(),
+    );
   }
 
   return ref;

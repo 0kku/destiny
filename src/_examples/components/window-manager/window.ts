@@ -1,8 +1,8 @@
-import { Component, xml, css, computed } from "../../../mod.ts";
+import { Component, html, css, computed } from "../../../mod.ts";
 
 import type { TWindow } from "./TWindow.ts";
 
-export class Window extends Component<{
+export default class Window extends Component<{
   props: TWindow,
 }> {
   constructor () {
@@ -18,7 +18,7 @@ export class Window extends Component<{
     });
   }
 
-  static styles = css`
+  static override styles = css`
     :host {
       background: #333;
       display: block;
@@ -91,7 +91,7 @@ export class Window extends Component<{
     }
   `;
 
-  template = xml`
+  override template = html`
     <header>
       ${this.props.header}
     </header>
