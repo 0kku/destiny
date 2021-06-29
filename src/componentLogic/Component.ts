@@ -1,5 +1,4 @@
-// import { xml } from "../parsing/_xml.js";
-import { xml } from "../mod.js";
+import { xml } from "../parsing/_xml.js";
 import { register } from "./register.js";
 import { attachCSSProperties } from "../styling/attachCSSProperties.js";
 import { deferredElements } from "../parsing/deferredElements.js";
