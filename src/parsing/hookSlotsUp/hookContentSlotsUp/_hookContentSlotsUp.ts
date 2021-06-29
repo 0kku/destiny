@@ -1,7 +1,7 @@
 import { valueToFragment } from "./toFragment/valueToFragment.js";
 import { Slot } from "../../Slot.js";
 import { SlotArray } from "../../SlotArray.js";
-import { ReadonlyReactiveValue } from "../../../reactive/ReactiveValue/ReactiveValue.js";
+import { ReadonlyReactiveValue } from "../../../reactive/ReactiveValue/_ReadonlyReactiveValue.js";
 import { ReadonlyReactiveArray } from "../../../reactive/ReactiveArray/_ReadonlyReactiveArray.js";
 
 /**

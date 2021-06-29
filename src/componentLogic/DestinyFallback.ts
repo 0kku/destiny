@@ -3,7 +3,7 @@ import { xml } from "../parsing/_xml.js";
 import { Ref } from "./Ref.js";
 import { getElementData } from "./elementData.js";
 import { describeType } from "../utils/describeType.js";
-import { ReactiveValue } from "../reactive/ReactiveValue/ReactiveValue.js";
+import { ReactiveValue } from "../reactive/ReactiveValue/_ReactiveValue.js";
 import { isRenderable } from "../typeChecks/isRenderable.js";
 import { componentOrComponentModule } from "./componentOrComponentModule.js";
 import type { Renderable } from "../parsing/Renderable.js";

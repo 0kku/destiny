@@ -1,7 +1,7 @@
 import type { ReactiveArray } from "../ReactiveArray/_ReactiveArray.js";
 import type { TSpecialCaseObject } from "../reactiveProperties/specialCaseObjects.js";
 import type { TMakeReactiveProperties } from "../reactiveProperties/TMakeReactiveProperties.js";
-import type { ReactiveValue } from "../ReactiveValue/ReactiveValue.js";
+import type { ReactiveValue } from "../ReactiveValue/_ReactiveValue.js";
 import type { TReactive } from "./TReactive.js";
 
 export type TReactiveValueType<T> = (

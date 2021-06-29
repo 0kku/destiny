@@ -3,49 +3,12 @@ import { WeakMultiRef } from "../../utils/WeakMultiRef.js";
 import { computedConsumer } from "../computed.js";
 import { concatIterators } from "../../utils/concatIterators.js";
 import { PassReactiveValue } from "./PassReactiveValue.js";
+import { internalSetReactiveValue } from "./internalSetReactiveValue.js";
+import { stronglyHeldDependencies, weaklyHeldDependencies } from "./valueDependencyCaches.js";
+import type { TReactiveValueCallback } from "./TReactiveValueCallback.js";
+import type { TReactiveValueUpdaterOptions } from "./TReactiveValueUpdaterOptions.js";
 import type { ReadonlyReactiveArray } from "../ReactiveArray/_ReadonlyReactiveArray.js";
 
-type TReactiveValueCallback<T> = (newValue: T) => void;
-
-type TReactiveValueUpdaterOptions<T> = {
-  noUpdate: ReadonlyArray<TReactiveValueCallback<T>>,
-  force: boolean,
-};
-
-type TReactiveValueUpdater<T> = (
-  value: T,
-  options?: Partial<TReactiveValueUpdaterOptions<T>>,
-) => void;
-
-export const internalSetReactiveValue = new class {
-  #inner = new WeakMap<
-    ReadonlyReactiveValue<any>
-  >();
-
-  get<T>(
-    key: ReadonlyReactiveValue<T>
-  ) {
-    return this.#inner.get(key) as TReactiveValueUpdater<T>;
-  }
-
-  set<T>(
-    key: ReadonlyReactiveValue<T>,
-    value: TReactiveValueUpdater<T>,
-  ) {
-    this.#inner.set(key, value);
-  }
-};
-
-
-const stronglyHeldDependencies = new Map<
-  TReactiveValueCallback<any>,
-  ReadonlyReactiveValue<any>
->();
-
-const weaklyHeldDependencies = new IterableWeakMap<
-  WeakMultiRef,
-  ReadonlyReactiveValue<any>
->();
 
 export class ReadonlyReactiveValue<T> {
   /** The current value of the `ReactiveValue`. */
@@ -254,53 +217,5 @@ export class ReadonlyReactiveValue<T> {
    */
   get pass (): PassReactiveValue<T> {
     return new PassReactiveValue(this);
-  }
-}
-
-export class ReactiveValue<T> extends ReadonlyReactiveValue<T> {
-  /**
-   * Forces an update event to be dispatched.
-   */
-  update (): this {
-    this.set(
-      this.value,
-      { force: true },
-    );
-
-    return this;
-  }
-    
-  /**
-   * Can be used to functionally update the value.
-   * @param value New value to be set
-   * @param noUpdate One or more callback methods you don't want to be called on this update. This can be useful for example when responding to DOM events: you wouldn't want to update the DOM with the new value on the same element that caused the udpate in the first place.
-   */
-  set (
-    value: T,
-    options?: Partial<TReactiveValueUpdaterOptions<T>>,
-  ): this {
-    internalSetReactiveValue.get(this)(value, options);
-
-    return this;
-  }
-  
-  /** The current value of the ReactiveValue. */
-  override get value (): T {
-    return super.value; 
-  }
-
-  /** The current `value` of the `ReactiveValue` */
-  override set value (
-    value: T,
-  ) {
-    this.set(value);
-  }
-
-  /** Cache for readonly getter */
-  #readonly: ReadonlyReactiveValue<T> | undefined;
-
-  /** Readonly version of the instance that can't be mutated from the outside, but will be updated as the original instance updates. */
-  get readonly (): ReadonlyReactiveValue<T> {
-    return this.#readonly ?? (this.#readonly = this.pipe(v => v));
   }
 }

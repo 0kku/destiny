@@ -1,5 +1,6 @@
 import { composeTemplateString } from "../utils/composeTemplateString.js";
-import { ReactiveValue, ReadonlyReactiveValue } from "./ReactiveValue/ReactiveValue.js";
+import { ReactiveValue } from "./ReactiveValue/_ReactiveValue.js";
+import type { ReadonlyReactiveValue } from "./ReactiveValue/_ReadonlyReactiveValue.js";
 
 export let computedConsumer: {
   fn: VoidFunction,

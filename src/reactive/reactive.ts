@@ -1,4 +1,4 @@
-import { ReactiveValue } from "./ReactiveValue/ReactiveValue.js";
+import { ReactiveValue } from "./ReactiveValue/_ReactiveValue.js";
 import { ReactiveArray } from "./ReactiveArray/_ReactiveArray.js";
 import { makeReactiveProperties } from "./reactiveProperties/makeReactiveProperties.js";
 import { isSpecialCaseObject } from "./reactiveProperties/specialCaseObjects.js";

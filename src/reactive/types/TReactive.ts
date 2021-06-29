@@ -1,4 +1,4 @@
-import type { ReadonlyReactiveValue } from "../ReactiveValue/ReactiveValue.js";
+import type { ReadonlyReactiveValue } from "../ReactiveValue/_ReadonlyReactiveValue.js";
 import type { ReadonlyReactiveArray } from "../ReactiveArray/_ReadonlyReactiveArray.js";
 import type { TMakeReactiveProperties } from "../reactiveProperties/TMakeReactiveProperties.js";
 

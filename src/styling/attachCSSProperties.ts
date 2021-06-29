@@ -1,4 +1,4 @@
-import type { ReadonlyReactiveValue } from "../reactive/ReactiveValue/ReactiveValue.js";
+import type { ReadonlyReactiveValue } from "../reactive/ReactiveValue/_ReadonlyReactiveValue.js";
 
 /**
  * Synchonizes a CSS property of an element to a `ReadonlyReactiveValue`.

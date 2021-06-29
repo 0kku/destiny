@@ -1,4 +1,4 @@
-import type { ReadonlyReactiveValue } from "./ReactiveValue.js";
+import type { ReadonlyReactiveValue } from "./_ReadonlyReactiveValue.js";
 
 export class PassReactiveValue<T> {
   deref: ReadonlyReactiveValue<T>;
