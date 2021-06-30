@@ -10,7 +10,7 @@ async function emit(file: string): Promise<{
     compilerOptions: {
       declaration: true,
       sourceMap: true,
-      target: "es2021",
+      target: "es2020",
       module: "esnext",
       lib: [
         "dom",

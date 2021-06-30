@@ -1,5 +1,5 @@
 import type { ReadonlyReactiveValue } from "./_ReadonlyReactiveValue.ts";
-import type { TReactiveValueUpdater } from "./TReactiveValueUpdater";
+import type { TReactiveValueUpdater } from "./TReactiveValueUpdater.ts";
 
 export const internalSetReactiveValue = new class {
   #inner = new WeakMap<

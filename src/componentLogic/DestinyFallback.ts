@@ -5,8 +5,8 @@ import { getElementData } from "./elementData.ts";
 import { describeType } from "../utils/describeType.ts";
 import { ReactiveValue } from "../reactive/ReactiveValue/_ReactiveValue.ts";
 import { isRenderable } from "../typeChecks/isRenderable.ts";
-import { componentOrComponentModule } from "./componentOrComponentModule.jt";
-import type { Renderable } from "../parsing/Renderable.t";
+import { componentOrComponentModule } from "./componentOrComponentModule.ts";
+import type { Renderable } from "../parsing/Renderable.ts";
 
 export class DestinyFallback extends Component {
   static override captureProps = true;
