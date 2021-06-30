@@ -8,12 +8,16 @@ This setup uses:
   - `components/App.ts` - the component to use on your frontend
   - `index.html` - the view to serve your bundled file
 
+Change the import in components/App.ts to point to `../src/mod.ts`
+
 ```shell
 # add .d.ts to globalthis import in dist/mod.d.ts
 $ deno run -A --unstable compile.ts
 $ npx serve-http
 # go to browser
 ```
+
+NOTE this doesnt work, because compile.ts doesnt write the transpiled files. Because we're using deno.emit, we aren't bundling
 
 ## Usage with Node
 
