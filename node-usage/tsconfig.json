@@ -1,0 +1,10 @@
+{
+    "compilerOptions": {
+      "target": "es2020",
+      "module": "esnext",
+      "lib": ["dom", "DOM.Iterable", "ESNext"],
+    },
+    "include": [
+      "components/App.ts"
+    ]
+  }
