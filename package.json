@@ -9,7 +9,7 @@
     "lint": "deno lint --ignore=dist",
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile": "deno run --allow-read=. --allow-write=dist --unstable compile.ts",
-    "watch": "deno run --allow-read=. --allow-write=dist --unstable compile.ts --watch"
+    "watch": "deno run --allow-read=. --allow-write=dist --unstable --allow-net=deno.land,127.0.0.1:1777 compile.ts --watch"
   },
   "keywords": [
     "javascript",

@@ -1,4 +1,4 @@
-import { Component, html, reactive, computed } from "../../../mod.ts";
+import { Component, html, reactive, computed } from "../../mod.ts";
 
 import { inputStyles } from "./inputStyles.ts";
 

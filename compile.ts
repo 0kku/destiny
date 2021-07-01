@@ -64,5 +64,5 @@ async function compile(
   }
 }
 
-await compile("./src/mod.ts", "./src", false);
-await compile("./src/_examples/main.ts", "./src", Deno.args[0] === "--watch");
+const directoryToWatch = "./src"
+await compile("./src/mod.ts", directoryToWatch, false);
