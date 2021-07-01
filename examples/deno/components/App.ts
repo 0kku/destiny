@@ -1,4 +1,4 @@
-import { Component, css, html } from "../../dist/mod.js";
+import { Component, css, html } from "./deps.ts";
 
 class CustomP extends Component<{
     customText: string

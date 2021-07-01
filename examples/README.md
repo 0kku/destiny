@@ -1,4 +1,8 @@
+Make sure to create the dist firsT: npm run compile
+
 ## Usage with Deno
+
+NOTE: This *transpiles*, and DOES NOT *bundle* AND keeps the RAW LINKS to destiny
 
 Ensure you're on latest deno verion, 1.11.2
 
@@ -8,10 +12,10 @@ This setup uses:
   - `components/App.ts` - the component to use on your frontend
   - `index.html` - the view to serve your bundled file
 
-Change the import in components/App.ts to point to `../src/mod.ts`
 
 ```shell
-# add .d.ts to globalthis import in dist/mod.d.ts
+$ cd examples/deno
+$ cp -r ../../dist .
 $ deno run -A --unstable compile.ts
 $ npx serve-http
 # go to browser
@@ -34,4 +38,17 @@ This setup uses:
 $ node_modules/.bin/webpack --config webpack.config.js
 $ npx serve-http
 # go to browser
+```
+
+## Usage With Browser
+
+This setup uses:
+
+  - `components/App.ts` - the component to use on your frontend
+  - `index.html` - the view to serve your bundled file
+
+```shell
+$ cd examples/browser
+$ cp -r ../../dist .
+$ npx serve-http
 ```
