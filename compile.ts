@@ -1,10 +1,22 @@
 // transpile.ts
-import { fromFileUrlWin, fromFileUrlUnix, Crumpets } from "./deps.ts";
+import { Crumpets, fromFileUrlUnix, fromFileUrlWin } from "./deps.ts";
 
-const crumpet = new Crumpets({
-  rootFile: "./src/mod.ts",
-  compilerOptions: {
-    declaration: true,
+const fromFileUrl = Deno.build.os === "windows"
+  ? fromFileUrlWin
+  : fromFileUrlUnix;
+const encoder = new TextEncoder();
+
+async function compile(
+  rootFile: string,
+  directoryToWatch: string,
+  watch: boolean,
+) {
+  const crumpet = new Crumpets({
+    rootFile,
+    startWebSocketServer: true,
+    directoryToWatch,
+    compilerOptions: {
+      declaration: true,
       sourceMap: true,
       target: "es2020",
       module: "esnext",
@@ -24,15 +36,33 @@ const crumpet = new Crumpets({
         "/dist/*": ["src/*"],
       },
       baseUrl: "./",
-  },
-});
-// Overrite `write` function so instead of placing the transpiled file besides the source, we can move it into dist
-// TODO :: if the dist dir doesnt exist, this will throw an error, first we need to check if the filepath exists, if not then create it
-Crumpets.write = (filename: string, content: string) => {
-  const distPath = filename.replace("/src/", "/dist/")
-  const validWritablePath = Deno.build.os === "windows"
-  ? fromFileUrlWin(distPath)
-  : fromFileUrlUnix(distPath);
-  Deno.writeFileSync(validWritablePath, new TextEncoder().encode(content))
+    },
+  });
+
+  // Overrite `write` function so instead of placing the transpiled file besides the source, we can move it into dist
+  Crumpets.write = (filename: string, content: string) => {
+    console.log(filename);
+    const distPath = filename.replace("/src/", "/dist/");
+    const validWritablePath = fromFileUrl(distPath);
+    try {
+      Deno.writeFileSync(validWritablePath, encoder.encode(content));
+    } catch (e) {
+      if (e instanceof Deno.errors.NotFound) {
+        const dirPathSplit = distPath.split("/");
+        dirPathSplit.pop();
+        const dirPath = dirPathSplit.join("/");
+        Deno.mkdirSync(fromFileUrl(dirPath), { recursive: true });
+        Deno.writeFileSync(validWritablePath, encoder.encode(content));
+      }
+    }
+  };
+
+  await crumpet.run();
+
+  if (watch) {
+    await crumpet.watch();
+  }
 }
-await crumpet.run();
+
+await compile("./src/mod.ts", "./src", false);
+await compile("./src/_examples/main.ts", "./src", Deno.args[0] === "--watch");

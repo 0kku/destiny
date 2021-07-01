@@ -1,4 +1,4 @@
-import { Component, html, css } from "../../../mod.ts";
+import { Component, html, css } from "../../mod.ts";
 
 import TabView from "./tab-view.ts";
 
