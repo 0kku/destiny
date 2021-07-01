@@ -1,6 +1,6 @@
 import { ReactiveValue } from "./ReactiveValue/_ReactiveValue.js";
 import { ReactiveArray } from "./ReactiveArray/_ReactiveArray.js";
-import { makeReactiveProperties } from "./reactiveProperties/makeReactiveProperties.js";
+import { reactiveProperties } from "./reactiveProperties/_reactiveProperties.js";
 import { isSpecialCaseObject } from "./reactiveProperties/specialCaseObjects.js";
 import { isReactive } from "../typeChecks/isReactive.js";
 import { isObject } from "../typeChecks/isObject.js";
@@ -10,11 +10,11 @@ import type { TReactive } from "./types/TReactive.js";
 import type { ReadonlyReactiveArray } from "./ReactiveArray/_ReadonlyReactiveArray.js";
 
 /**
- * A polymorphic convenience function that will convert any value into a reactive entity recursively. `Array`s are converted into `ReactiveArray`s. `Object`s whose prototype is `Object` get their keys converted into reactive items using the same algorithm `ReactiveArray`s use (see `makeReactiveProperties.ts` for more details). Other values are converted into `ReactiveValue`s.
+ * A polymorphic convenience function that will convert any value into a reactive entity recursively. `Array`s are converted into `ReactiveArray`s. `Object`s whose prototype is `Object` get their keys converted into reactive items using the same algorithm `ReactiveArray`s use (see `reactiveProperties.ts` for more details). Other values are converted into `ReactiveValue`s.
  * 
  * @param initialValue The value to be made reactive
  * @param options.fallback A fallback value to be displayed when the initial value is a pending `Promise`
- * @param options.parent Another reactive object to whom any reactive items created should report to when updating, so updates can correctly propagate to the highest level
+ * @param options.parent Another reactive entity to whom any reactive items created should report to when updating, so updates can correctly propagate to the highest level
  */
 function reactive<T extends Promise<unknown>, K = unknown> (
   initialValue: T,
@@ -59,8 +59,8 @@ function reactive<T, K = unknown> (
     } else if (isSpecialCaseObject(initialValue)) {
       ref = new ReactiveValue<unknown>(initialValue);
     } else {
-      // objects passed to makeReactiveProperties don't get callbacks bound to them: the callbacks are attached to each field separately.
-      return makeReactiveProperties(initialValue, options.parent);
+      // objects passed to reactiveProperties don't get callbacks bound to them: the callbacks are attached to each field separately.
+      return reactiveProperties(initialValue, options.parent);
     }
   } else {
     ref = new ReactiveValue<unknown>(initialValue);

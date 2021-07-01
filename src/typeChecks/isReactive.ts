@@ -4,7 +4,7 @@ import { reactivePropertiesFlag } from "../reactive/reactiveProperties/reactiveP
 import type { TReactive } from "../reactive/types/TReactive.js";
 
 /**
- * Checks if a given value is a reactive entity; I.E. an instance of `ReadonlyReactiveValue` or `ReadonlyReactiveArray`, or an object returned by `makeReactiveProperties()` which is flagged by the `reactivePropertiesFlag` symbol.
+ * Checks if a given value is a reactive entity; I.E. an instance of `ReadonlyReactiveValue` or `ReadonlyReactiveArray`, or an object returned by `reactiveProperties()` which is flagged by the `reactivePropertiesFlag` symbol.
  * 
  * @param input The value to be checked
  */
