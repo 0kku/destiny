@@ -13,7 +13,6 @@ async function compile(
 ) {
   const crumpet = new Crumpets({
     rootFile,
-    startWebSocketServer: true,
     directoryToWatch,
     compilerOptions: {
       declaration: true,
