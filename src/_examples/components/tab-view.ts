@@ -34,6 +34,11 @@ export default class TabView extends Component {
       title: "Windowing demo",
       content: "./window-manager/_window-manager.js",
     },
+    {
+      path: "/tests",
+      title: "Tests",
+      content: "./tests/test-runner.js",
+    },
   ].map(tab => (tab.content = new URL(tab.content, import.meta.url).href, tab));
 
   connectedCallback (): void {

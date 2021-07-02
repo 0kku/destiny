@@ -453,7 +453,7 @@ import type { TMask } from "./TMask.js";
   /**
    * Similar to `Array::map()`, except that it returns a `ReadonlyReactiveArray`, which gets gets updated with mapped values as the originating array is updated. If you don't want this behavior, use `ReadonlyReactiveArray.prototype.value.map()` instead.
    */
-  map<U> (
+  map <U> (
     callback: (
       value: TArrayValueType<InputType>,
       index: ReadonlyReactiveValue<number>,
@@ -503,7 +503,7 @@ import type { TMask } from "./TMask.js";
    */
   slice (
     start = 0,
-    end = this.#value.length - 1,
+    end = Infinity,
   ): ReadonlyReactiveArray<TArrayValueType<InputType>> {
     const newArray = new ReactiveArray(
       ...this.#value.slice(start, end),
