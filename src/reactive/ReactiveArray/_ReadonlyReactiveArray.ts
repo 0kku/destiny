@@ -253,7 +253,11 @@ import type { TMask } from "./TMask.js";
     if (start > this.#value.length) {
       throw new RangeError(`Out of bounds assignment: tried to assign to index ${start}, but array length was only ${this.#value.length}. Sparse arrays are not allowed. Consider using .push() instead.`);
     }
-    
+
+    if (start < 0) {
+      start += this.#value.length;
+    }
+
     this.#adjustIndices(start, deleteCount, items);
     const reactiveItems = makeNonPrimitiveItemsReactive(items, this);
     const deletedItems = this.#value.splice(start, deleteCount, ...reactiveItems);
