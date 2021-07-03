@@ -33,6 +33,7 @@ export function computed<T> (
   fn();
 
   function fn () {
+    if (computedConsumer) throw new Error("Nested computation detected. Calling computed() inside the callback of computed() is not allowed. This is most likely either a mistake or a misunderstanding of correct usage of the function.");
     computedConsumer = {fn, consumer};
     const newValue = cb();
     computedConsumer = undefined;
