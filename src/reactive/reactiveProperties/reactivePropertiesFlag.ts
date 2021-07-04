@@ -1,1 +1,1 @@
-export const reactivePropertiesFlag = Symbol("Reactive Object");
+export const reactivePropertiesFlag = Symbol("reactivePropertiesFlag");

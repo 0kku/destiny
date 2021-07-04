@@ -1,7 +1,7 @@
 {
-  "name": "destiny",
+  "name": "destiny-ui",
   "description": "A reactive UI library for JavaScript and TypeScript.",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "main": "./dist/examples/main.js",
   "types": "./src/mod.ts",
   "type": "module",
