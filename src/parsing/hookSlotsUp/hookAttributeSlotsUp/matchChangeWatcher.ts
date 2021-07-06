@@ -14,6 +14,5 @@ export type TWatchedAttribute = keyof typeof propToWatcherMap;
 export function matchChangeWatcher (
   attributeName: string,
 ): typeof propToWatcherMap[TWatchedAttribute] | "" {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   return propToWatcherMap[attributeName as TWatchedAttribute] ?? "";
 }

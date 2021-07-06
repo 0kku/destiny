@@ -15,7 +15,6 @@ import type { ReadonlyReactiveValue } from "../reactive/ReactiveValue/_ReadonlyR
 import type { ReadonlyReactiveArray } from "../reactive/ReactiveArray/_ReadonlyReactiveArray.ts";
 import type { CSSTemplate } from "../styling/CSSTemplate.ts";
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 interface ComponentImplementation {
   destinySlot?: Slot,
 }
@@ -26,9 +25,12 @@ interface ComponentImplementation {
 class ComponentImplementation extends HTMLElement {
   static captureProps = false;
   forwardProps?: Ref<HTMLElement> | RefPromise<HTMLElement>;
+  // TODO(@ebebbington): Why is `template` typed like this? Isn't it only ever assigned `xml`...`` eg `TemplateResult`? 
   template: (
     | Renderable
+    // deno-lint-ignore no-explicit-any
     | ReadonlyReactiveValue<any>
+    // deno-lint-ignore no-explicit-any
     | ReadonlyReactiveArray<any>
   ) = xml`<slot />`;
   static styles: Array<CSSTemplate> | CSSTemplate = [];
@@ -55,8 +57,7 @@ class ComponentImplementation extends HTMLElement {
       // Upgrade values that have an associated setter but were assigned before the setters existed:
       if (data) {
         for (const [key, value] of data.prop) {
-          // eslint-disable-next-line @typescript-eslint/ban-types
-          let proto = this.constructor.prototype as Function | undefined;
+          let proto = this.constructor.prototype;
           let descriptor: PropertyDescriptor | undefined;
 
           while (!descriptor && proto && proto !== HTMLElement) {
@@ -64,11 +65,9 @@ class ComponentImplementation extends HTMLElement {
               proto,
               key,
             );
-            // eslint-disable-next-line @typescript-eslint/ban-types
-            proto = Object.getPrototypeOf(proto) as Function;
+            proto = Object.getPrototypeOf(proto);
           }
           if (!descriptor?.set) continue;
-          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
           delete this[key as keyof this];
           this[key as keyof this] = value as this[keyof this];
         }
@@ -147,20 +146,17 @@ class ComponentImplementation extends HTMLElement {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export type Component<
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  TProperties extends Record<string, unknown> = {}
+  TProperties extends Record<string, unknown> = Record<string, unknown>
 > = (
   & ComponentImplementation
   & TProperties
 );
 
 type TComponentConstructor = (
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // deno-lint-ignore ban-types
   & (new <TProperties extends Record<string, unknown> = {}> () => Component<TProperties>)
   & typeof ComponentImplementation
 );
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export const Component = ComponentImplementation as TComponentConstructor;

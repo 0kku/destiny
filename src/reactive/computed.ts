@@ -4,9 +4,11 @@ import type { ReadonlyReactiveValue } from "./ReactiveValue/_ReadonlyReactiveVal
 
 export let computedConsumer: {
   fn: VoidFunction,
+  // deno-lint-ignore no-explicit-any
   consumer: ReadonlyReactiveValue<any>,
 } | undefined;
 
+// deno-lint-ignore no-explicit-any
 const hold = new WeakMap<ReactiveValue<any>, VoidFunction>();
 
 /**

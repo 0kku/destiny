@@ -17,9 +17,10 @@ export class ReadonlyReactiveValue<T> {
   /** All the callbacks added to the `ReactiveValue`, which are to be called when the `value` updates. */
   readonly #callbacks: Set<TReactiveValueCallback<T>> = new Set;
 
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // deno-lint-ignore ban-types
   readonly #consumers = new IterableWeakMap<object, TReactiveValueCallback<T>>();
 
+  // deno-lint-ignore no-explicit-any People can pass literally anything into ReactiveArray
   readonly dependencies = new Map<ReadonlyReactiveValue<any> | ReadonlyReactiveArray<any>, VoidFunction>();
 
   constructor (
@@ -75,10 +76,8 @@ export class ReadonlyReactiveValue<T> {
   /**
    * When the object is attempted to be cast to a primitive, the current value of `this.value` is used as a hint. Obviously, if you're trying to cast a `ReactiveValue<string>` into a `number`, it'll just cast `this.value` from a `string` to a `number`. Trying to cast `ReactiveValue<object>` to a primitive will throw.
    */
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  [Symbol.toPrimitive] (): T extends object ? never : T {
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    return this.value as T extends object ? never : T;
+  [Symbol.toPrimitive] (): T extends Record<string, unknown> ? never : T {
+    return this.value as T extends Record<string, unknown> ? never : T;
   }
 
   /**
@@ -124,7 +123,7 @@ export class ReadonlyReactiveValue<T> {
     callback: TReactiveValueCallback<T>,
     options: {
       noFirstRun?:  boolean,
-      // eslint-disable-next-line @typescript-eslint/ban-types
+      // deno-lint-ignore ban-types
       dependents?: ReadonlyArray<object>,
     } = {},
   ): this {

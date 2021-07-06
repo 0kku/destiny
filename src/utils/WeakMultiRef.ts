@@ -1,11 +1,11 @@
-/* eslint-disable @typescript-eslint/ban-types */
-
-const refs = new Set<object>();
+const refs = new Set<WeakMultiRef>();
 
 export class WeakMultiRef {
   #cleanup = (
     { set, ref, target }: {
+      // deno-lint-ignore ban-types
       set: Set<WeakRef<object>>,
+      // deno-lint-ignore ban-types
       ref: WeakRef<object>,
       target: WeakMultiRef,
     },
@@ -16,10 +16,12 @@ export class WeakMultiRef {
     }
   };
 
+  // deno-lint-ignore ban-types People can pass literally anything into ReactiveArray
   weakKeys = new Set<WeakRef<object>>();
   #finalizationGroup = new FinalizationRegistry(this.#cleanup);
 
   constructor (
+    // deno-lint-ignore ban-types People can pass literally anything into ReactiveArray
     keys: ReadonlyArray<object>,
   ) {
     keys.forEach(key => {

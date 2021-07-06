@@ -3,6 +3,7 @@ import type { TReactiveValueUpdater } from "./TReactiveValueUpdater.ts";
 
 export const internalSetReactiveValue = new class {
   #inner = new WeakMap<
+    // deno-lint-ignore no-explicit-any People can pass literally anything into ReactiveArray
     ReadonlyReactiveValue<any>
   >();
 

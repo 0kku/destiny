@@ -1,17 +1,19 @@
-/* eslint-disable @typescript-eslint/ban-types */ 
-
+// deno-lint-ignore ban-types People can pass literally anything into ReactiveArray
 type TEmplaceOptions<K extends object, V> = {
   insert: (key: K, map: IterableWeakMap<K, V>) => V,
   update: (oldValue: V, key: K, map: IterableWeakMap<K, V>) => V,
 };
 
 export class IterableWeakMap<
+  // deno-lint-ignore ban-types
   K extends object = object,
   V = unknown,
 > {
   #cleanup = (
     { set, ref }: {
+      // deno-lint-ignore ban-types
       set: Set<WeakRef<object>>,
+      // deno-lint-ignore ban-types
       ref: WeakRef<object>,
     },
   ): void => {

@@ -2,7 +2,6 @@ import { getXmlErrorMessage } from "./getXmlErrorMessage.ts";
 import { parseAsNewDocument } from "./parseAsNewDocument.ts";
 import { parseInSafari } from "./parseInSafari.ts";
 
-// eslint-disable-next-line @typescript-eslint/quotes
 export const namespaces = `xmlns="http://www.w3.org/1999/xhtml" xmlns:on="p:u" xmlns:prop="p:u" xmlns:destiny="p:u"`;
 
 const xmlDocument = new DOMParser().parseFromString(

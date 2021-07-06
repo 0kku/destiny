@@ -10,6 +10,7 @@ export type TSplice<InputType> = (
 
 export const splicers = new class {
   #inner = new WeakMap<
+    // deno-lint-ignore no-explicit-any People can pass literally anything into ReactiveArray
     ReadonlyReactiveArray<any>
   >();
 

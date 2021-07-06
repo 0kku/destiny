@@ -1,6 +1,5 @@
 export function safeStringifyObject (
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  input: object,
+  input: unknown & { constructor: { name: string } },
 ): string {
   try {
     const string = String(input);

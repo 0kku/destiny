@@ -48,7 +48,7 @@ import type { TMask } from "./TMask.ts";
   /** A Set containing all the callbacks to be called whenever the ReadonlyReactiveArray is updated */
   readonly #callbacks: Set<TReactiveArrayCallback<TArrayValueType<InputType>>> = new Set;
 
-  // eslint-disable-next-line @typescript-eslint/ban-types
+  // deno-lint-ignore ban-types People can pass literally anything into ReactiveArray
   readonly #consumers = new IterableWeakMap<object, TReactiveArrayCallback<TArrayValueType<InputType>>>();
 
   /** Size of the ReactiveArray as a ReactiveValue */
@@ -204,7 +204,7 @@ import type { TMask } from "./TMask.ts";
     callback: TReactiveArrayCallback<TArrayValueType<InputType>>,
     options: {
       noFirstRun?: boolean,
-      // eslint-disable-next-line @typescript-eslint/ban-types
+      // deno-lint-ignore ban-types People can pass literally anything into ReactiveArray
       dependents?: ReadonlyArray<object>,
     } = {},
   ): this {
@@ -323,6 +323,7 @@ import type { TMask } from "./TMask.ts";
       index: number,
       array: Array<TArrayValueType<InputType>>,
     ) => boolean,
+    // deno-lint-ignore no-explicit-any People can pass literally anything into ReactiveArray
     dependencies: ReadonlyArray<TReactiveEntity<any>> = [],
   ): ReadonlyReactiveArray<TArrayValueType<InputType>> {
     

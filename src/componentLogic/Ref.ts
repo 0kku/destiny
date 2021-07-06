@@ -1,6 +1,5 @@
 export abstract class RefPromise<T> {
   // The rule is seemingly broken. Return type annotations are not allowed for setters.
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   abstract set value (
     element: T,
   );

@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./globalThis.d.ts" />
 
 export { ReactiveValue             } from "./reactive/ReactiveValue/_ReactiveValue.ts";
