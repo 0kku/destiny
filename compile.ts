@@ -5,37 +5,33 @@ const fromFileUrl = Deno.build.os === "windows"
   ? fromFileUrlWin
   : fromFileUrlUnix;
 const encoder = new TextEncoder();
+const compilerOptions: {
+  [key: string]: string | boolean | string[]
+} = {
+  declaration: true,
+  sourceMap: true,
+  target: "es2020",
+  module: "esnext",
+  lib: [
+    "dom",
+    "DOM.Iterable",
+    "esnext",
+  ],
+  removeComments: true,
+  downlevelIteration: true,
+  useDefineForClassFields: true,
+  strict: true,
+  noImplicitReturns: true,
+  noFallthroughCasesInSwitch: true,
+  importsNotUsedAsValues: "error",
+}
 
 async function compile(
   rootFile: string,
-  directoryToWatch: string,
-  watch: boolean,
 ) {
   const crumpet = new Crumpets({
     rootFile,
-    directoryToWatch,
-    compilerOptions: {
-      declaration: true,
-      sourceMap: true,
-      target: "es2020",
-      module: "esnext",
-      lib: [
-        "dom",
-        "DOM.Iterable",
-        "esnext",
-      ],
-      removeComments: true,
-      downlevelIteration: true,
-      useDefineForClassFields: true,
-      strict: true,
-      noImplicitReturns: true,
-      noFallthroughCasesInSwitch: true,
-      importsNotUsedAsValues: "error",
-      paths: {
-        "/dist/*": ["src/*"],
-      },
-      baseUrl: "./",
-    },
+    compilerOptions
   });
 
   // Overrite `write` function so instead of placing the transpiled file besides the source, we can move it into dist
@@ -56,12 +52,19 @@ async function compile(
   };
 
   await crumpet.run();
-
-  if (watch) {
-    await crumpet.watch();
-  }
 }
 
-const directoryToWatch = "./src"
-await compile("./src/mod.ts", directoryToWatch, false);
-await compile("./src/examples_mod.ts", directoryToWatch, Deno.args[0] === "--watch")
+async function watch() {
+  const crumpets = new Crumpets({
+    rootFile: "./src/mod.ts",
+    directoryToWatch: "./src",
+    compilerOptions
+  })
+  await crumpets.watch()
+}
+
+await compile("./src/mod.ts");
+await compile("./src/examples_mod.ts")
+if (Deno.args[0] === "--watch") {
+  await watch()
+}
