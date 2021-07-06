@@ -4,7 +4,6 @@
  */
 
 const { diagnostics, files } = await Deno.emit("./components/App.ts", {
-    bundle: "classic",
     compilerOptions: {
         "target": "es2020",
         "module": "esnext",
@@ -14,7 +13,9 @@ const { diagnostics, files } = await Deno.emit("./components/App.ts", {
 })
 const fd = await Deno.formatDiagnostics(diagnostics)
 console.log(fd)
-const fileKey = Object.keys(files)[0]
-const content = files[fileKey]
-const encoder = new TextEncoder()
-Deno.writeFileSync("./components/app.js", encoder.encode(content))
+const key = Object.keys(files).find(f => f.includes("App.ts")) as string
+files[key] = files[key].replace("deps.ts", "deps.js")
+const key2 = Object.keys(files).find(f => f.includes("deps.ts")) as string
+files[key2] = files[key2].replace("src/mod.ts", "dist/mod.js")
+Deno.writeFileSync("./components/app.js", new TextEncoder().encode(files[key]))
+Deno.writeFileSync("./components/deps.js", new TextEncoder().encode(files[key2]))

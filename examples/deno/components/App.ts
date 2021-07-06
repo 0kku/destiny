@@ -1,4 +1,4 @@
-import { Component, css, html } from "./deps.ts";
+import { Component, css, html, register } from "../../../src/mod.ts";
 
 class CustomP extends Component<{
     customText: string
@@ -21,4 +21,4 @@ class AppRoot extends Component {
     `;
 }
 
-customElements.define("app-root", AppRoot)
+register(AppRoot)
