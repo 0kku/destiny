@@ -55,7 +55,7 @@ Note that currently, there are multiple issues with this:
 https://github.com/denoland/deno/issues/11286
 https://github.com/denoland/deno/issues/11287
 
-## Transpile
+### Transpile
 
 NOTE: This *transpiles*, and DOES NOT *bundle*, AND keeps the RAW LINKS to destiny. For example, everytime a user requests the js files, a new request will be made to the dependencies cdn.
 
