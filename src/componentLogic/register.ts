@@ -15,7 +15,7 @@ const registeredComponents = new Map<
  * @param noHash               Opt out of adding a unique hash to the name
  */
 export function register (
-  componentConstructor: new () => Component,
+  componentConstructor: typeof Component,
   noHash = true,
 ): string {
   const registeredName = registeredComponents.get(componentConstructor);

@@ -1,5 +1,3 @@
-/// <reference path="./globalThis.d.ts" />
-
 export { ReactiveValue             } from "./reactive/ReactiveValue/_ReactiveValue.ts";
 export { ReadonlyReactiveValue     } from "./reactive/ReactiveValue/_ReadonlyReactiveValue.ts";
 export { ReactiveArray             } from "./reactive/ReactiveArray/_ReactiveArray.ts";
