@@ -40,7 +40,6 @@ async function compile(
 
   // Overrite `write` function so instead of placing the transpiled file besides the source, we can move it into dist
   Crumpets.write = (filename: string, content: string) => {
-    console.log(filename);
     const distPath = filename.replace("/src/", "/dist/");
     const validWritablePath = fromFileUrl(distPath);
     try {
