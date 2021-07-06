@@ -3,7 +3,7 @@
 const refs = new Set<object>();
 
 export class WeakMultiRef {
-  static #cleanup = (
+  #cleanup = (
     { set, ref, target }: {
       set: Set<WeakRef<object>>,
       ref: WeakRef<object>,
@@ -17,7 +17,7 @@ export class WeakMultiRef {
   };
 
   weakKeys = new Set<WeakRef<object>>();
-  #finalizationGroup = new FinalizationRegistry(WeakMultiRef.#cleanup);
+  #finalizationGroup = new FinalizationRegistry(this.#cleanup);
 
   constructor (
     keys: ReadonlyArray<object>,

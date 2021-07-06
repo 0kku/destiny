@@ -9,7 +9,7 @@ export class IterableWeakMap<
   K extends object = object,
   V = unknown,
 > {
-  static #cleanup = (
+  #cleanup = (
     { set, ref }: {
       set: Set<WeakRef<object>>,
       ref: WeakRef<object>,
@@ -20,7 +20,7 @@ export class IterableWeakMap<
 
   #weakMap = new WeakMap<K, { value: V, ref: WeakRef<K> }>();
   #refSet = new Set<WeakRef<K>>();
-  #finalizationGroup = new FinalizationRegistry(IterableWeakMap.#cleanup);
+  #finalizationGroup = new FinalizationRegistry(this.#cleanup);
 
   constructor (
     iterable: Iterable<[K, V]> = [],

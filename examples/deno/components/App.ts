@@ -1,4 +1,4 @@
-import { Component, css, html, register } from "../../../src/mod.ts";
+import { Component, css, html } from "../../../src/mod.ts";
 
 class CustomP extends Component<{
     customText: string
@@ -8,12 +8,9 @@ class CustomP extends Component<{
         color: red;
       }
     `
-
     template = html`<p>${this.customText}</p>`
 }
-
 class AppRoot extends Component {
-
     override template = html`
         <div>
             <${CustomP} prop:customText=${"hello"}></${CustomP}>
@@ -21,4 +18,4 @@ class AppRoot extends Component {
     `;
 }
 
-register(AppRoot)
+customElements.define("app-root", AppRoot)
