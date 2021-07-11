@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "sourceMap": true,
+    "target": "es2020",
+    "module": "esnext",
+    "lib": [
+      "dom",
+      "DOM.Iterable",
+      "esnext"
+    ],
+    "removeComments": true,
+    "downlevelIteration": true,
+    "useDefineForClassFields": true,
+    "strict": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "importsNotUsedAsValues": "error"
+  }
+}

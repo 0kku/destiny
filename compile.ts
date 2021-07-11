@@ -1,26 +1,7 @@
 // transpile.ts
 import { Crumpets } from "./deps.ts";
 
-const compilerOptions: {
-  [key: string]: string | boolean | string[];
-} = {
-  declaration: true,
-  sourceMap: true,
-  target: "es2020",
-  module: "esnext",
-  lib: [
-    "dom",
-    "DOM.Iterable",
-    "esnext",
-  ],
-  removeComments: true,
-  downlevelIteration: true,
-  useDefineForClassFields: true,
-  strict: true,
-  noImplicitReturns: true,
-  noFallthroughCasesInSwitch: true,
-  importsNotUsedAsValues: "error",
-};
+const compilerOptions = (JSON.parse(Deno.readTextFileSync("./tsconfig.json"))).compilerOptions
 
 async function compile(
   rootFile: string,
