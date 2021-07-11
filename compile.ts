@@ -46,8 +46,10 @@ async function watch() {
   await crumpets.watch()
 }
 
-await compile("./src/mod.ts");
-await compile("./src/examples_mod.ts");
+await Promise.all([
+  "./src/mod.ts",
+  "./src/examples_mod.ts",
+].map(compile));
 if (Deno.args[0] === "--watch") {
   await watch();
 }
