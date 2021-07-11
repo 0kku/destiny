@@ -2,7 +2,7 @@
 import { Crumpets } from "./deps.ts";
 
 const compilerOptions: {
-  [key: string]: string | boolean | string[]
+  [key: string]: string | boolean | string[];
 } = {
   declaration: true,
   sourceMap: true,
@@ -20,7 +20,7 @@ const compilerOptions: {
   noImplicitReturns: true,
   noFallthroughCasesInSwitch: true,
   importsNotUsedAsValues: "error",
-}
+};
 
 async function compile(
   rootFile: string,
@@ -30,8 +30,8 @@ async function compile(
     compilerOptions,
     filenameReplaceOptions: {
       search: "/src/",
-      replacer: "/dist/"
-    }
+      replacer: "/dist/",
+    },
   });
 
   await crumpet.run();
@@ -41,13 +41,13 @@ async function watch() {
   const crumpets = new Crumpets({
     rootFile: "./src/mod.ts",
     directoryToWatch: "./src",
-    compilerOptions
-  })
+    compilerOptions,
+  });
   await crumpets.watch()
 }
 
 await compile("./src/mod.ts");
-await compile("./src/examples_mod.ts")
+await compile("./src/examples_mod.ts");
 if (Deno.args[0] === "--watch") {
-  await watch()
+  await watch();
 }
