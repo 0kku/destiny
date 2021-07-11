@@ -50,6 +50,6 @@ await Promise.all([
   "./src/mod.ts",
   "./src/examples_mod.ts",
 ].map(compile));
-if (Deno.args[0] === "--watch") {
+if (Deno.args.includes("--watch")) {
   await watch();
 }
