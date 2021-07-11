@@ -1,10 +1,6 @@
 // transpile.ts
-import { Crumpets, fromFileUrlUnix, fromFileUrlWin } from "./deps.ts";
+import { Crumpets } from "./deps.ts";
 
-const fromFileUrl = Deno.build.os === "windows"
-  ? fromFileUrlWin
-  : fromFileUrlUnix;
-const encoder = new TextEncoder();
 const compilerOptions: {
   [key: string]: string | boolean | string[]
 } = {
@@ -31,28 +27,12 @@ async function compile(
 ) {
   const crumpet = new Crumpets({
     rootFile,
-    compilerOptions
+    compilerOptions,
+    filenameReplaceOptions: {
+      search: "/src/",
+      replacer: "/dist/"
+    }
   });
-
-  // Overrite `write` function so instead of placing the transpiled file besides the source, we can move it into dist
-  Crumpets.write = (filename: string, content: string) => {
-    if (filename.includes(".d.ts")) {
-      filename = filename.replace(".ts.d.ts", ".d.ts")
-    }
-    const distPath = filename.replace("/src/", "/dist/");
-    const validWritablePath = fromFileUrl(distPath);
-    try {
-      Deno.writeFileSync(validWritablePath, encoder.encode(content));
-    } catch (e) {
-      if (e instanceof Deno.errors.NotFound) {
-        const dirPathSplit = distPath.split("/");
-        dirPathSplit.pop();
-        const dirPath = dirPathSplit.join("/");
-        Deno.mkdirSync(fromFileUrl(dirPath), { recursive: true });
-        Deno.writeFileSync(validWritablePath, encoder.encode(content));
-      }
-    }
-  };
 
   await crumpet.run();
 }
