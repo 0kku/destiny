@@ -1,4 +1,3 @@
-import { getElementData } from "../../../../componentLogic/elementData.js";
 import { doOrBind } from "../doOrBind.js";
 import type { TElementData } from "../elementData/TElementData.js";
 
