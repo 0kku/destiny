@@ -2,7 +2,8 @@ import { destinyUnmount } from "./destinyUnmount.js";
 import { destinyMount } from "./destinyMount.js";
 import { destinyRef } from "./destinyRef.js";
 import { destinyProps } from "./destinyProps.js";
-import type { TElementData } from "../TElementData.js";
+import { destinyData } from "./destinyData.js";
+import type { TElementData } from "../elementData/TElementData.js";
 
 /**
  * Handler for destiny-namespaced attributes. See referenced methods for details.
@@ -23,6 +24,10 @@ export function destiny (
 
       case "unmount":
         destinyUnmount(element, value);
+      break;
+
+      case "data":
+        destinyData(element, value);
       break;
 
       case "props":
