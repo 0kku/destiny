@@ -13,8 +13,8 @@
  * ```
  */
 export function destinyMount (
-  value: unknown,
   element: HTMLElement,
+  value: unknown,
 ): void {
   if (!(value instanceof Function)) {
     throw new TypeError("Value of destiny:mount must be a function");

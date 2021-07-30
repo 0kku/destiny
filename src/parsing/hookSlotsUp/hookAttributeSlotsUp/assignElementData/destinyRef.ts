@@ -20,8 +20,8 @@ import { isObject } from "../../../../typeChecks/isObject.js";
  * ```
  */
 export function destinyRef (
-  value: unknown,
   element: HTMLElement,
+  value: unknown,
 ): void {
   if (!(value instanceof Ref)) {
     throw new TypeError(`Attribute value for destiny:ref must be a Ref, but it was [${
