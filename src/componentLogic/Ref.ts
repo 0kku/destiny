@@ -16,6 +16,10 @@ export class Ref<T extends HTMLElement> {
     this.#resolve = resolve;
   });
 
+  constructor () {
+    console.warn("Refs are deprecated and will be removed in v0.8. Use a ReactiveValue instead.");
+  }
+
   set value (
     element: T,
   ) {
