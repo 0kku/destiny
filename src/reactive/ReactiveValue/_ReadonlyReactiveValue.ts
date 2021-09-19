@@ -97,14 +97,14 @@ export class ReadonlyReactiveValue<T> {
    */
   async *[Symbol.asyncIterator] (): AsyncIterable<T> {
     while (true) {
-      yield await this.#nextUpdate();
+      yield await this.nextUpdate;
     }
   }
 
   /**
    * Returns a Promise which will resolve the next time the `value` is updated.
    */
-  #nextUpdate (): Promise<T> {
+  get nextUpdate (): Promise<T> {
     return new Promise<T>(resolve => {
       const cb = (v: T) => {
         resolve(v);
