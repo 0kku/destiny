@@ -18,11 +18,6 @@ $ deno bundle --config tsconfig.json components/App.ts components/app.js
 $ npx serve-http
 ```
 
-Note that currently, there are multiple issues with this:
-
-https://github.com/denoland/deno/issues/11286
-https://github.com/denoland/deno/issues/11287
-
 #### 2
 
 Using `Deno.emit`:
@@ -49,11 +44,6 @@ Deno.writeFileSync("./components/app.js", encoder.encode(content))
 $ deno run -A --unstable compile.ts
 $ npx serve-http
 ```
-
-Note that currently, there are multiple issues with this:
-
-https://github.com/denoland/deno/issues/11286
-https://github.com/denoland/deno/issues/11287
 
 ### Transpile
 
