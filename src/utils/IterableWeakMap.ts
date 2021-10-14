@@ -9,7 +9,7 @@ export class IterableWeakMap<
   K extends object = object,
   V = unknown,
 > {
-  #cleanup = (
+  static #cleanup = (
     { set, ref }: {
       // deno-lint-ignore ban-types
       set: Set<WeakRef<object>>,
@@ -22,7 +22,7 @@ export class IterableWeakMap<
 
   #weakMap = new WeakMap<K, { value: V, ref: WeakRef<K> }>();
   #refSet = new Set<WeakRef<K>>();
-  #finalizationGroup = new FinalizationRegistry(this.#cleanup);
+  #finalizationGroup = new FinalizationRegistry(IterableWeakMap.#cleanup);
 
   constructor (
     iterable: Iterable<[K, V]> = [],

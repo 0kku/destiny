@@ -8,8 +8,8 @@ function getHashRoute (
 
 export const route = reactive(getHashRoute(window.location.href));
 
-window.addEventListener("hashchange", e => {
-  route.value = getHashRoute(e.newURL);
+window.addEventListener("hashchange", () => {
+  route.value = getHashRoute(window.location.href);
 });
 
 export default class HashRouter extends Component<{

@@ -1,7 +1,7 @@
 const refs = new Set<WeakMultiRef>();
 
 export class WeakMultiRef {
-  #cleanup = (
+  static #cleanup = (
     { set, ref, target }: {
       // deno-lint-ignore ban-types
       set: Set<WeakRef<object>>,
@@ -18,7 +18,7 @@ export class WeakMultiRef {
 
   // deno-lint-ignore ban-types People can pass literally anything into ReactiveArray
   weakKeys = new Set<WeakRef<object>>();
-  #finalizationGroup = new FinalizationRegistry(this.#cleanup);
+  #finalizationGroup = new FinalizationRegistry(WeakMultiRef.#cleanup);
 
   constructor (
     // deno-lint-ignore ban-types People can pass literally anything into ReactiveArray
