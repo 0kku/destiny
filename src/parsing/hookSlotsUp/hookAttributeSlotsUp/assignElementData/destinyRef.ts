@@ -1,4 +1,5 @@
 import { Ref } from "../../../../componentLogic/Ref.js";
+import { ReactiveValue } from "../../../../reactive/ReactiveValue/_ReactiveValue.js";
 import { isObject } from "../../../../typeChecks/isObject.js";
 
 /**
@@ -20,11 +21,11 @@ import { isObject } from "../../../../typeChecks/isObject.js";
  * ```
  */
 export function destinyRef (
-  value: unknown,
   element: HTMLElement,
+  value: unknown,
 ): void {
-  if (!(value instanceof Ref)) {
-    throw new TypeError(`Attribute value for destiny:ref must be a Ref, but it was [${
+  if (!((value instanceof ReactiveValue) || (value instanceof Ref))) {
+    throw new TypeError(`Attribute value for destiny:ref must be a ReactiveValue, but it was [${
       isObject(value)
       ? `${value.constructor.name} (Object)`
       : `${String(value)} (${typeof value})`

@@ -2,18 +2,16 @@ import { xml } from "../parsing/_xml.js";
 import { register } from "./register.js";
 import { attachCSSProperties } from "../styling/attachCSSProperties.js";
 import { deferredElements } from "../parsing/deferredElements.js";
-import { assignElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/elementData/_assignElementData.js";
 import { supportsAdoptedStyleSheets } from "../styling/supportsAdoptedStyleSheets.js";
 import { arrayWrap } from "../utils/arrayWrap.js";
 import { getElementData } from "./elementData.js";
 import { isReactive } from "../typeChecks/isReactive.js";
-import { elementData } from "./elementData.js";
-import type { Ref, RefPromise } from "./Ref.js";
 import type { Renderable } from "../parsing/Renderable.js";
 import type { Slot } from "../parsing/Slot.js";
 import type { ReadonlyReactiveValue } from "../reactive/ReactiveValue/_ReadonlyReactiveValue.js";
 import type { ReadonlyReactiveArray } from "../reactive/ReactiveArray/_ReadonlyReactiveArray.js";
 import type { CSSTemplate } from "../styling/CSSTemplate.js";
+import type { TElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/elementData/TElementData.js";
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 interface ComponentImplementation {
@@ -25,7 +23,6 @@ interface ComponentImplementation {
  */
 class ComponentImplementation extends HTMLElement {
   static captureProps = false;
-  forwardProps?: Ref<HTMLElement> | RefPromise<HTMLElement>;
   template: (
     | Renderable
     | ReadonlyReactiveValue<any>
@@ -39,39 +36,27 @@ class ComponentImplementation extends HTMLElement {
       throw new TypeError("Can't initialize abstract class.");
     }
 
-    const data = getElementData(this);
-    if (data && this.forwardProps) {
-      this.forwardProps.then(element => {
-        elementData.set(element, data);
-        assignElementData(
-          element,
-          data,
-        );
-      });
-    }
-
     const shadow = this.attachShadow({ mode: "open" });
+    // Wait for subclasses to finish initialization:
     queueMicrotask(() => {
       // Upgrade values that have an associated setter but were assigned before the setters existed:
-      if (data) {
-        for (const [key, value] of data.prop) {
-          // eslint-disable-next-line @typescript-eslint/ban-types
-          let proto = this.constructor.prototype as Function | undefined;
-          let descriptor: PropertyDescriptor | undefined;
+      for (const [key, value] of this.elementData?.prop ?? []) {
+        // eslint-disable-next-line @typescript-eslint/ban-types
+        let proto = this.constructor.prototype as Function | undefined;
+        let descriptor: PropertyDescriptor | undefined;
 
-          while (!descriptor && proto && proto !== HTMLElement) {
-            descriptor = Object.getOwnPropertyDescriptor(
-              proto,
-              key,
-            );
-            // eslint-disable-next-line @typescript-eslint/ban-types
-            proto = Object.getPrototypeOf(proto) as Function;
-          }
-          if (!descriptor?.set) continue;
-          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-          delete this[key as keyof this];
-          this[key as keyof this] = value as this[keyof this];
+        while (!descriptor && proto && proto !== HTMLElement) {
+          descriptor = Object.getOwnPropertyDescriptor(
+            proto,
+            key,
+          );
+          // eslint-disable-next-line @typescript-eslint/ban-types
+          proto = Object.getPrototypeOf(proto) as Function;
         }
+        if (!descriptor?.set) continue;
+        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
+        delete this[key as keyof this];
+        this[key as keyof this] = value as this[keyof this];
       }
 
       shadow.appendChild(
@@ -128,6 +113,10 @@ class ComponentImplementation extends HTMLElement {
     );
 
     return this;
+  }
+
+  get elementData (): TElementData | undefined{
+    return getElementData(this);
   }
 
   static register (): string {

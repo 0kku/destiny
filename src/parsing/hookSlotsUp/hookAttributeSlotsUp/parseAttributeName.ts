@@ -1,5 +1,5 @@
-import { isValidAttributePair } from "./isValidNamespace.js";
-import type { TNamespace } from "./TNamespace.js";
+import { isValidAttributePair } from "./elementData/isValidNamespace.js";
+import type { TNamespace } from "./elementData/TNamespace.js";
 
 export function parseAttributeName (
   input: string,

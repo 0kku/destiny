@@ -1,8 +1,8 @@
 import { resolveSlotPropIndex } from "./resolveSlotPropIndex.js";
 import { parseAttributeName } from "./parseAttributeName.js";
-import { assignElementData } from "./elementData/_assignElementData.js";
-import { elementData } from "../../../componentLogic/elementData.js";
-import type { TElementData } from "./TElementData.js";
+import { assignElementData } from "./assignElementData/_assignElementData.js";
+import { elementDataStore } from "../../../componentLogic/elementData.js";
+import { ElementData } from "./elementData/ElementData.js";
 
 /**
  * Goes through all the elements in a template that are flagged with the `destiny::attr` attribute and figures out what events need to be listened to, and how the DOM needs to be updated if any of the given props are reactive.
@@ -19,12 +19,7 @@ export function hookAttributeSlotsUp (
 
   for (const element of attributeSlots) {
     const { captureProps } = element.dataset;
-    const values: TElementData = {
-      prop:      new Map<string, unknown>(),
-      on:        new Map<string, unknown>(),
-      destiny:   new Map<string, unknown>(),
-      attribute: new Map<string, unknown>(),
-    } as const;
+    const values = new ElementData;
     for (const {name, value} of element.attributes) {
       const propIndex = resolveSlotPropIndex(value);
 
@@ -42,9 +37,13 @@ export function hookAttributeSlotsUp (
       values[namespace].set(attributeName, attrVal);
     }
     
+    elementDataStore.set(element, values);
     if (!captureProps) {
-      assignElementData(element, values);
+      assignElementData(
+        element,
+        values,
+        {elementDataAlreadySet: true},
+      );
     }
-    elementData.set(element, values);
   }
 }
