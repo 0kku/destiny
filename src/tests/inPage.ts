@@ -5,8 +5,8 @@ import {JSHandle, Page, test as base} from "@playwright/test";
 
 type TTestFixtures = {
   navigate: undefined,
-  pageSerial: Page,
-  destinySerial: JSHandle<typeof import("/dist/mod.js")>,
+  page: Page,
+  destiny: JSHandle<typeof import("/dist/mod.js")>,
 };
 
 type TWorkerFixtures = {
@@ -67,15 +67,15 @@ const test = base.extend<TTestFixtures, TWorkerFixtures>({
     { scope: "worker", auto: true },
   ],
 
-  pageSerial: async ({browser, port}, use) => {
+  page: async ({browser, port}, use) => {
     const page = await browser.newPage();
     await page.goto(`http://localhost:${port}/`);
 
     await use(page);
   },
 
-  destinySerial: async ({pageSerial}, use) => {
-    const destiny = await pageSerial.evaluateHandle(() => import("/dist/mod.js"));
+  destiny: async ({page}, use) => {
+    const destiny = await page.evaluateHandle(() => import("/dist/mod.js"));
 
     await use(destiny);
   },

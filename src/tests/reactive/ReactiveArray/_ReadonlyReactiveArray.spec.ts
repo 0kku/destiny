@@ -72,9 +72,9 @@ test.describe.serial("slice", () => {
   let destiny: JSHandle<typeof import("/dist/mod.js")>;
   let page: Page;
 
-  test.beforeAll(({destinySerial, pageSerial}) => {
-    destiny = destinySerial;
-    page = pageSerial;
+  test.beforeAll(({destiny: _destiny, page: _page}) => {
+    destiny = _destiny;
+    page = _page;
   });
 
   for (const splice of splices) {
