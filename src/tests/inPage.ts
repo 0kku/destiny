@@ -64,9 +64,7 @@ const test = base.extend<TTestFixtures, TWorkerFixtures>({
 
       await use(undefined);
 
-      // fuck eslint
-      // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
-      return promisify<void>((cb) => server.close(cb));
+      return promisify((cb: (err?: Error) => void) => server.close(cb));
     },
     { scope: "worker", auto: true },
   ],
