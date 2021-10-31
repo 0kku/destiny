@@ -5,17 +5,22 @@
   "main": "./dist/examples/main.js",
   "types": "./src/mod.ts",
   "type": "module",
+  "imports": {
+    "#dist/*": "./dist/*"
+  },
   "devDependencies": {
+    "@playwright/test": "^1.16.2",
     "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.1",
     "eslint": "^7.29.0",
     "typescript": "^4.3.4"
   },
   "scripts": {
+    "postinstall": "playwright install",
     "lint": "npm run lint:types && npm run lint:code",
     "lint:code": "eslint src",
     "lint:types": "tsc --noEmit",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "playwright test",
     "compile": "tsc",
     "watch": "tsc -w"
   },
