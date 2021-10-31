@@ -1,4 +1,5 @@
 export default {
-  testDir: './dist/tests',
-  workers: 2,
+  testDir: "./dist/tests",
+  reporter: "line",
+  workers: 10,
 };

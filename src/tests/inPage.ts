@@ -34,7 +34,7 @@ const test = base.extend<TTestFixtures, TWorkerFixtures>({
         }
 
         if (!req.url || !req.url.startsWith("/")) {
-          res.write("401 Not Found");
+          res.writeHead(404);
           res.end();
           return;
         }
@@ -45,6 +45,10 @@ const test = base.extend<TTestFixtures, TWorkerFixtures>({
           .then(file => {
             res.setHeader("Content-Type", "text/javascript");
             res.write(file);
+            res.end();
+          })
+          .catch(() => {
+            res.writeHead(404);
             res.end();
           });
       });

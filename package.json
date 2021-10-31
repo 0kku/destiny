@@ -21,6 +21,7 @@
     "lint:code": "eslint src",
     "lint:types": "tsc --noEmit",
     "test": "playwright test",
+    "test:ci": "playwright test --browser=all",
     "compile": "tsc",
     "watch": "tsc -w"
   },
