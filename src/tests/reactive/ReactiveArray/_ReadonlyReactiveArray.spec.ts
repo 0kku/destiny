@@ -1,5 +1,5 @@
 import {expect, JSHandle, Page} from "@playwright/test";
-import test, {loadDestiny} from "#dist/tests/inPage.js";
+import test from "#dist/tests/inPage.js";
 
 const slices = [
   // positive positive
