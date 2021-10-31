@@ -1,9 +1,9 @@
-import type { TElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/TElementData";
+import type { TElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/elementData/TElementData.js";
 
-export const elementData = new WeakMap<Element, TElementData>();
+export const elementDataStore = new WeakMap<Element, TElementData>();
 
 export function getElementData (
   element: Element,
 ): TElementData | undefined {
-  return elementData.get(element);
+  return elementDataStore.get(element);
 }

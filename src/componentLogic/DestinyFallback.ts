@@ -1,6 +1,5 @@
 import { Component } from "./Component.js";
 import { xml } from "../parsing/_xml.js";
-import { Ref } from "./Ref.js";
 import { getElementData } from "./elementData.js";
 import { describeType } from "../utils/describeType.js";
 import { ReactiveValue } from "../reactive/ReactiveValue/_ReactiveValue.js";
@@ -10,14 +9,14 @@ import type { Renderable } from "../parsing/Renderable.js";
 
 export class DestinyFallback extends Component {
   static override captureProps = true;
-  override forwardProps = new Ref();
 
   #view = new ReactiveValue<Renderable>(xml``);
 
   constructor () {
     super();
     queueMicrotask(async () => {
-      const props = getElementData(this)!.prop;
+      const data = getElementData(this)!;
+      const props = data.prop;
       const fallback = props.get("fallback");
       if (fallback) {
         if (!isRenderable(fallback)) {
@@ -31,8 +30,8 @@ export class DestinyFallback extends Component {
 
         this.#view.value = xml`
           <${component}
-            destiny:ref=${this.forwardProps}
             destiny:mount=${(element: HTMLElement) => element.append(...this.childNodes)}
+            destiny:data=${data}
           />
         `;
       } catch (error) {

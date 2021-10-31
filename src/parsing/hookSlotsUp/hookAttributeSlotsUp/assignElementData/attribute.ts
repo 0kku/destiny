@@ -1,5 +1,5 @@
 import { doOrBind } from "../doOrBind.js";
-import type { TElementData } from "../TElementData.js";
+import type { TElementData } from "../elementData/TElementData.js";
 
 /**
  * Handler for normal non-namespaced attributes. Behaves like normal HTML.

@@ -1,5 +1,5 @@
 import { doOrBind } from "../doOrBind.js";
-import type { TElementData } from "../TElementData.js";
+import type { TElementData } from "../elementData/TElementData.js";
 
 /**
  * `prop:<PropertyName>` takes in any property and assigns it to the element in JS.
