@@ -1,24 +1,24 @@
-import { attribute } from "./attribute.js";
-import { destiny } from "./destiny.js";
-import { prop } from "./prop.js";
-import { on } from "./on.js";
-import { elementDataStore } from "../../../../componentLogic/elementData.js";
-import { validNamespaces } from "../elementData/isValidNamespace.js";
-import { emplace } from "../../../../utils/mapEmplace.js";
-import { concat } from "../../../../utils/mapConcat.js";
-import type { TElementData } from "../elementData/TElementData.js";
+import { attribute } from "./attribute.ts";
+import { destiny } from "./destiny.ts";
+import { prop } from "./prop.ts";
+import { on } from "./on.ts";
+import { elementDataStore } from "../../../../componentLogic/elementData.ts";
+import { validNamespaces } from "../elementData/isValidNamespace.ts";
+import { emplace } from "../../../../utils/mapEmplace.ts";
+import { concat } from "../../../../utils/mapConcat.ts";
+import type { TElementData } from "../elementData/TElementData.ts";
 
 /**
  * Takes care of hooking up data to an element.
- * 
+ *
  * @param element Element to assign it on
  * @param data    What to assign
  */
-export function assignElementData (
+export function assignElementData(
   element: HTMLElement,
   data: TElementData,
   options: {
-    elementDataAlreadySet?: boolean,
+    elementDataAlreadySet?: boolean;
   } = {},
 ): void {
   if (!options.elementDataAlreadySet) {
@@ -32,7 +32,7 @@ export function assignElementData (
           );
         }
         return oldData;
-      }
+      },
     });
   }
 

@@ -9,7 +9,7 @@ export const internalArrays = new class {
   >();
 
   get<InputType>(
-    key: ReadonlyReactiveArray<InputType> | ReactiveArray<InputType>
+    key: ReadonlyReactiveArray<InputType> | ReactiveArray<InputType>,
   ) {
     return this.#inner.get(key) as ReadonlyArray<TArrayValueType<InputType>>;
   }
@@ -20,4 +20,4 @@ export const internalArrays = new class {
   ) {
     this.#inner.set(key, value);
   }
-};
+}();

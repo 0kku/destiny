@@ -4,17 +4,17 @@ import type { TElementData } from "../elementData/TElementData.ts";
  * `on:<EventName>` adds an event listener. It either takes a
  * callback function, or an array containing a callback
  * function and options.
- * 
+ *
  * Example usage:
  * ```html
  * <button on:click=${() => alert("Hi!")}>Click me!</button>
- * 
+ *
  * <container-block
  *   on:scroll=${[scrollHandler, {passive:true}]}
  * ></container-block>
  * ```
  */
-export function on (
+export function on(
   eventListeners: TElementData["on"],
   element: HTMLElement,
 ): void {

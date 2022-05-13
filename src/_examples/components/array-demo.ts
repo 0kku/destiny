@@ -1,15 +1,15 @@
-import { Component, reactive, html, css, computed } from "../../mod.ts";
+import { Component, computed, css, html, reactive } from "../../mod.ts";
 
 const randomColor = () => (
-  "#" + 
+  "#" +
   Math
-  .floor(Math.random() * 2**24)
-  .toString(16)
-  .padStart(6, "0")
+    .floor(Math.random() * 2 ** 24)
+    .toString(16)
+    .padStart(6, "0")
 );
 
 export default class ArrayDemo extends Component {
-  #items = reactive(Array.from({length: 256}, randomColor));
+  #items = reactive(Array.from({ length: 256 }, randomColor));
   frame = (): void => {
     const randomIndex = Math.floor(
       Math.random() * this.#items.length.value,
@@ -19,7 +19,7 @@ export default class ArrayDemo extends Component {
   };
   #timer = requestAnimationFrame(this.frame);
 
-  disconnectedCallback (): void {
+  disconnectedCallback(): void {
     cancelAnimationFrame(this.#timer);
   }
 
@@ -48,11 +48,15 @@ export default class ArrayDemo extends Component {
 
   override template = html`
     <ul>
-      ${this.#items.map((text, i) => html`
+      ${
+    this.#items.map((text, i) =>
+      html`
         <li style=${computed`background-color: ${text};`}>
           ${i}
         </li>
-      `)}
+      `
+    )
+  }
     </ul>
   `;
 }

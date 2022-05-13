@@ -4,10 +4,10 @@ export class WeakMultiRef {
   static #cleanup = (
     { set, ref, target }: {
       // deno-lint-ignore ban-types
-      set: Set<WeakRef<object>>,
+      set: Set<WeakRef<object>>;
       // deno-lint-ignore ban-types
-      ref: WeakRef<object>,
-      target: WeakMultiRef,
+      ref: WeakRef<object>;
+      target: WeakMultiRef;
     },
   ): void => {
     set.delete(ref);
@@ -20,11 +20,11 @@ export class WeakMultiRef {
   weakKeys = new Set<WeakRef<object>>();
   #finalizationGroup = new FinalizationRegistry(WeakMultiRef.#cleanup);
 
-  constructor (
+  constructor(
     // deno-lint-ignore ban-types People can pass literally anything into ReactiveArray
     keys: ReadonlyArray<object>,
   ) {
-    keys.forEach(key => {
+    keys.forEach((key) => {
       const ref = new WeakRef(key);
       this.weakKeys.add(ref);
       this.#finalizationGroup.register(
@@ -37,7 +37,7 @@ export class WeakMultiRef {
         ref,
       );
     });
-    
+
     refs.add(this);
   }
 }

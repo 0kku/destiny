@@ -1,17 +1,17 @@
-import { Component, html, css } from "../../../mod.ts";
+import { Component, css, html } from "../../../mod.ts";
 import type { TReactiveValueType } from "../../../mod.ts";
 
 import { inputStyles } from "../inputStyles.ts";
 
 export default class TaskItem extends Component<{
   item: TReactiveValueType<{
-    title: string,
-    done: boolean,
-    editing: boolean,
-  }>,
-  removeItem: () => void,
+    title: string;
+    done: boolean;
+    editing: boolean;
+  }>;
+  removeItem: () => void;
 }> {
-  constructor () {
+  constructor() {
     super();
     this.setAttribute("role", "listitem");
   }
@@ -54,11 +54,13 @@ export default class TaskItem extends Component<{
     <form
       class="edit-task"
       on:submit=${(e: Event) => {
-        e.preventDefault();
-        this.item.editing.value = false;
-      }}
+    e.preventDefault();
+    this.item.editing.value = false;
+  }}
     >
-      ${this.item.editing.pipe(editing => !editing
+      ${
+    this.item.editing.pipe((editing) =>
+      !editing
         ? html`
           <label>
             <span class="task-checkbox">
@@ -94,7 +96,8 @@ export default class TaskItem extends Component<{
             title="Save"
           />
         `
-      )}
+    )
+  }
       <input
         type="button"
         value="🚮"

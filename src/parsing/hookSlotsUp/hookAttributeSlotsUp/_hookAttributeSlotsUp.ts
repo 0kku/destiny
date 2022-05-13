@@ -9,7 +9,7 @@ import { ElementData } from "./elementData/ElementData.ts";
  * @param templ A template element that has been processed by `resolveSlots()`.
  * @param props Any items that were slotted into the HTML template
  */
-export function hookAttributeSlotsUp (
+export function hookAttributeSlotsUp(
   templ: DocumentFragment,
   props: Array<unknown>,
 ): void {
@@ -19,8 +19,8 @@ export function hookAttributeSlotsUp (
 
   for (const element of attributeSlots) {
     const { captureProps } = element.dataset;
-    const values = new ElementData;
-    for (const {name, value} of element.attributes) {
+    const values = new ElementData();
+    for (const { name, value } of element.attributes) {
       const propIndex = resolveSlotPropIndex(value);
 
       // skip if attribute wasn't slotted
@@ -36,13 +36,13 @@ export function hookAttributeSlotsUp (
       const [namespace, attributeName] = parseAttributeName(name);
       values[namespace].set(attributeName, attrVal);
     }
-    
+
     elementDataStore.set(element, values);
     if (!captureProps) {
       assignElementData(
         element,
         values,
-        {elementDataAlreadySet: true},
+        { elementDataAlreadySet: true },
       );
     }
   }

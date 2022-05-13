@@ -1,8 +1,8 @@
 export type TUnpreparedContentSlot = {
-  node: Text,
+  node: Text;
   slots: Array<{
-    index: number,
-    start: number,
-    end: number,
-  }>,
+    index: number;
+    start: number;
+    end: number;
+  }>;
 };

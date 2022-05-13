@@ -1,7 +1,7 @@
 // deno-lint-ignore ban-types People can pass literally anything into ReactiveArray
 type TEmplaceOptions<K extends object, V> = {
-  insert: (key: K, map: IterableWeakMap<K, V>) => V,
-  update: (oldValue: V, key: K, map: IterableWeakMap<K, V>) => V,
+  insert: (key: K, map: IterableWeakMap<K, V>) => V;
+  update: (oldValue: V, key: K, map: IterableWeakMap<K, V>) => V;
 };
 
 export class IterableWeakMap<
@@ -12,19 +12,19 @@ export class IterableWeakMap<
   static #cleanup = (
     { set, ref }: {
       // deno-lint-ignore ban-types
-      set: Set<WeakRef<object>>,
+      set: Set<WeakRef<object>>;
       // deno-lint-ignore ban-types
-      ref: WeakRef<object>,
+      ref: WeakRef<object>;
     },
   ): void => {
     set.delete(ref);
   };
 
-  #weakMap = new WeakMap<K, { value: V, ref: WeakRef<K> }>();
+  #weakMap = new WeakMap<K, { value: V; ref: WeakRef<K> }>();
   #refSet = new Set<WeakRef<K>>();
   #finalizationGroup = new FinalizationRegistry(IterableWeakMap.#cleanup);
 
-  constructor (
+  constructor(
     iterable: Iterable<[K, V]> = [],
   ) {
     for (const [key, value] of iterable) {
@@ -32,7 +32,7 @@ export class IterableWeakMap<
     }
   }
 
-  set (
+  set(
     key: K,
     value: V,
   ): void {
@@ -54,13 +54,13 @@ export class IterableWeakMap<
     );
   }
 
-  get (
+  get(
     key: K,
   ): V | undefined {
     return this.#weakMap.get(key)?.value;
   }
 
-  delete (
+  delete(
     key: K,
   ): boolean {
     const entry = this.#weakMap.get(key);
@@ -71,13 +71,13 @@ export class IterableWeakMap<
     return true;
   }
 
-  has (
+  has(
     key: K,
   ): boolean {
     return this.#weakMap.has(key);
   }
 
-  forEach (
+  forEach(
     cb: (value: V, key: K, map: this) => void,
   ): void {
     for (const [key, value] of this) {
@@ -85,21 +85,21 @@ export class IterableWeakMap<
     }
   }
 
-  clear (): void {
+  clear(): void {
     for (const key of this.keys()) {
       this.delete(key);
     }
   }
 
-  emplace (
+  emplace(
     key: K,
     options: Pick<TEmplaceOptions<K, V>, "insert"> | TEmplaceOptions<K, V>,
   ): V;
-  emplace (
+  emplace(
     key: K,
     options: Pick<TEmplaceOptions<K, V>, "update">,
   ): V | undefined;
-  emplace (
+  emplace(
     key: K,
     options: Partial<TEmplaceOptions<K, V>>,
   ): V | undefined {
@@ -117,7 +117,7 @@ export class IterableWeakMap<
     }
   }
 
-  get size (): number {
+  get size(): number {
     let size = 0;
     for (const ref of this.#refSet) {
       if (ref.deref()) size++;
@@ -125,24 +125,24 @@ export class IterableWeakMap<
     return size;
   }
 
-  [Symbol.hasInstance] (
+  [Symbol.hasInstance](
     instance: unknown,
   ): boolean {
     return instance instanceof IterableWeakMap || instance instanceof WeakMap;
   }
 
-  *[Symbol.iterator] (): Generator<[K, V], void> {
+  *[Symbol.iterator](): Generator<[K, V], void> {
     for (const key of this.keys()) {
       const { value } = this.#weakMap.get(key)!;
       yield [key, value];
     }
   }
 
-  entries (): Generator<[K, V], void> {
+  entries(): Generator<[K, V], void> {
     return this[Symbol.iterator]();
   }
 
-  *keys (): Generator<K, void> {
+  *keys(): Generator<K, void> {
     for (const ref of this.#refSet) {
       const key = ref.deref();
       if (!key) console.log("key", key);
@@ -151,7 +151,7 @@ export class IterableWeakMap<
     }
   }
 
-  *values (): Generator<V, void> {
+  *values(): Generator<V, void> {
     for (const [, value] of this) {
       yield value;
     }

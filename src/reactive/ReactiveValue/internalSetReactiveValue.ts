@@ -8,7 +8,7 @@ export const internalSetReactiveValue = new class {
   >();
 
   get<T>(
-    key: ReadonlyReactiveValue<T>
+    key: ReadonlyReactiveValue<T>,
   ) {
     return this.#inner.get(key) as TReactiveValueUpdater<T>;
   }
@@ -19,4 +19,4 @@ export const internalSetReactiveValue = new class {
   ) {
     this.#inner.set(key, value);
   }
-};
+}();

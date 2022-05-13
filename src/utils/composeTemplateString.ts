@@ -1,4 +1,4 @@
-export function composeTemplateString (
+export function composeTemplateString(
   strings: TemplateStringsArray,
   props: ReadonlyArray<unknown>,
 ): string {

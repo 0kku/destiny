@@ -9,12 +9,12 @@ import { ReadonlyReactiveArray } from "../../../reactive/ReactiveArray/_Readonly
  * @param templ A template element that has been processed by `resolveSlots()`.
  * @param props Any items that were slotted into the HTML template
  */
-export function hookContentSlotsUp (
+export function hookContentSlotsUp(
   templ: DocumentFragment,
   props: Array<unknown>,
 ): void {
   const contentSlots = Object.values(
-    templ.querySelectorAll("[destiny\\:content]")
+    templ.querySelectorAll("[destiny\\:content]"),
   ) as unknown as Array<HTMLElement & ChildNode>;
 
   for (const contentSlot of contentSlots) {
@@ -22,7 +22,7 @@ export function hookContentSlotsUp (
     const item = props[Number(index)];
     if (item instanceof ReadonlyReactiveValue) {
       const slot = new Slot(contentSlot);
-      item.bind(value => {
+      item.bind((value) => {
         slot.update(valueToFragment(value));
       }, {
         dependents: [slot],

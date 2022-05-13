@@ -1,7 +1,8 @@
 // transpile.ts
 import { Crumpets } from "./deps.ts";
 
-const compilerOptions = (JSON.parse(Deno.readTextFileSync("./tsconfig.json"))).compilerOptions
+const compilerOptions =
+  (JSON.parse(Deno.readTextFileSync("./tsconfig.json"))).compilerOptions;
 
 async function compile(
   rootFile: string,
@@ -24,7 +25,7 @@ async function watch() {
     directoryToWatch: "./src",
     compilerOptions,
   });
-  await crumpets.watch()
+  await crumpets.watch();
 }
 
 await Promise.all([

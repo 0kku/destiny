@@ -1,4 +1,4 @@
-export function safeStringifyObject (
+export function safeStringifyObject(
   input: unknown & { constructor: { name: string } },
 ): string {
   try {

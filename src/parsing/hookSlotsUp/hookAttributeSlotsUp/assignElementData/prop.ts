@@ -3,13 +3,13 @@ import type { TElementData } from "../elementData/TElementData.ts";
 
 /**
  * `prop:<PropertyName>` takes in any property and assigns it to the element in JS.
- * 
+ *
  * For example, to assign a Date object to a date input (`input.valueAsDate = new Date`), you can do:
  * ```html
  * <input type=date prop:valueAsDate=${new Date} />
  * ```
  */
-export function prop (
+export function prop(
   props: TElementData["prop"],
   element: HTMLElement,
 ): void {

@@ -4,26 +4,34 @@ import { computedConsumer } from "../computed.ts";
 import { concatIterators } from "../../utils/concatIterators.ts";
 import { PassReactiveValue } from "./PassReactiveValue.ts";
 import { internalSetReactiveValue } from "./internalSetReactiveValue.ts";
-import { stronglyHeldDependencies, weaklyHeldDependencies } from "./valueDependencyCaches.ts";
+import {
+  stronglyHeldDependencies,
+  weaklyHeldDependencies,
+} from "./valueDependencyCaches.ts";
 import type { TReactiveValueCallback } from "./TReactiveValueCallback.ts";
 import type { TReactiveValueUpdaterOptions } from "./TReactiveValueUpdaterOptions.ts";
 import type { ReadonlyReactiveArray } from "../ReactiveArray/_ReadonlyReactiveArray.ts";
-
 
 export class ReadonlyReactiveValue<T> {
   /** The current value of the `ReactiveValue`. */
   #value: T;
 
   /** All the callbacks added to the `ReactiveValue`, which are to be called when the `value` updates. */
-  readonly #callbacks: Set<TReactiveValueCallback<T>> = new Set;
+  readonly #callbacks: Set<TReactiveValueCallback<T>> = new Set();
 
   // deno-lint-ignore ban-types
-  readonly #consumers = new IterableWeakMap<object, TReactiveValueCallback<T>>();
+  readonly #consumers = new IterableWeakMap<
+    object,
+    TReactiveValueCallback<T>
+  >();
 
   // deno-lint-ignore no-explicit-any People can pass literally anything into ReactiveArray
-  readonly dependencies = new Map<ReadonlyReactiveValue<any> | ReadonlyReactiveArray<any>, VoidFunction>();
+  readonly dependencies = new Map<
+    ReadonlyReactiveValue<any> | ReadonlyReactiveArray<any>,
+    VoidFunction
+  >();
 
-  constructor (
+  constructor(
     initialValue: T,
   ) {
     this.#value = initialValue;
@@ -32,13 +40,13 @@ export class ReadonlyReactiveValue<T> {
       (...args) => this.#set(...args),
     );
   }
-  
+
   /**
    * Can be used to functionally update the value.
    * @param value New value to be set
    * @param noUpdate One or more callback methods you don't want to be called on this update. This can be useful for example when responding to DOM events: you wouldn't want to update the DOM with the new value on the same element that caused the udpate in the first place.
    */
-  #set (
+  #set(
     value: T,
     options?: Partial<TReactiveValueUpdaterOptions<T>>,
   ): this {
@@ -69,32 +77,32 @@ export class ReadonlyReactiveValue<T> {
   /**
    * Same as `this.value`. The current value of the `ReactiveValue`.
    */
-  valueOf (): T {
+  valueOf(): T {
     return this.value;
   }
 
   /**
    * When the object is attempted to be cast to a primitive, the current value of `this.value` is used as a hint. Obviously, if you're trying to cast a `ReactiveValue<string>` into a `number`, it'll just cast `this.value` from a `string` to a `number`. Trying to cast `ReactiveValue<object>` to a primitive will throw.
    */
-  [Symbol.toPrimitive] (): T extends Record<string, unknown> ? never : T {
+  [Symbol.toPrimitive](): T extends Record<string, unknown> ? never : T {
     return this.value as T extends Record<string, unknown> ? never : T;
   }
 
   /**
    * When the object is attempted to be serialized using JSON.serialize(), the current value of `this.value` is returned.
    */
-  toJSON (): T {
+  toJSON(): T {
     return this.value;
   }
 
-  get [Symbol.toStringTag] (): string {
+  get [Symbol.toStringTag](): string {
     return `${this.constructor.name}<${typeof this.#value}>`;
   }
 
   /**
    * Instances of this class can be iterated over asynchronously; it will iterate over updates to the `value`. You can use this feature using `for-await-of`.
    */
-  async *[Symbol.asyncIterator] (): AsyncIterable<T> {
+  async *[Symbol.asyncIterator](): AsyncIterable<T> {
     while (true) {
       yield await this.nextUpdate;
     }
@@ -103,8 +111,8 @@ export class ReadonlyReactiveValue<T> {
   /**
    * Returns a Promise which will resolve the next time the `value` is updated.
    */
-  get nextUpdate (): Promise<T> {
-    return new Promise<T>(resolve => {
+  get nextUpdate(): Promise<T> {
+    return new Promise<T>((resolve) => {
       const cb = (v: T) => {
         resolve(v);
         this.#callbacks.delete(cb);
@@ -119,12 +127,12 @@ export class ReadonlyReactiveValue<T> {
    * @param options.noFirstRun   Set to true and the callback won't be fired right after being added.
    * @param options.dependencies  An array of objects that are modified by the callback provided. The callback will be garbage collected if all the provided objects are collected. If no dependencies are provided, the callback will never be automatically garbage collected and you have to unbind it yourself to avoid leaking memory.
    */
-  bind (
+  bind(
     callback: TReactiveValueCallback<T>,
     options: {
-      noFirstRun?:  boolean,
+      noFirstRun?: boolean;
       // deno-lint-ignore ban-types
-      dependents?: ReadonlyArray<object>,
+      dependents?: ReadonlyArray<object>;
     } = {},
   ): this {
     if (!options.noFirstRun) callback(this.value);
@@ -141,7 +149,7 @@ export class ReadonlyReactiveValue<T> {
     return this;
   }
 
-  unbind (
+  unbind(
     callback: TReactiveValueCallback<T>,
   ): this {
     this.#callbacks.delete(callback);
@@ -151,12 +159,12 @@ export class ReadonlyReactiveValue<T> {
   }
 
   /** The current value of the ReadonlyReactiveValue. */
-  get value (): T {
+  get value(): T {
     if (computedConsumer) {
-      const {fn, consumer} = computedConsumer;
+      const { fn, consumer } = computedConsumer;
       consumer.dependencies.set(this, fn);
       this.#consumers.set(
-        consumer, 
+        consumer,
         fn,
       );
     }
@@ -168,11 +176,12 @@ export class ReadonlyReactiveValue<T> {
    * Creates a new `ReactiveValue` which is dependent on the `ReactiveValue` it's called on, and is updated as the original one is updated. The value of the original is tranformed by a callback function whose return value determines the value of the resulting `ReactiveValue`.
    * @param callback A function which will be called whenever the original `ReactiveValue` is updated, and whose return value is assigned to the output `ReactiveValue`
    */
-  pipe <K> (
+  pipe<K>(
     callback: (value: T) => K,
   ): ReadonlyReactiveValue<K> {
     const reactor = new ReadonlyReactiveValue(callback(this.#value));
-    const fn = () => internalSetReactiveValue.get(reactor)(callback(this.#value));
+    const fn = () =>
+      internalSetReactiveValue.get(reactor)(callback(this.#value));
     reactor.dependencies.set(this, fn);
     this.#consumers.set(
       reactor,
@@ -181,40 +190,40 @@ export class ReadonlyReactiveValue<T> {
     return reactor;
   }
 
-  truthy<T> (
+  truthy<T>(
     valueWhenTruthy: T,
     valueWhenFalsy?: undefined,
-  ): ReadonlyReactiveValue<T | undefined>
-  truthy<T, K> (
+  ): ReadonlyReactiveValue<T | undefined>;
+  truthy<T, K>(
     valueWhenTruthy: T,
     valueWhenFalsy: K,
-  ): ReadonlyReactiveValue<T | K>
-  truthy<T, K> (
+  ): ReadonlyReactiveValue<T | K>;
+  truthy<T, K>(
     valueWhenTruthy: T,
     valueWhenFalsy: K,
   ): ReadonlyReactiveValue<T | K> {
-    return this.pipe(v => v ? valueWhenTruthy : valueWhenFalsy);
+    return this.pipe((v) => v ? valueWhenTruthy : valueWhenFalsy);
   }
 
-  falsy<T> (
+  falsy<T>(
     valueWhenFalsy: T,
     valueWhenTruthy?: undefined,
-  ): ReadonlyReactiveValue<T | undefined>
-  falsy<T, K> (
+  ): ReadonlyReactiveValue<T | undefined>;
+  falsy<T, K>(
     valueWhenFalsy: T,
     valueWhenTruthy: K,
-  ): ReadonlyReactiveValue<T | K>
-  falsy<T, K> (
+  ): ReadonlyReactiveValue<T | K>;
+  falsy<T, K>(
     valueWhenFalsy: T,
     valueWhenTruthy: K,
   ): ReadonlyReactiveValue<T | K> {
-    return this.pipe(v => v ? valueWhenTruthy : valueWhenFalsy);
+    return this.pipe((v) => v ? valueWhenTruthy : valueWhenFalsy);
   }
 
   /**
    * Returns a reference to the reactive value, which can be used to pass it as a prop to a template without binding or unboxing. The reference gets unwrapped by the tempalte automatically, and you will receive the ReactiveValue itself on the other side.
    */
-  get pass (): PassReactiveValue<T> {
+  get pass(): PassReactiveValue<T> {
     return new PassReactiveValue(this);
   }
 }

@@ -26,4 +26,4 @@ export const splicers = new class {
   ) {
     this.#inner.set(key, value);
   }
-};
+}();

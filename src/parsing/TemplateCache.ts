@@ -5,7 +5,7 @@ export class TemplateCache extends WeakMap<
   TemplateStringsArray,
   TParseResult
 > {
-  computeIfAbsent (
+  computeIfAbsent(
     key: TemplateStringsArray,
     set: () => TParseResult,
     props: Array<unknown>,

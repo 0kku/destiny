@@ -14,7 +14,7 @@ import type { CSSTemplate } from "../styling/CSSTemplate.ts";
 import type { TElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/elementData/TElementData.ts";
 
 interface ComponentImplementation {
-  destinySlot?: Slot,
+  destinySlot?: Slot;
 }
 
 /**
@@ -31,7 +31,7 @@ class ComponentImplementation extends HTMLElement {
   ) = xml`<slot />`;
   static styles: Array<CSSTemplate> | CSSTemplate = [];
 
-  constructor () {
+  constructor() {
     super();
     if (new.target === ComponentImplementation) {
       throw new TypeError("Can't initialize abstract class.");
@@ -62,15 +62,19 @@ class ComponentImplementation extends HTMLElement {
 
       shadow.appendChild(
         isReactive(this.template)
-        ? xml`${this.template}`.content
-        : this.template.content,
+          ? xml`${this.template}`.content
+          : this.template.content,
       );
 
       if (supportsAdoptedStyleSheets) {
         // @ts-ignore This does exist, but lib doesn't contain the declaration yet. We also used `destiny/src/globalThis.d.ts` to provide the typings when using Node, but there doesn't seem to be a way to include this in the `emit`
-        shadow.adoptedStyleSheets = arrayWrap(new.target.styles).map(v => v.styleSheet);
+        shadow.adoptedStyleSheets = arrayWrap(new.target.styles).map((v) =>
+          v.styleSheet
+        );
       } else {
-        shadow.append(...arrayWrap(new.target.styles).map(v => v.styleElement));
+        shadow.append(
+          ...arrayWrap(new.target.styles).map((v) => v.styleElement),
+        );
       }
     });
 
@@ -84,19 +88,19 @@ class ComponentImplementation extends HTMLElement {
 
   /**
    * Synchonizes a CSS property of this element to a `ReactiveValue`.
-   * 
+   *
    * @param property  CSS property to be synchronized
    * @param source    A ReactiveValue whose value is to be used for the CSS Property
    */
-  attachCSSProperties (
+  attachCSSProperties(
     styles: {
-      [Key: string]: ReadonlyReactiveValue<string>,
+      [Key: string]: ReadonlyReactiveValue<string>;
     },
   ): void {
     attachCSSProperties(this, styles);
   }
 
-  override replaceWith (
+  override replaceWith(
     ...nodes: Array<string | Node>
   ): void {
     if (this.destinySlot) {
@@ -106,7 +110,7 @@ class ComponentImplementation extends HTMLElement {
     }
   }
 
-  unmount (
+  unmount(
     callback: (element: HTMLElement) => Promise<void> | void,
   ): this {
     deferredElements.set(
@@ -117,28 +121,28 @@ class ComponentImplementation extends HTMLElement {
     return this;
   }
 
-  get elementData (): TElementData | undefined{
+  get elementData(): TElementData | undefined {
     return getElementData(this);
   }
 
-  static register (): string {
+  static register(): string {
     return register(
       this as typeof Component & (new () => Component),
       false,
     );
   }
 
-  static get tagName (): string {
+  static get tagName(): string {
     return this.register();
   }
 
-  static [Symbol.toPrimitive] (): string {
+  static [Symbol.toPrimitive](): string {
     return this.tagName;
   }
 }
 
 export type Component<
-  TProperties extends Record<string, unknown> = Record<string, unknown>
+  TProperties extends Record<string, unknown> = Record<string, unknown>,
 > = (
   & ComponentImplementation
   & TProperties
@@ -146,7 +150,9 @@ export type Component<
 
 type TComponentConstructor = (
   // deno-lint-ignore ban-types
-  & (new <TProperties extends Record<string, unknown> = {}> () => Component<TProperties>)
+  & (new <TProperties extends Record<string, unknown> = {}>() => Component<
+    TProperties
+  >)
   & typeof ComponentImplementation
 );
 

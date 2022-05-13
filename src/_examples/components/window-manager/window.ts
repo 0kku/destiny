@@ -1,16 +1,16 @@
-import { Component, html, css, computed } from "../../../mod.ts";
+import { Component, computed, css, html } from "../../../mod.ts";
 
 import type { TWindow } from "./TWindow.ts";
 
 export default class Window extends Component<{
-  props: TWindow,
+  props: TWindow;
 }> {
-  constructor () {
+  constructor() {
     super();
 
     this.attachCSSProperties({
-      width:     computed`${this.props.size.x}px`,
-      height:    computed`${this.props.size.y}px`,
+      width: computed`${this.props.size.x}px`,
+      height: computed`${this.props.size.y}px`,
       transform: computed`translate(
         ${this.props.position.x}px,
         ${this.props.position.y}px

@@ -9,7 +9,7 @@ export default class VisitorDemo extends Component {
     this.#count.value++;
   }, 1e3);
 
-  disconnectedCallback (): void {
+  disconnectedCallback(): void {
     clearInterval(this.#timer);
   }
 

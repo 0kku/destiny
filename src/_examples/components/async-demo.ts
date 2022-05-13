@@ -1,4 +1,3 @@
-
 import { Component, html } from "../../mod.ts";
 
 export default class AsyncDemo extends Component {

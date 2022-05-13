@@ -14,7 +14,7 @@ const registeredComponents = new Map<
  * @param componentConstructor A constructor for the element to be registered
  * @param noHash               Opt out of adding a unique hash to the name
  */
-export function register (
+export function register(
   componentConstructor: typeof Component,
   noHash = true,
 ): string {
@@ -22,17 +22,11 @@ export function register (
   if (registeredName) {
     return registeredName;
   }
-  
+
   const givenName = componentConstructor.name;
   const name = `${(
-    givenName
-    ? pascalToKebab(givenName)
-    : "anonymous"
-  )}${
-    noHash
-    ? ""
-    : `-${pseudoRandomId.next().value}`
-  }`;
+    givenName ? pascalToKebab(givenName) : "anonymous"
+  )}${noHash ? "" : `-${pseudoRandomId.next().value}`}`;
 
   customElements.define(name, componentConstructor);
   registeredComponents.set(componentConstructor, name);

@@ -1,10 +1,10 @@
-export function getXmlErrorMessage (
+export function getXmlErrorMessage(
   doc: Document | Element | null,
 ): string {
   return (
     doc
-    ?.firstElementChild
-    ?.textContent
-    ?? "unknown error"
+      ?.firstElementChild
+      ?.textContent ??
+      "unknown error"
   );
 }

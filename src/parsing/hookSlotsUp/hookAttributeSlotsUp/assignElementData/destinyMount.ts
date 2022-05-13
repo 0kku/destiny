@@ -1,8 +1,8 @@
 /**
- * `destiny:mount` takes a callback function, which will be called 
+ * `destiny:mount` takes a callback function, which will be called
  * once the element has been created.
- * 
- * Example usage: 
+ *
+ * Example usage:
  * ```html
  * <div destiny:mount=${
  *   element => element.animate(
@@ -12,7 +12,7 @@
  * }> This will fade in! </div>
  * ```
  */
-export function destinyMount (
+export function destinyMount(
   element: HTMLElement,
   value: unknown,
 ): void {
@@ -20,8 +20,9 @@ export function destinyMount (
     throw new TypeError("Value of destiny:mount must be a function");
   }
   queueMicrotask( // wait for stack to clear
-    () => queueMicrotask( // let other microtasks run first
-      () => void value(element),
-    ),
+    () =>
+      queueMicrotask( // let other microtasks run first
+        () => void value(element),
+      ),
   );
 }

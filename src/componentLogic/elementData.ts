@@ -2,7 +2,7 @@ import type { TElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/e
 
 export const elementDataStore = new WeakMap<Element, TElementData>();
 
-export function getElementData (
+export function getElementData(
   element: Element,
 ): TElementData | undefined {
   return elementDataStore.get(element);

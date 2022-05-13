@@ -11,42 +11,42 @@ import type { ReadonlyReactiveArray } from "./ReactiveArray/_ReadonlyReactiveArr
 
 /**
  * A polymorphic convenience function that will convert any value into a reactive entity recursively. `Array`s are converted into `ReactiveArray`s. `Object`s whose prototype is `Object` get their keys converted into reactive items using the same algorithm `ReactiveArray`s use (see `reactiveProperties.ts` for more details). Other values are converted into `ReactiveValue`s.
- * 
+ *
  * @param initialValue The value to be made reactive
  * @param options.fallback A fallback value to be displayed when the initial value is a pending `Promise`
  * @param options.parent Another reactive entity to whom any reactive items created should report to when updating, so updates can correctly propagate to the highest level
  */
-function reactive<T extends Promise<unknown>, K = unknown> (
+function reactive<T extends Promise<unknown>, K = unknown>(
   initialValue: T,
   options: {
-    fallback: T extends Promise<infer V> ? V : never,
-    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K>,
+    fallback: T extends Promise<infer V> ? V : never;
+    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K>;
   },
 ): ReactiveValue<T extends Promise<infer V> ? V : never>;
-function reactive<T, K = unknown> (
+function reactive<T, K = unknown>(
   initialValue: T,
   options?: {
-    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K>,
+    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K>;
   },
 ): TReactiveValueType<T>;
-function reactive<K = unknown> (
+function reactive<K = unknown>(
   initialValue: unknown,
   options?: {
-    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K>,
+    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K>;
   },
 ): TReactive<unknown>;
-function reactive<T, K = unknown> (
+function reactive<T, K = unknown>(
   initialValue: T,
   options: {
-    fallback?: T,
-    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K>,
+    fallback?: T;
+    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K>;
   } = {},
 ): unknown {
   if (isReactive(initialValue as unknown)) {
     return initialValue;
   }
-  
-  const {parent} = options;
+
+  const { parent } = options;
   let ref: TReactiveEntity<unknown>;
 
   if (isObject(initialValue)) {
@@ -54,7 +54,7 @@ function reactive<T, K = unknown> (
       ref = new ReactiveArray(...initialValue);
     } else if (initialValue instanceof Promise) {
       const temp = new ReactiveValue(options.fallback);
-      void initialValue.then(value => temp.value = value as T);
+      void initialValue.then((value) => temp.value = value as T);
       ref = temp as ReactiveValue<unknown>;
     } else if (isSpecialCaseObject(initialValue)) {
       ref = new ReactiveValue<unknown>(initialValue);
@@ -75,4 +75,4 @@ function reactive<T, K = unknown> (
   return ref;
 }
 
-export {reactive};
+export { reactive };
