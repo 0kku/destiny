@@ -1,0 +1,6 @@
+{
+    "tasks": {
+        "lint": "deno lint --ignore=dist",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    }
+}

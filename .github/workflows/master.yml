@@ -15,26 +15,12 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install Deno
-        uses: denolib/setup-deno@master
-
-      - name: Deno version
-        run: echo deno --version
+        uses: deno.land/setup-deno@v1
+        with:
+          version: vx.x.x
 
       - name: Check Any Type Errors
-        run: deno cache src/mod.ts
-
-      - name: Can Compile To Dist
-        run: npm run compile # mainly to check if there are any errors when running this command
-
-      - name: Basic Example Can Be Compiled
-        run: |
-          cd examples/deno
-          deno bundle --config tsconfig.json components/App.ts components/app.js
-          cd ../node
-          npm i
-          node_modules/.bin/webpack --config webpack.config.js
-          cd ../browser
-          echo "No build step so no testing here"
+        run: deno cache --config tsconfig.json src/mod.ts
 
   linter:
     runs-on: ubuntu-latest
@@ -42,10 +28,12 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Install Deno
-        uses: denolib/setup-deno@master
+        uses: deno.land/setup-deno@v1
+        with:
+          version: vx.x.x
 
       - name: Formatter
         run: echo "Is this something we want?" #deno fmt --check --ignore=dist
 
       - name: Linter
-        run: npm run lint
+        run: deno lint
