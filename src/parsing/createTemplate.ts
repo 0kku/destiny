@@ -1,14 +1,14 @@
-import { parseString } from "./parseString.js";
-import { resolveSlots } from "./resolveSlots.js";
-import { isComponent } from "../componentLogic/isComponent.js";
-import { DestinyFallback } from "../componentLogic/DestinyFallback.js";
-import type { TParseResult } from "./TParseResult.js";
+import { parseString } from "./parseString.ts";
+import { resolveSlots } from "./resolveSlots.ts";
+import { isComponent } from "../componentLogic/isComponent.ts";
+import { DestinyFallback } from "../componentLogic/DestinyFallback.ts";
+import type { TParseResult } from "./TParseResult.ts";
 
 /**
  * Parses and processes a `TemplateStringsArray` into a `DocumentFragment`.
  * @param param0 The template strings to parse and process
  */
-export function createTemplate (
+export function createTemplate(
   [first, ...strings]: TemplateStringsArray,
   props: Array<unknown>,
 ): TParseResult {
@@ -22,7 +22,8 @@ export function createTemplate (
       if (isComponent(prop) && prop.captureProps) {
         string += `${prop.register()} data-capture-props="true"${fragment}`;
       } else if (prop instanceof Promise) {
-        string += `${DestinyFallback.register()} prop:for="__internal_${i}_" data-capture-props="true"${fragment}`;
+        string +=
+          `${DestinyFallback.register()} prop:for="__internal_${i}_" data-capture-props="true"${fragment}`;
       } else {
         string += String(prop) + fragment;
       }
@@ -37,7 +38,7 @@ export function createTemplate (
       string += `"__internal_${i}_"${fragment}`;
     }
   }
-  
+
   const templateElement = parseString(string);
 
   resolveSlots(templateElement);

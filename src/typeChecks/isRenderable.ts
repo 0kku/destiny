@@ -1,10 +1,10 @@
-import { Renderable } from "../parsing/Renderable.js";
+import { Renderable } from "../parsing/Renderable.ts";
 
-export function isRenderable (
+export function isRenderable(
   input: unknown,
 ): input is Renderable {
   return (
-    Boolean(input)
-    && input instanceof Renderable
+    Boolean(input) &&
+    input instanceof Renderable
   );
 }

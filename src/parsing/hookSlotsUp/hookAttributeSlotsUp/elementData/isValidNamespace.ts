@@ -1,14 +1,14 @@
-import type { TNamespace } from "./TNamespace.js";
+import type { TNamespace } from "./TNamespace.ts";
 
 export const validNamespaces = ["attribute", "prop", "on", "destiny"] as const;
 
-export function isValidNamespace (
+export function isValidNamespace(
   input: string,
 ): input is TNamespace {
   return validNamespaces.includes(input as TNamespace);
 }
 
-export function isValidAttributePair (
+export function isValidAttributePair(
   input: ReadonlyArray<string>,
 ): input is [TNamespace, string] {
   return input.length === 2 && isValidNamespace(input[0]!);

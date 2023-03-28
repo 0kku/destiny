@@ -1,6 +1,6 @@
-import { namespaces } from "./parseString.js";
+import { namespaces } from "./parseString.ts";
 
-export function parseAsNewDocument (
+export function parseAsNewDocument(
   string: string,
 ): Document {
   return new DOMParser().parseFromString(

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-types */
 
-export function concat <K, V> (
+export function concat<K, V>(
   mapTarget: Map<K, V>,
   mapSource: Map<K, V>,
 ): Map<K, V> {

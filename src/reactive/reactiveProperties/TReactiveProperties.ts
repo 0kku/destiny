@@ -1,5 +1,5 @@
-import type { TReactivePropertiesFlag } from "./TReactivePropertiesFlag.js";
-import type { TReactiveValueType } from "../types/TReactiveValueType.js";
+import type { TReactivePropertiesFlag } from "./TReactivePropertiesFlag.ts";
+import type { TReactiveValueType } from "../types/TReactiveValueType.ts";
 
 export type TReactiveProperties<T extends Record<string, unknown> | unknown> = (
   {

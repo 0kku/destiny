@@ -1,11 +1,11 @@
-import type { TParseResult } from "./TParseResult.js";
+import type { TParseResult } from "./TParseResult.ts";
 
 /** Used to cache parsed `DocumentFragment`s so looped templates don't need to be reparsed on each iteration. */
 export class TemplateCache extends WeakMap<
   TemplateStringsArray,
   TParseResult
 > {
-  computeIfAbsent (
+  computeIfAbsent(
     key: TemplateStringsArray,
     set: () => TParseResult,
     props: Array<unknown>,

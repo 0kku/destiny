@@ -1,10 +1,10 @@
-import { Slot } from "./Slot.js";
-import { throwExpression } from "../utils/throwExpression.js";
-import type { TemplateResult } from "./TemplateResult.js";
-import type { ReadonlyReactiveArray } from "../reactive/ReactiveArray/_ReadonlyReactiveArray.js";
+import { Slot } from "./Slot.ts";
+import { throwExpression } from "../utils/throwExpression.ts";
+import type { TemplateResult } from "./TemplateResult.ts";
+import type { ReadonlyReactiveArray } from "../reactive/ReactiveArray/_ReadonlyReactiveArray.ts";
 
 /**
- * Keeps track of `ReadonlyReactiveArray`s slotted into a template in the DOM. 
+ * Keeps track of `ReadonlyReactiveArray`s slotted into a template in the DOM.
  */
 export class SlotArray {
   /** A "bookmark" for where in the DOM this `SlotArray` starts */
@@ -23,7 +23,7 @@ export class SlotArray {
    * @param placeholderNode A `Node` which is used as a "bookmark" of where in the DOM the `SlotArray`'s content should be inserted
    * @param source The `ReadonlyReactiveArray` which is being rendered
    */
-  constructor (
+  constructor(
     placeholderNode: ChildNode,
     source: ReadonlyReactiveArray<DocumentFragment>,
   ) {
@@ -46,7 +46,7 @@ export class SlotArray {
    * @param index Index at which to insert the items
    * @param fragments the items to be inserted
    */
-  #insertToDom (
+  #insertToDom(
     index: number,
     ...fragments: Array<DocumentFragment | TemplateResult>
   ): void {
@@ -57,7 +57,12 @@ export class SlotArray {
         this.#endAnchor.before(slotPlaceholder);
       } else {
         const target = this.#domArray[where];
-        if (!target) throwExpression(`Tried to insert to DOM at an invalid position ${where} at an array of length ${this.#domArray.length}`, RangeError);
+        if (!target) {
+          throwExpression(
+            `Tried to insert to DOM at an invalid position ${where} at an array of length ${this.#domArray.length}`,
+            RangeError,
+          );
+        }
         target.insertBeforeThis(slotPlaceholder);
       }
       this.#domArray.splice(where, 0, new Slot(slotPlaceholder, fragment));
@@ -69,7 +74,7 @@ export class SlotArray {
    * @param from Index at which to start removing `Slot`s
    * @param count How many `Slot`s to remove
    */
-  #removeFromDom (
+  #removeFromDom(
     from: number,
     count: number,
   ): void {

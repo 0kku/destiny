@@ -1,6 +1,6 @@
-import { Component } from "./Component.js";
+import { Component } from "./Component.ts";
 
-export function isComponent (
+export function isComponent(
   input: unknown,
 ): input is typeof Component & (new () => Component) {
   return (

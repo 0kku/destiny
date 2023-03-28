@@ -1,14 +1,13 @@
-import { Component, html, css, reactive, ReactiveValue } from "/dist/mod.js";
+import { Component, css, html, reactive, ReactiveValue } from "../../../mod.ts";
 
-import Window from "./window.js";
-import type { TWindow } from "./TWindow.js";
-
+import Window from "./window.ts";
+import type { TWindow } from "./TWindow.ts";
 
 type TDirection = "n" | "s" | "e" | "w" | "ne" | "se" | "sw" | "nw";
 type TGrabType = TDirection | "move" | "";
 const directions = ["s", "n", "e", "w"] as const;
 
-function grabTypeToCursorType (v: TGrabType) {
+function grabTypeToCursorType(v: TGrabType) {
   switch (v) {
     case "move":
       return "grabbing";
@@ -73,24 +72,27 @@ export default class WindowManager extends Component {
       y: 0,
     },
   };
-  
-  connectedCallback (): void {
-    this.addEventListener("mousedown", e => {
-      const composed = e.composedPath() as Array<HTMLElement | EventTarget & { matches: undefined }>;
+
+  connectedCallback(): void {
+    this.addEventListener("mousedown", (e) => {
+      const composed = e.composedPath() as Array<
+        HTMLElement | EventTarget & { matches: undefined }
+      >;
       const targetWindow = composed.find(
-        v => v.matches?.(String(Window))
+        (v) => v.matches?.(String(Window)),
       ) as Window | null;
       if (!targetWindow) return; // event didn't trigger within a window
 
       const target = composed[0] as HTMLElement;
-      const type = 
-        target.closest("header")  ? "move" :
-        target.closest(".handle") ? directions.filter(c => target.classList.contains(c)).join() as TDirection
-        : undefined
-      ;
+      const type = target.closest("header")
+        ? "move"
+        : target.closest(".handle")
+        ? directions.filter((c) => target.classList.contains(c))
+          .join() as TDirection
+        : undefined;
       if (!type) return; // event didn't trigger on something draggable
 
-      const {position, size} = targetWindow.props;
+      const { position, size } = targetWindow.props;
 
       this.#dragging.type.value = type;
       Object.assign(this.#dragging, {
@@ -110,18 +112,18 @@ export default class WindowManager extends Component {
       });
     });
 
-    this.addEventListener("mousemove", e => {
+    this.addEventListener("mousemove", (e) => {
       const type = this.#dragging.type.value;
       if (type) {
-        const {position, size} = this.#dragging.target;
-        const {positionStart, sizeStart, pointerStart} = this.#dragging;
+        const { position, size } = this.#dragging.target;
+        const { positionStart, sizeStart, pointerStart } = this.#dragging;
         const deltaPointer = {
           x: pointerStart.x - e.offsetX,
           y: pointerStart.y - e.offsetY,
         };
 
         if (type === "move") {
-          const {x, y} = position;
+          const { x, y } = position;
           x.value = positionStart.x - deltaPointer.x;
           y.value = positionStart.y - deltaPointer.y;
         } else {
@@ -146,7 +148,7 @@ export default class WindowManager extends Component {
     window.addEventListener("mouseup", () => this.#dragging.type.value = "");
   }
 
-  constructor () {
+  constructor() {
     super();
 
     this.attachCSSProperties({
@@ -168,8 +170,12 @@ export default class WindowManager extends Component {
   `;
 
   override template = html`
-    ${this.#windows.map(win => html`
+    ${
+    this.#windows.map((win) =>
+      html`
       <${Window} prop:props=${win} />
-    `)}
+    `
+    )
+  }
   `;
 }

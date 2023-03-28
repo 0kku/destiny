@@ -1,4 +1,4 @@
-import type { TReactiveValueUpdaterOptions } from "./TReactiveValueUpdaterOptions.js";
+import type { TReactiveValueUpdaterOptions } from "./TReactiveValueUpdaterOptions.ts";
 
 export type TReactiveValueUpdater<T> = (
   value: T,

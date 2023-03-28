@@ -1,28 +1,28 @@
-import { Component, html, reactive, computed } from "/dist/mod.js";
+import { Component, computed, html, reactive } from "../../mod.ts";
 
-import { inputStyles } from "./inputStyles.js";
+import { inputStyles } from "./inputStyles.ts";
 
-function formatTimeFragment (
+function formatTimeFragment(
   input: number,
 ) {
   return String(input).padStart(2, "0");
 }
 
-function formatTime (
+function formatTime(
   duration: number,
 ) {
-  const days    = Math.floor(duration / 1000 / 60 / 60 / 24);
-  const hours   = Math.floor(duration / 1000 / 60 / 60 % 24);
+  const days = Math.floor(duration / 1000 / 60 / 60 / 24);
+  const hours = Math.floor(duration / 1000 / 60 / 60 % 24);
   const minutes = Math.floor(duration / 1000 / 60 % 60);
   const seconds = Math.floor(duration / 1000 % 60);
   const daysString = days ? `${days}, ` : "";
   const hoursString = `${hours}:`;
   const minutesString = formatTimeFragment(minutes);
-  const secondsString = seconds ? `:${formatTimeFragment(seconds)}`: "";
+  const secondsString = seconds ? `:${formatTimeFragment(seconds)}` : "";
   return [daysString, hoursString, minutesString, secondsString].join("");
 }
 
-function createTask () {
+function createTask() {
   return {
     start: new Date(0),
     end: new Date(0),
@@ -36,7 +36,9 @@ export default class TimeDiff extends Component {
   static override styles = inputStyles;
 
   override template = html`
-    ${this.#tasks.map(task => html`
+    ${
+    this.#tasks.map((task) =>
+      html`
       <div>
         <label>
           Start:
@@ -60,12 +62,15 @@ export default class TimeDiff extends Component {
           />
         </label>
         <p>
-          Duration of "${task.name}": ${computed(() => 
-            formatTime(Number(task.end.value) - Number(task.start.value))
-          )}
+          Duration of "${task.name}": ${
+        computed(() =>
+          formatTime(Number(task.end.value) - Number(task.start.value))
+        )
+      }
         </p>
       </div>`
-    )}
+    )
+  }
     <input
       type="button"
       on:click=${() => this.#tasks.push(createTask())}

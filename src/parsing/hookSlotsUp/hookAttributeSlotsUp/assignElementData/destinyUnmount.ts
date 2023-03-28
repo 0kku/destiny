@@ -1,12 +1,12 @@
-import { deferredElements } from "../../../deferredElements.js";
+import { deferredElements } from "../../../deferredElements.ts";
 
 /**
  * `destiny:unmount` takes a callback function which will be called
- * when the element is about to be removed from DOM. If the 
+ * when the element is about to be removed from DOM. If the
  * callback returns a promise, that promise will be awaited on
  * and the element is removed once it resolves.
- * 
- * Example usage: 
+ *
+ * Example usage:
  * ```html
  * <div destiny:unmount=${
  *   element => {
@@ -15,12 +15,12 @@ import { deferredElements } from "../../../deferredElements.js";
  *       {duration: 300, fill: "forwards"},
  *     );
  *     anim.play();
- *     return anim.finished; // Element is removed once the animation finishes 
+ *     return anim.finished; // Element is removed once the animation finishes
  *   }
  * }> This will fade out! </div>
  * ```
  */
-export function destinyUnmount (
+export function destinyUnmount(
   element: HTMLElement,
   value: unknown,
 ): void {

@@ -1,6 +1,6 @@
-import { Component, reactive, html, computed } from "/dist/mod.js";
+import { Component, computed, html, reactive } from "../../mod.ts";
 
-function getHashRoute (
+function getHashRoute(
   url: string,
 ) {
   return "/" + new URL(url).hash.replace(/^#\//u, "");
@@ -8,15 +8,15 @@ function getHashRoute (
 
 export const route = reactive(getHashRoute(window.location.href));
 
-window.addEventListener("hashchange", e => {
-  route.value = getHashRoute(e.newURL);
+window.addEventListener("hashchange", () => {
+  route.value = getHashRoute(window.location.href);
 });
 
 export default class HashRouter extends Component<{
   routes: Array<{
-    path: string,
-    content: string,
-  }>,
+    path: string;
+    content: string;
+  }>;
 }> {
   #error404 = html`
     <slot name="404">
@@ -25,17 +25,17 @@ export default class HashRouter extends Component<{
   `;
 
   override template = computed(() => {
-    const routeInfo = this.routes.find(({path}) => path === route.value);
+    const routeInfo = this.routes.find(({ path }) => path === route.value);
     return (
       routeInfo
-      ? html`
+        ? html`
         <${import(routeInfo.content)}
           prop:fallback=${html`Loading…`}
-          prop:catch=${(err: Error) => html`
-            Error loading page: ${err.message}`
-          }
+          prop:catch=${(err: Error) =>
+          html`
+            Error loading page: ${err.message}`}
         />`
-      : this.#error404
+        : this.#error404
     );
   });
 }

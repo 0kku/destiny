@@ -1,13 +1,17 @@
+interface ICSSStyleSheet extends CSSStyleSheet {
+  replace: (cssText: string) => void;
+}
+
 export class CSSTemplate {
   readonly cssText: string;
 
-  constructor (
+  constructor(
     cssText: string,
   ) {
     this.cssText = cssText;
   }
 
-  get styleElement (): HTMLStyleElement {
+  get styleElement(): HTMLStyleElement {
     return Object.assign(
       document.createElement("style"),
       { textContent: this.cssText },
@@ -15,10 +19,10 @@ export class CSSTemplate {
   }
 
   #stylesheet: CSSStyleSheet | undefined;
-  get styleSheet (): CSSStyleSheet {
+  get styleSheet(): CSSStyleSheet {
     if (!this.#stylesheet) {
-      this.#stylesheet = new CSSStyleSheet;
-      this.#stylesheet.replace(this.cssText);
+      this.#stylesheet = new CSSStyleSheet();
+      (this.#stylesheet as ICSSStyleSheet).replace(this.cssText);
     }
     return this.#stylesheet;
   }

@@ -1,5 +1,5 @@
-import { register } from "/dist/mod.js";
+import { register } from "../mod.ts";
 
-import { AppRoot } from "./components/app-root.js";
+import { AppRoot } from "./components/app-root.ts";
 
 register(AppRoot);

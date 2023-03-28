@@ -1,9 +1,9 @@
-import { throwExpression } from "../../utils/throwExpression.js";
-import type { ReactiveArray } from "./_ReactiveArray.js";
-import type { TMask } from "./TMask.js";
-import type { TMaskEntry } from "./TMaskEntry.js";
+import { throwExpression } from "../../utils/throwExpression.ts";
+import type { ReactiveArray } from "./_ReactiveArray.ts";
+import type { TMask } from "./TMask.ts";
+import type { TMaskEntry } from "./TMaskEntry.ts";
 
-type TUpdateQueueEntry<T> = TMaskEntry & {value: T};
+type TUpdateQueueEntry<T> = TMaskEntry & { value: T };
 type TUpdateQueue<T> = Array<TUpdateQueueEntry<T>>;
 
 const processUpdateQueue = <T>(
@@ -21,7 +21,8 @@ const processUpdateQueue = <T>(
       deleteCount++;
     }
   }
-  const startEditingAt = updateQueue.find(v => v.show)?.index ?? updateQueue[0]!.index + 1;
+  const startEditingAt = updateQueue.find((v) => v.show)?.index ??
+    updateQueue[0]!.index + 1;
   filteredArray.splice(
     startEditingAt,
     deleteCount,
@@ -47,7 +48,11 @@ export const updateFilteredArray = <T>(
     if (showThis) {
       newIndex++;
     }
-    if (showThis !== (maskArray[i]?.show ?? throwExpression("Internal error: failed to filter", RangeError))) {
+    if (
+      showThis !==
+        (maskArray[i]?.show ??
+          throwExpression("Internal error: failed to filter", RangeError))
+    ) {
       const current = {
         index: newIndex,
         show: showThis,

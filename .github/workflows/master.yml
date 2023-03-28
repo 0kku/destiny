@@ -1,0 +1,39 @@
+name: master
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Deno
+        uses: denoland/setup-deno@v1
+        with:
+          version: vx.x.x
+
+      - name: Check Any Type Errors
+        run: deno cache --config tsconfig.json src/mod.ts
+
+  linter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Deno
+        uses: deno.land/setup-deno@v1
+        with:
+          version: vx.x.x
+
+      - name: Formatter
+        run: echo "Is this something we want?" #deno fmt --check --ignore=dist
+
+      - name: Linter
+        run: deno lint

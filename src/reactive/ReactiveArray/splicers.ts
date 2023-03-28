@@ -1,6 +1,6 @@
-import type { ReadonlyReactiveArray } from "./_ReadonlyReactiveArray.js";
-import type { ReactiveArray } from "./_ReactiveArray.js";
-import type { TArrayValueType } from "./TArrayValueType.js";
+import type { ReadonlyReactiveArray } from "./_ReadonlyReactiveArray.ts";
+import type { ReactiveArray } from "./_ReactiveArray.ts";
+import type { TArrayValueType } from "./TArrayValueType.ts";
 
 export type TSplice<InputType> = (
   start: number,
@@ -10,6 +10,7 @@ export type TSplice<InputType> = (
 
 export const splicers = new class {
   #inner = new WeakMap<
+    // deno-lint-ignore no-explicit-any People can pass literally anything into ReactiveArray
     ReadonlyReactiveArray<any>
   >();
 
@@ -25,4 +26,4 @@ export const splicers = new class {
   ) {
     this.#inner.set(key, value);
   }
-};
+}();

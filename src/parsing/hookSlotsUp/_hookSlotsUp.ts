@@ -1,13 +1,12 @@
-import { hookContentSlotsUp } from "./hookContentSlotsUp/_hookContentSlotsUp.js";
-import { hookAttributeSlotsUp } from "./hookAttributeSlotsUp/_hookAttributeSlotsUp.js";
-
+import { hookContentSlotsUp } from "./hookContentSlotsUp/_hookContentSlotsUp.ts";
+import { hookAttributeSlotsUp } from "./hookAttributeSlotsUp/_hookAttributeSlotsUp.ts";
 
 export type TValueProps = {
-  element: HTMLElement & ChildNode,
-  attributeName: string,
-  valueStart: string,
-  valueSlot: unknown,
-  valueEnd: string,
+  element: HTMLElement & ChildNode;
+  attributeName: string;
+  valueStart: string;
+  valueSlot: unknown;
+  valueEnd: string;
 };
 
 /**
@@ -15,7 +14,7 @@ export type TValueProps = {
  * @param template A parsed `HTMLTemplateElement` which has been processed by `resolveSlots()`
  * @param props Items that were originally slotted into the template prior to parsing
  */
-export function hookSlotsUp (
+export function hookSlotsUp(
   template: DocumentFragment,
   props: Array<unknown>,
 ): void {

@@ -1,4 +1,4 @@
-import { css } from "/dist/mod.js";
+import { css } from "../../mod.ts";
 
 export const inputStyles = css`
   input:not([type=checkbox]) {

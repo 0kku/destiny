@@ -1,6 +1,6 @@
-import { Component, computed, html, css, classNames } from "/dist/mod.js";
+import { classNames, Component, computed, css, html } from "../../mod.ts";
 
-import HashRouter, { route } from "./hash-router.js";
+import HashRouter, { route } from "./hash-router.ts";
 
 export default class TabView extends Component {
   #tabs = [
@@ -34,13 +34,16 @@ export default class TabView extends Component {
       title: "Windowing demo",
       content: "./window-manager/_window-manager.js",
     },
-  ].map(tab => (tab.content = new URL(tab.content, import.meta.url).href, tab));
+  ].map(
+    (tab) => (tab.content = new URL(tab.content, import.meta.url).href, tab),
+  );
 
-  connectedCallback (): void {
+  connectedCallback(): void {
     const original = document.title;
     route.bind(
-      path => {
-        document.title = this.#tabs.find(v => v.path === path)?.title ?? original;
+      (path) => {
+        document.title = this.#tabs.find((v) => v.path === path)?.title ??
+          original;
       },
       { dependents: [this] },
     );
@@ -83,16 +86,22 @@ export default class TabView extends Component {
 
   override template = html`
     <nav>
-      ${this.#tabs.map(({path, title}) => html`
+      ${
+    this.#tabs.map(({ path, title }) =>
+      html`
         <a
           href=${computed`#${path}`}
-          class=${classNames({
-            selected: computed(() => path === route.value)
-          })}
+          class=${
+        classNames({
+          selected: computed(() => path === route.value),
+        })
+      }
         >
           ${title}
         </a>
-      `)}
+      `
+    )
+  }
     </nav>
 
     <main>

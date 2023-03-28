@@ -1,11 +1,11 @@
-import { Component, html, css, reactive } from "/dist/mod.js";
+import { Component, css, html, reactive } from "../../../mod.ts";
 
-import TaskItem from "./task-item.js";
-import { animateIn, animateOut } from "./animations.js";
-import { inputStyles } from "../inputStyles.js";
+import TaskItem from "./task-item.ts";
+import { animateIn, animateOut } from "./animations.ts";
+import { inputStyles } from "../inputStyles.ts";
 
 type TInputChangeEvent = InputEvent & {
-  currentTarget: HTMLInputElement,
+  currentTarget: HTMLInputElement;
 };
 
 export default class Todo extends Component {
@@ -52,36 +52,44 @@ export default class Todo extends Component {
   ];
 
   override template = html`
-    <h1>${this.#items.filter(v => v.done.value).length}/${this.#items.length} tasks compelete</h1>
+    <h1>${
+    this.#items.filter((v) => v.done.value).length
+  }/${this.#items.length} tasks compelete</h1>
     <ul>
-      ${this.#items.map((item, i) => html`
+      ${
+    this.#items.map((item, i) =>
+      html`
         <${TaskItem}
           prop:item=${item}
           prop:removeItem=${() => this.#items.splice(i.value, 1)}
           destiny:mount=${animateIn}
           destiny:unmount=${animateOut}
         />
-      `)}
-      ${this.#items.length.falsy(html`
+      `
+    )
+  }
+      ${
+    this.#items.length.falsy(html`
         <li
           destiny:mount=${animateIn}
           destiny:unmount=${animateOut}
         >
           <i>No items to show</i>
         </li>
-      `)}
+      `)
+  }
       <li>
         <form
           id="add-task"
           on:submit=${(e: Event) => {
-            e.preventDefault();
-            this.#items.push({
-              title: this.#newValue.value,
-              done: false,
-              editing: false,
-            });
-            this.#newValue.value = "";
-          }}
+    e.preventDefault();
+    this.#items.push({
+      title: this.#newValue.value,
+      done: false,
+      editing: false,
+    });
+    this.#newValue.value = "";
+  }}
         >
           <input
             type="text"
@@ -98,20 +106,22 @@ export default class Todo extends Component {
       <input
         type="checkbox"
         class="check-all"
-        prop:checked=${this.#items.every(item => item.done.value)}
-        prop:indeterminate=${this.#items.exclusiveSome(item => item.done.value)}
+        prop:checked=${this.#items.every((item) => item.done.value)}
+        prop:indeterminate=${
+    this.#items.exclusiveSome((item) => item.done.value)
+  }
         on:change=${(e: TInputChangeEvent) => {
-          this.#items.value.forEach(item => {
-            item.done.value = e.currentTarget.checked;
-          });
-        }}
+    this.#items.value.forEach((item) => {
+      item.done.value = e.currentTarget.checked;
+    });
+  }}
       />
       Check all
     </label>
     <input
       type="button"
       value="Clear done"
-      on:click=${() => this.#items.mutFilter(v => !v.done.value)}
+      on:click=${() => this.#items.mutFilter((v) => !v.done.value)}
     />
   `;
 }

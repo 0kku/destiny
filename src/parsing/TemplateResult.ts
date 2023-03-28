@@ -1,11 +1,11 @@
-import { hookSlotsUp } from "./hookSlotsUp/_hookSlotsUp.js";
-import { Renderable } from "./Renderable.js";
+import { hookSlotsUp } from "./hookSlotsUp/_hookSlotsUp.ts";
+import { Renderable } from "./Renderable.ts";
 
 export class TemplateResult extends Renderable {
   #template: HTMLTemplateElement;
   #props: Array<unknown>;
 
-  constructor (
+  constructor(
     template: HTMLTemplateElement,
     props: Array<unknown>,
   ) {
@@ -14,7 +14,7 @@ export class TemplateResult extends Renderable {
     this.#props = props;
   }
 
-  get content (): DocumentFragment {
+  get content(): DocumentFragment {
     const content = this.#template.content.cloneNode(true) as DocumentFragment;
 
     hookSlotsUp(

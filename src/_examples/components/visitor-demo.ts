@@ -1,6 +1,6 @@
-import { Component, html, reactive } from "/dist/mod.js";
+import { Component, html, reactive } from "../../mod.ts";
 
-import { inputStyles } from "./inputStyles.js";
+import { inputStyles } from "./inputStyles.ts";
 
 export default class VisitorDemo extends Component {
   #who = reactive("visitor");
@@ -9,7 +9,7 @@ export default class VisitorDemo extends Component {
     this.#count.value++;
   }, 1e3);
 
-  disconnectedCallback (): void {
+  disconnectedCallback(): void {
     clearInterval(this.#timer);
   }
 

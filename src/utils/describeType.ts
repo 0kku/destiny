@@ -1,6 +1,6 @@
-import { safeStringifyObject } from "./safeStringifyObject.js";
+import { safeStringifyObject } from "./safeStringifyObject.ts";
 
-export function describeType (
+export function describeType(
   input: unknown,
 ): string {
   if (input === null || input === undefined) {

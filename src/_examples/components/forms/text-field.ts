@@ -1,6 +1,5 @@
-import { Component, html } from "/dist/mod.js";
-
-import { inputStyles } from "../inputStyles.js";
+import { Component, html } from "../../../mod.ts";
+import { inputStyles } from "../inputStyles.ts";
 
 /**
  * An example of a component that forwards its props to a child.
