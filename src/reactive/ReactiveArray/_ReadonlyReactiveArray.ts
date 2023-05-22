@@ -1,6 +1,6 @@
 import { ReactiveArray } from "./_ReactiveArray.js";
 import { weaklyHeldDependencies, stronglyHeldDependencies } from "./arrayDependencyCaches.js";
-import { makeNonPrimitiveItemsReactive } from "./makeNonPrimitiveItemsReactive.js";
+import { makeNonPrimitiveItemReactive, makeNonPrimitiveItemsReactive } from "./makeNonPrimitiveItemsReactive.js";
 import { internalArrays } from "./internalArrays.js";
 import { splicers } from "./splicers.js";
 import { flatten } from "./flatten.js";
@@ -13,6 +13,9 @@ import { concatIterators } from "../../utils/concatIterators.js";
 import { throwExpression } from "../../utils/throwExpression.js";
 import { IterableWeakMap } from "../../utils/IterableWeakMap.js";
 import { WeakMultiRef } from "../../utils/WeakMultiRef.js";
+import { searchInsertionPointInSortedArray } from "./sorting/searchInsertionPointInSortedArray.js";
+import { sortAndGetOrder } from "./sorting/sortAndGetOrder.js";
+import { defaultSort } from "./sorting/defaultSort.js";
 import type { TReactiveArrayCallback } from "./TReactiveArrayCallback.js";
 import type { TArrayUpdateArguments } from "./TArrayUpdateArguments.js";
 import type { TUnwrapReactiveArray } from "./TUnwrapReactiveArray.js";
@@ -827,4 +830,38 @@ import type { TMask } from "./TMask.js";
     }
     return newArray;
   }
+
+  withSorted (
+    compareFn: (
+      a: TArrayValueType<TArrayValueType<InputType>> | TArrayValueType<InputType>,
+      b: TArrayValueType<TArrayValueType<InputType>> | TArrayValueType<InputType>,
+    ) => number = defaultSort,
+  ): ReadonlyReactiveArray<TArrayValueType<InputType>> {
+    const [sortedSource, order] = sortAndGetOrder(this.value, compareFn);
+
+    const sorted = new ReactiveArray(...sortedSource);
+
+    this.#callbacks.add((
+      index,
+      deleteCount,
+      ...values
+    ) => {
+      for (let i = index; i < index + deleteCount; i++) {
+        sorted.splice(order[i]!, 1);
+        order.splice(i, 1);
+      }
+      for (const [i, value] of values.entries()) {
+        const whereToInsert = searchInsertionPointInSortedArray(
+          sorted.value,
+          makeNonPrimitiveItemReactive(value, this as ReadonlyReactiveArray<unknown>),
+          compareFn,
+        );
+        sorted.splice(whereToInsert, 0, value);
+        order.splice(index + i, 0, whereToInsert);
+      }
+    });
+ 
+    return sorted.readonly;
+  }
+
 }

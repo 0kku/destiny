@@ -10,18 +10,26 @@ import type { ReadonlyReactiveArray } from "./_ReadonlyReactiveArray.js";
  * @param items The items to be converted
  * @param parent Another reactive entity to whom any reactive items created should report to when updating, so updates can correctly propagate to the highest level
  */
-export function makeNonPrimitiveItemsReactive<InputType> (
+export function makeNonPrimitiveItemsReactive <InputType> (
   items: Array<InputType | TArrayValueType<InputType>>,
   parent: ReadonlyReactiveArray<InputType>,
 ): Array<TArrayValueType<InputType>> {
-  return items.map((v: unknown) => {
-    return (
-      isReactive(v) || !isObject(v) || isSpecialCaseObject(v)
-      ? v
-      : reactive<unknown>(
-          v,
-          {parent: parent as ReadonlyReactiveArray<unknown>},
-        )
-    ) as TArrayValueType<InputType>;
-  });
+  const foo = items.map(
+    (v: unknown) => makeNonPrimitiveItemReactive(v, parent as ReadonlyReactiveArray<unknown>)
+  );
+  return foo as Array<TArrayValueType<InputType>>; 
+}
+
+export function makeNonPrimitiveItemReactive <InputType> (
+  item: InputType,
+  parent: ReadonlyReactiveArray<unknown>,
+): TArrayValueType<InputType> {
+  return (
+    isReactive(item) || !isObject(item) || isSpecialCaseObject(item)
+    ? item
+    : reactive<unknown>(
+        item,
+        {parent: parent},
+      )
+  ) as TArrayValueType<InputType>;
 }

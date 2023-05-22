@@ -1,5 +1,6 @@
 import {expect, JSHandle, Page} from "@playwright/test";
 import test from "#dist/tests/inPage.js";
+import "./_ReadonlyReacativeArray.withSorted.js";
 
 const slices = [
   // positive positive
