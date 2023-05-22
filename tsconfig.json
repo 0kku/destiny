@@ -42,7 +42,7 @@
     "noUncheckedIndexedAccess": true,           /* Treat properties of index signatures as potentially undefined */
     "noImplicitOverride": true,                 /* Report errors on overriding properties of a super class without the use of override keyword */
     "forceConsistentCasingInFileNames": true,   /* Disallow inconsistently-cased references to the same file. */
-    "importsNotUsedAsValues": "error",          /* Report errors on imports that are not being imported as only types being used as only types */
+    "verbatimModuleSyntax": true,               /* Do not transform or elide any imports or exports not marked as type-only, ensuring they are written in the output file's format based on the 'module' setting. */
 
     /* Module Resolution Options */
     // "moduleResolution": "node",              /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
