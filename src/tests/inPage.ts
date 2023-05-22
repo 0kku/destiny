@@ -1,7 +1,7 @@
-import {createServer} from "http";
-import {promisify} from "util";
-import {readFile} from "fs/promises";
-import {JSHandle, Page, test as base} from "@playwright/test";
+import { createServer } from "http";
+import { promisify } from "util";
+import { readFile } from "fs/promises";
+import { JSHandle, Page, test as base } from "@playwright/test";
 
 type TTestFixtures = {
   navigate: undefined,
@@ -16,6 +16,7 @@ type TWorkerFixtures = {
 
 const test = base.extend<TTestFixtures, TWorkerFixtures>({
   port: [
+    // eslint-disable-next-line no-empty-pattern
     async ({}, use, workerInfo) => {
       await use(9090 + workerInfo.workerIndex);
     },
@@ -42,15 +43,15 @@ const test = base.extend<TTestFixtures, TWorkerFixtures>({
         const url = new URL(`../../${req.url.slice(1)}`, import.meta.url);
 
         void readFile(url)
-          .then(file => {
-            res.setHeader("Content-Type", "text/javascript");
-            res.write(file);
-            res.end();
-          })
-          .catch(() => {
-            res.writeHead(404);
-            res.end();
-          });
+        .then(file => {
+          res.setHeader("Content-Type", "text/javascript");
+          res.write(file);
+          res.end();
+        })
+        .catch(() => {
+          res.writeHead(404);
+          res.end();
+        });
       });
 
       await new Promise((resolve, reject) => {
