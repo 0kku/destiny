@@ -6,6 +6,7 @@ import { supportsAdoptedStyleSheets } from "../styling/supportsAdoptedStyleSheet
 import { arrayWrap } from "../utils/arrayWrap.js";
 import { getElementData } from "./elementData.js";
 import { isReactive } from "../typeChecks/isReactive.js";
+import { ReactiveValue } from "../reactive/ReactiveValue/_ReactiveValue.js";
 import type { Renderable } from "../parsing/Renderable.js";
 import type { Slot } from "../parsing/Slot.js";
 import type { ReadonlyReactiveValue } from "../reactive/ReactiveValue/_ReadonlyReactiveValue.js";
@@ -56,7 +57,11 @@ class ComponentImplementation extends HTMLElement {
         if (!descriptor?.set) continue;
         // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
         delete this[key as keyof this];
-        this[key as keyof this] = value as this[keyof this];
+        this[key as keyof this] = (
+          value instanceof ReactiveValue
+          ? value.value
+          : value
+        ) as this[keyof this];
       }
 
       shadow.appendChild(
