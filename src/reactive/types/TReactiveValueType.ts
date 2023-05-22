@@ -9,7 +9,8 @@ export type TReactiveValueType<T> = (
   T extends TSpecialCaseObject ? ReactiveValue<T> :
   T extends Promise<infer V> ? ReactiveValue<V | undefined> :
   T extends ReadonlyArray<infer V> ? ReactiveArray<V> :
-  T extends Readonly<Record<string, unknown>> ? TReactiveProperties<T> :
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  T extends object ? TReactiveProperties<T> :
   T extends boolean ? ReactiveValue<boolean> :
   ReactiveValue<T>
 );
