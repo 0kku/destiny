@@ -2,12 +2,12 @@
   "compilerOptions": {
     "plugins": [],
     /* Basic Options */
-    "target": "es2021",                         /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'. */
+    "target": "ES2021",                         /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017','ES2018' or 'ESNEXT'. */
     "module": "ESNext",                         /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */
     "lib": [
-      "dom",
+      "DOM",
       "DOM.Iterable",
-      "esnext",
+      "ESNext",
     ],                                          /* Specify library files to be included in the compilation. */
     // "allowJs": true,                         /* Allow javascript files to be compiled. */
     // "checkJs": true,                         /* Report errors in .js files. */
@@ -23,6 +23,7 @@
     "downlevelIteration": true,                 /* Provide full support for iterables in 'for-of', spread, and destructuring when targeting 'ES5' or 'ES3'. */
     // "isolatedModules": true,                 /* Transpile each file as a separate module (similar to 'ts.transpileModule'). */
     "useDefineForClassFields": true,            /* Defines class fields in a way that's compatible with the current spec. */
+    "moduleDetection": "force",                 /* Every file is always treated as a module. */
 
     /* Strict Type-Checking Options */
     "strict": true,                             /* Enable all strict type-checking options. */
@@ -42,6 +43,7 @@
     "noUncheckedIndexedAccess": true,           /* Treat properties of index signatures as potentially undefined */
     "noImplicitOverride": true,                 /* Report errors on overriding properties of a super class without the use of override keyword */
     "forceConsistentCasingInFileNames": true,   /* Disallow inconsistently-cased references to the same file. */
+    "exactOptionalPropertyTypes": true,         /* Missing properties are not treated the same as properties with the value undefined. */
     "verbatimModuleSyntax": true,               /* Do not transform or elide any imports or exports not marked as type-only, ensuring they are written in the output file's format based on the 'module' setting. */
 
     /* Module Resolution Options */

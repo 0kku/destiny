@@ -20,26 +20,26 @@ function reactive<T extends Promise<unknown>, K = unknown> (
   initialValue: T,
   options: {
     fallback: T extends Promise<infer V> ? V : never,
-    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K>,
+    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K> | undefined,
   },
 ): ReactiveValue<T extends Promise<infer V> ? V : never>;
 function reactive<T, K = unknown> (
   initialValue: T,
   options?: {
-    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K>,
+    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K> | undefined,
   },
 ): TReactiveValueType<T>;
 function reactive<K = unknown> (
   initialValue: unknown,
   options?: {
-    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K>,
+    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K> | undefined,
   },
 ): TReactive<unknown>;
 function reactive<T, K = unknown> (
   initialValue: T,
   options: {
     fallback?: T,
-    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K>,
+    parent?: ReactiveValue<K> | ReadonlyReactiveArray<K> | undefined,
   } = {},
 ): unknown {
   if (isReactive(initialValue as unknown)) {
