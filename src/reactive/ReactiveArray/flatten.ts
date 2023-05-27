@@ -14,7 +14,7 @@ export const flatten = <
 ): Array<TUnwrapReactiveArray<TUnwrapArray<Input>>> => {
   return input.reduce((acc: Array<TUnwrapReactiveArray<TUnwrapArray<Input>>>, v) => {
     v instanceof ReadonlyReactiveArray
-    ? acc.push(...v.value)
+    ? acc.push(...v.value as Array<TUnwrapReactiveArray<TUnwrapArray<Input>>>)
     : acc.push(v as TUnwrapReactiveArray<TUnwrapArray<Input>>);
     return acc;
   }, []);

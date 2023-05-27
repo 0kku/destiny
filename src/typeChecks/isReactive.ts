@@ -17,6 +17,6 @@ export function isReactive (
   ].some(constr => input instanceof constr) || (
     !!input &&
     typeof input === "object" &&
-    reactivePropertiesFlag in input!
+    reactivePropertiesFlag in input
   );
 }

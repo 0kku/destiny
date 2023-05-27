@@ -25,6 +25,7 @@ import type { TMask } from "./TMask.js";
  */
  export class ReadonlyReactiveArray<InputType> {
   /** An Array containing the current values of the ReactiveArray */
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly #__value: Array<TArrayValueType<InputType>>;
   /** A getter for an Array containing the current values of the ReactiveArray. Notifies computed values when it's being accessed. */
   get #value (): Array<TArrayValueType<InputType>> {

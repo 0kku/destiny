@@ -6,7 +6,7 @@ export function describeType (
   if (input === null || input === undefined) {
     return `[${String(input)}]`;
   } else if (typeof input === "object") {
-    return safeStringifyObject(input!);
+    return safeStringifyObject(input);
   } else {
     return `[${typeof input} ${String(input)}]`;
   }

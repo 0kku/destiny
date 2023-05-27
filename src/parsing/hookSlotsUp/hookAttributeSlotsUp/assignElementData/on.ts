@@ -21,7 +21,7 @@ export function on (
   for (const [key, value] of eventListeners) {
     if (Array.isArray(value)) {
       //@ts-ignore TODO gotta figure out later if this can be resolved properly by TS
-      element.addEventListener(key, ...value);
+      element.addEventListener(key, ...value as Array<unknown>);
     } else {
       //@ts-ignore TODO gotta figure out later if this can be resolved properly by TS
       element.addEventListener(key, value);

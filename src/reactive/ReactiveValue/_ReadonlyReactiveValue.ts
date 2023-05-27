@@ -185,11 +185,11 @@ export class ReadonlyReactiveValue<T> {
   truthy<T> (
     valueWhenTruthy: T,
     valueWhenFalsy?: undefined,
-  ): ReadonlyReactiveValue<T | undefined>
+  ): ReadonlyReactiveValue<T | undefined>;
   truthy<T, K> (
     valueWhenTruthy: T,
     valueWhenFalsy: K,
-  ): ReadonlyReactiveValue<T | K>
+  ): ReadonlyReactiveValue<T | K>;
   truthy<T, K> (
     valueWhenTruthy: T,
     valueWhenFalsy: K,
@@ -200,11 +200,11 @@ export class ReadonlyReactiveValue<T> {
   falsy<T> (
     valueWhenFalsy: T,
     valueWhenTruthy?: undefined,
-  ): ReadonlyReactiveValue<T | undefined>
+  ): ReadonlyReactiveValue<T | undefined>;
   falsy<T, K> (
     valueWhenFalsy: T,
     valueWhenTruthy: K,
-  ): ReadonlyReactiveValue<T | K>
+  ): ReadonlyReactiveValue<T | K>;
   falsy<T, K> (
     valueWhenFalsy: T,
     valueWhenTruthy: K,

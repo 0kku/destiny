@@ -1,6 +1,7 @@
 import { Component, html } from "/dist/mod.js";
 
 export default class AsyncDemo extends Component {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   #AsyncComponent = import("./async-component.js");
 
   override template = html`

@@ -16,7 +16,7 @@ export function destinyProps (
     input instanceof Map
     ? input
     : new Map(Object.entries(input))
-  );
+  ) as Map<string, unknown>;
 
   emplace(elementDataStore, element, {
     insert: () => new ElementData({prop: map}),

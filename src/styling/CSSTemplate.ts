@@ -18,7 +18,7 @@ export class CSSTemplate {
   get styleSheet (): CSSStyleSheet {
     if (!this.#stylesheet) {
       this.#stylesheet = new CSSStyleSheet;
-      this.#stylesheet.replace(this.cssText);
+      void this.#stylesheet.replace(this.cssText);
     }
     return this.#stylesheet;
   }

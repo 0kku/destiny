@@ -28,7 +28,7 @@ export function hookContentSlotsUp (
         dependents: [slot],
       });
     } else if (item instanceof ReadonlyReactiveArray) {
-      new SlotArray(contentSlot, item);
+      new SlotArray(contentSlot, item as ReadonlyReactiveArray<DocumentFragment>);
     } else {
       new Slot(contentSlot, valueToFragment(item));
     }
