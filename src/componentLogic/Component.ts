@@ -71,7 +71,9 @@ class ComponentImplementation extends HTMLElement {
       );
 
       if (supportsAdoptedStyleSheets) {
-        shadow.adoptedStyleSheets = arrayWrap(new.target.styles).map(v => v.styleSheet);
+        shadow.adoptedStyleSheets = shadow.adoptedStyleSheets.concat(
+          arrayWrap(new.target.styles).map(v => v.styleSheet),
+        );
       } else {
         shadow.append(...arrayWrap(new.target.styles).map(v => v.styleElement));
       }
