@@ -13,6 +13,7 @@ import type { ReadonlyReactiveValue } from "../reactive/ReactiveValue/_ReadonlyR
 import type { ReadonlyReactiveArray } from "../reactive/ReactiveArray/_ReadonlyReactiveArray.js";
 import type { CSSTemplate } from "../styling/CSSTemplate.js";
 import type { TElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/elementData/TElementData.js";
+import type { Context } from "./Context.js";
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 interface ComponentImplementation {
@@ -139,6 +140,64 @@ class ComponentImplementation extends HTMLElement {
 
   static [Symbol.toPrimitive] (): string {
     return this.tagName;
+  }
+  
+  static #contextStore = new WeakMap<Component, WeakMap<Context<unknown>, unknown>>;
+
+  /**
+   * Creates a new internal WeakMap where contexts for current element can be stored.
+   * @returns the created context store
+   */
+  #initializeContextStore <T>() {
+    const map = new WeakMap<Context<T>, T>;
+    Component.#contextStore.set(this, map);
+    return map;
+  }
+
+  /**
+   * Creates and attaches a context to the target component. If an ancestor uses the same key for a context, that context gets shadowed and becomes inaccessible. If the context already exists on the target component, the method will throw.
+   * @param key the key for accessing the new context
+   * @param value the value to be stored in the context
+   * @returns the value that was stored
+   */
+  createContext <T>(
+    key: Context<T>,
+    value: T,
+  ): T {
+    const target = Component.#contextStore.get(this) ?? this.#initializeContextStore<T>();
+    if (target.has(key)) {
+      throw new Error("Context already exists");
+    }
+    target.set(key, value);
+    return value;
+  }
+  
+  /**
+   * @param key the key for the context that you want to search for
+   * @returns the internal WeakMap context store for the closest ancestor (including self) that contains the specified context key.
+   */
+  #findContextTarget <T>(
+    key: Context<T>,
+  ) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    let parent: Element | undefined = this;
+    // eslint-disable-next-line no-cond-assign
+    while (parent = parent.parentElement ?? (parent.parentNode as ShadowRoot | null)?.host) {
+      const map = Component.#contextStore.get(parent as ComponentImplementation);
+      if (map?.has(key)) return map;
+    }
+    return undefined;
+  }
+
+  /**
+   * Retreives the value for a given context from the closest ancestor (including self). Note that this is, relatively speaking, not a particularly fast operation; so consider caching the result on your component instance when appropriate.
+   * @param key the key for the context whose value you want to get
+   * @returns the value of the context
+   */
+  getContext <T>(
+    key: Context<T>,
+  ): T | undefined {
+    return this.#findContextTarget(key)?.get(key) as T | undefined;
   }
 }
 

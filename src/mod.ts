@@ -12,6 +12,7 @@ export { Component                 } from "./componentLogic/Component.js";
 export { getElementData            } from "./componentLogic/elementData.js";
 export { register                  } from "./componentLogic/register.js";
 export { Ref                       } from "./componentLogic/Ref.js";
+export { Context                   } from "./componentLogic/Context.js";
 export { classNames                } from "./reactive/classNames.js";
 export { css                       } from "./styling/css.js";
 export { CSSTemplate               } from "./styling/CSSTemplate.js";

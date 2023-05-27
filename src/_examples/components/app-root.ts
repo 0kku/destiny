@@ -1,6 +1,8 @@
-import { Component, html, css } from "/dist/mod.js";
+import { Component, html, css, Context } from "/dist/mod.js";
 
 import TabView from "./tab-view.js";
+
+export const exampleContext = new Context<string>;
 
 export class AppRoot extends Component {
   static override styles = css`
@@ -16,6 +18,10 @@ export class AppRoot extends Component {
       --border-radius: 3px;
     }
   `;
+
+  connectedCallback () {
+    this.createContext(exampleContext, "working!");
+  }
 
   override template = html`
     <${TabView} />
