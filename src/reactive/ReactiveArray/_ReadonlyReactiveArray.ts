@@ -6,6 +6,7 @@ import { splicers } from "./splicers.js";
 import { flatten } from "./flatten.js";
 import { updateFilteredArray } from "./updateFilteredArray.js";
 import { computed, computedConsumer } from "../computed.js";
+import { currentSideEffect } from "../sideEffect.js";
 import { ReactiveValue } from "../ReactiveValue/_ReactiveValue.js";
 import { internalSetReactiveValue } from "../ReactiveValue/internalSetReactiveValue.js";
 import { ReadonlyReactiveValue } from "../ReactiveValue/_ReadonlyReactiveValue.js";
@@ -36,8 +37,8 @@ import type { TMask } from "./TMask.js";
         consumer, 
         fn,
       );
-
-      // this.#callbacks.add(computedConsumer.fn);
+    } else if (currentSideEffect) {
+      this.#callbacks.add(currentSideEffect);
     }
 
     return this.#__value;

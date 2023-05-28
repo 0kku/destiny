@@ -7,6 +7,7 @@ export { ReadonlyReactiveArray     } from "./reactive/ReactiveArray/_ReadonlyRea
 export { reactiveProperties        } from "./reactive/reactiveProperties/_reactiveProperties.js";
 export { reactive                  } from "./reactive/reactive.js";
 export { computed                  } from "./reactive/computed.js";
+export { sideEffect                } from "./reactive/sideEffect.js";
 export { xml, xml as html          } from "./parsing/_xml.js";
 export { Component                 } from "./componentLogic/Component.js";
 export { getElementData            } from "./componentLogic/elementData.js";

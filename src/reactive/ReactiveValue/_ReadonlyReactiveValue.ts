@@ -5,6 +5,7 @@ import { concatIterators } from "../../utils/concatIterators.js";
 import { PassReactiveValue } from "./PassReactiveValue.js";
 import { internalSetReactiveValue } from "./internalSetReactiveValue.js";
 import { stronglyHeldDependencies, weaklyHeldDependencies } from "./valueDependencyCaches.js";
+import { currentSideEffect } from "../sideEffect.js";
 import type { TReactiveValueCallback } from "./TReactiveValueCallback.js";
 import type { TReactiveValueUpdaterOptions } from "./TReactiveValueUpdaterOptions.js";
 import type { ReadonlyReactiveArray } from "../ReactiveArray/_ReadonlyReactiveArray.js";
@@ -166,6 +167,8 @@ export class ReadonlyReactiveValue<T> {
         consumer, 
         fn,
       );
+    } else if (currentSideEffect) {
+      this.#callbacks.add(currentSideEffect);
     }
 
     return this.#value;
