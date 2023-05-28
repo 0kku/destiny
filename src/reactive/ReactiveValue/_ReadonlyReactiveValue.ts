@@ -25,6 +25,9 @@ export class ReadonlyReactiveValue<T> {
   constructor (
     initialValue: T,
   ) {
+    if (initialValue instanceof ReadonlyReactiveValue) {
+      throw new TypeError("Illegal nested reactive value");
+    }
     this.#value = initialValue;
     internalSetReactiveValue.set(
       this,
@@ -49,6 +52,9 @@ export class ReadonlyReactiveValue<T> {
       force: false,
       ...options,
     };
+    if (value instanceof ReadonlyReactiveValue) {
+      throw new TypeError("Illegal nested reactive value");
+    }
     if (force || !Object.is(value, this.#value)) {
       this.#value = value;
 
