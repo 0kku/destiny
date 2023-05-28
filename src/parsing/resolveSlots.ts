@@ -33,8 +33,8 @@ export function resolveSlots (
         contentSlots.push(fragment);
       }
     } else if (isElement(node)) {
-      for (const {value} of node.attributes) {
-        if (value.includes("__internal_")) {
+      for (const {name, value} of node.attributes) {
+        if (value.includes("__internal_") || name.startsWith("prop:")) {
           node.setAttribute("destiny:attr", "");
         }
       }

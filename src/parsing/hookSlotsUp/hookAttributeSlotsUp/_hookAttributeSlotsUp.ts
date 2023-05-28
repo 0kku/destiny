@@ -28,6 +28,10 @@ export function hookAttributeSlotsUp (
         if (captureProps && name !== "destiny:attr") {
           const [namespace, attributeName] = parseAttributeName(name);
           values[namespace].set(attributeName, value);
+        } else if (name.startsWith("prop:")) {
+          const [, attributeName] = parseAttributeName(name);
+          // @ts-ignore user-defined value that can't be statically type-checked here
+          element[attributeName] = value;
         }
         continue;
       }
