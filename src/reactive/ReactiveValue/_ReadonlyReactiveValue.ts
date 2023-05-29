@@ -11,15 +11,17 @@ import type { TReactiveValueUpdaterOptions } from "./TReactiveValueUpdaterOption
 import type { ReadonlyReactiveArray } from "../ReactiveArray/_ReadonlyReactiveArray.js";
 
 
-export class ReadonlyReactiveValue<T> {
+export class ReadonlyReactiveValue<out T> {
   /** The current value of the `ReactiveValue`. */
   #value: T;
 
+  // SAFETY: `any` used instead of `T` to avoid getting T's variance detected as invariant. The consumer is only ever called internally and is not exposed directly in the public API.
   /** All the callbacks added to the `ReactiveValue`, which are to be called when the `value` updates. */
-  readonly #callbacks: Set<TReactiveValueCallback<T>> = new Set;
+  readonly #callbacks: Set<TReactiveValueCallback<any>> = new Set;
 
+  // SAFETY: `any` used instead of `T` to avoid getting T's variance detected as invariant. The consumer is only ever called internally and is not exposed directly in the public API.
   // eslint-disable-next-line @typescript-eslint/ban-types
-  readonly #consumers = new IterableWeakMap<object, TReactiveValueCallback<T>>();
+  readonly #consumers = new IterableWeakMap<object, TReactiveValueCallback<any>>();
 
   readonly dependencies = new Map<ReadonlyReactiveValue<any> | ReadonlyReactiveArray<any>, VoidFunction>();
 
