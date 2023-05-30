@@ -26,8 +26,8 @@ class ComponentImplementation extends HTMLElement {
   static captureProps = false;
   template: (
     | Renderable
-    | ReadonlyReactiveValue<any>
-    | ReadonlyReactiveArray<any>
+    | ReadonlyReactiveValue<unknown>
+    | ReadonlyReactiveArray<unknown>
   ) = xml`<slot />`;
   static styles: Array<CSSTemplate> | CSSTemplate = [];
 
