@@ -24,7 +24,7 @@ import type { TMask } from "./TMask.js";
 /**
  * `ReadonlyReactiveArray`s are reactive values that contain multiple values and whose updates can be listened to. In general, `ReadonlyReactiveArray`s behave very similar to native `ReadonlyArray`s. The main difference is, that most primitive values are given as `ReactiveValue`s and methods will return a new `ReadonlyReactiveArray`, whose values are tied to the original `ReadonlyReactiveArray`. The class also provides a few custom convenience methods.
  */
- export class ReadonlyReactiveArray<InputType> {
+ export class ReadonlyReactiveArray<out InputType> {
   /** An Array containing the current values of the ReactiveArray */
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly #__value: Array<TArrayValueType<InputType>>;
@@ -47,11 +47,13 @@ import type { TMask } from "./TMask.js";
   /** An Array containing ReactiveValues for each index of the ReadonlyReactiveArray */
   readonly #indices: Array<ReactiveValue<number>>;
 
+  // SAFETY: `any` used instead of `T` to avoid getting T's variance detected as invariant. The consumer is only ever called internally and is not exposed directly in the public API.
   /** A Set containing all the callbacks to be called whenever the ReadonlyReactiveArray is updated */
-  readonly #callbacks: Set<TReactiveArrayCallback<TArrayValueType<InputType>>> = new Set;
+  readonly #callbacks: Set<TReactiveArrayCallback<TArrayValueType<any>>> = new Set;
 
+  // SAFETY: `any` used instead of `T` to avoid getting T's variance detected as invariant. The consumer is only ever called internally and is not exposed directly in the public API.
   // eslint-disable-next-line @typescript-eslint/ban-types
-  readonly #consumers = new IterableWeakMap<object, TReactiveArrayCallback<TArrayValueType<InputType>>>();
+  readonly #consumers = new IterableWeakMap<object, TReactiveArrayCallback<TArrayValueType<any>>>();
 
   /** Size of the ReactiveArray as a ReactiveValue */
   readonly #length: ReadonlyReactiveValue<number>;
@@ -479,7 +481,8 @@ import type { TMask } from "./TMask.js";
         index,
         deleteCount,
         ...values.map(
-          (v, i) => cb(v, i + index),
+          // SAFETY: any asserted as TArrayValueType<InputType>, which is its true type; see definition of #callbacks
+          (v, i) => cb(v as TArrayValueType<InputType>, i + index),
         ),
       ),
     );
