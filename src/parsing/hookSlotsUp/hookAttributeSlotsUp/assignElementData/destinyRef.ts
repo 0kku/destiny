@@ -1,6 +1,7 @@
 import { Ref } from "../../../../componentLogic/Ref.js";
 import { ReactiveValue } from "../../../../reactive/ReactiveValue/_ReactiveValue.js";
 import { isObject } from "../../../../typeChecks/isObject.js";
+import { deferredElements } from "../../../deferredElements.js";
 
 /**
  * `destiny:ref` prop allows you to to give a `ReactiveValue` to
@@ -12,6 +13,7 @@ import { isObject } from "../../../../typeChecks/isObject.js";
  * const ref = new ReactiveValue;
  *
  * ref.pipe(element => {
+ *   if (!element) return;
  *   console.log(element.innerHTML); // "Hello!";
  * });
  *
@@ -34,4 +36,11 @@ export function destinyRef (
   queueMicrotask(() => {
     value.value = element;
   });
+
+  if (value instanceof ReactiveValue) { // This check can be removed once support for Refs is removed
+    deferredElements.set(
+      element,
+      () => value.value = undefined,
+    );
+  }
 }
