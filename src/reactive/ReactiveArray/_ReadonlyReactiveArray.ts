@@ -61,6 +61,7 @@ import type { TMask } from "./TMask.js";
   constructor (
     ...input: Array<InputType>
   ) {
+    // (next 2 guard statements) Construction of reactive entities is not allowed inside computed() and sideEffect() because accessing the current value of a newly created reactive entity causes it to be added as a dependency for the resulting reactive value and thus can't be collected, causing a memory leak. Technically, it could be possible to allow creation of new reactive entities, but disallow accessing their value or alternatively do additional bookkeeping to avoid adding any reactive values as a dependency that were created inside. However, there doesn't appear to be any valid use-cases for creating a reactive entity inside a computed value or a sideEffect and having a need to do so suggests a misunderstanding of the programming paradigm and would add unnecessary complexity while encouraging writing confusing and poorly performing code.
     if (computedConsumer) {
       throw new Error("Illegal construction of reactive array inside computed()");
     }
