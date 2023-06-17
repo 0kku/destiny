@@ -31,6 +31,12 @@ export class ReadonlyReactiveValue<out T> {
     if (initialValue instanceof ReadonlyReactiveValue) {
       throw new TypeError("Illegal nested reactive value");
     }
+    if (computedConsumer) {
+      throw new Error("Illegal construction of reactive value inside computed()");
+    }
+    if (currentSideEffect) {
+      throw new Error("Illegal construction of reactive value inside sideEffect()");
+    }
     this.#value = initialValue;
     internalSetReactiveValue.set(
       this,

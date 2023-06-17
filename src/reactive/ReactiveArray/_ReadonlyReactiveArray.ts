@@ -61,6 +61,12 @@ import type { TMask } from "./TMask.js";
   constructor (
     ...input: Array<InputType>
   ) {
+    if (computedConsumer) {
+      throw new Error("Illegal construction of reactive array inside computed()");
+    }
+    if (currentSideEffect) {
+      throw new Error("Illegal construction of reactive array inside sideEffect()");
+    }
     this.#__value = makeNonPrimitiveItemsReactive(
       input,
       this,
