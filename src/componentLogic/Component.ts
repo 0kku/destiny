@@ -203,7 +203,7 @@ class ComponentImplementation extends HTMLElement {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export type Component<
   // eslint-disable-next-line @typescript-eslint/ban-types
-  TProperties extends Record<string, unknown> = {}
+  TProperties extends object = {}
 > = (
   & ComponentImplementation
   & TProperties
@@ -211,7 +211,7 @@ export type Component<
 
 type TComponentConstructor = (
   // eslint-disable-next-line @typescript-eslint/ban-types
-  & (new <TProperties extends Record<string, unknown> = {}> () => Component<TProperties>)
+  & (new <TProperties extends object = {}> () => Component<TProperties>)
   & typeof ComponentImplementation
 );
 
