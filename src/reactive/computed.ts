@@ -20,14 +20,14 @@ type TComputedOptions = {
  * 
  * @param callback The function that computes the value
  */
-export function computed (
-  callback: TemplateStringsArray,
-  ...props: Array<unknown>
-): ReadonlyReactiveValue<string>;
 export function computed<T> (
   callback: () => T,
   options?: TComputedOptions,
 ): ReadonlyReactiveValue<T>;
+export function computed (
+  callback: TemplateStringsArray,
+  ...props: Array<unknown>
+): ReadonlyReactiveValue<string>;
 export function computed<T> (
   callback: (() => T) | TemplateStringsArray,
   ...props: Array<unknown> | [TComputedOptions]
