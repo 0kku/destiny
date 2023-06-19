@@ -19,8 +19,9 @@ export { css                       } from "./styling/css.js";
 export { CSSTemplate               } from "./styling/CSSTemplate.js";
 export { attachCSSProperties       } from "./styling/attachCSSProperties.js";
 
-export type { TReactiveValueType      } from "./reactive/types/TReactiveValueType.js";
-export type { TReactiveProperties     } from "./reactive/reactiveProperties/TReactiveProperties.js";
-export type { TReactiveEntity         } from "./reactive/types/TReactiveEntity.js";
-export type { TReactive               } from "./reactive/types/TReactive.js";
-export type { TemplateResult          } from "./parsing/TemplateResult.js";
+export type { TReactiveValueType   } from "./reactive/types/TReactiveValueType.js";
+export type { TReactiveProperties  } from "./reactive/reactiveProperties/TReactiveProperties.js";
+export type { TReactiveEntity      } from "./reactive/types/TReactiveEntity.js";
+export type { TReactive            } from "./reactive/types/TReactive.js";
+export type { TemplateResult       } from "./parsing/TemplateResult.js";
+export type { TCssTemplateSlot     } from "./styling/css.js";
