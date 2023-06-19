@@ -1,6 +1,5 @@
-import { Ref } from "../../../../componentLogic/Ref.js";
-import { ReactiveValue } from "../../../../reactive/ReactiveValue/_ReactiveValue.js";
 import { isObject } from "../../../../typeChecks/isObject.js";
+import { describeType } from "../../../../utils/describeType.js";
 import { deferredElements } from "../../../deferredElements.js";
 
 /**
@@ -12,9 +11,9 @@ import { deferredElements } from "../../../deferredElements.js";
  * ```js
  * const ref = new ReactiveValue;
  *
- * ref.pipe(element => {
- *   if (!element) return;
- *   console.log(element.innerHTML); // "Hello!";
+ * sideEffect(() => {
+ *   if (!element.value) return;
+ *   console.log(element.value.textContent); // "Hello!";
  * });
  *
  * html`
@@ -26,21 +25,21 @@ export function destinyRef (
   element: HTMLElement,
   value: unknown,
 ): void {
-  if (!((value instanceof ReactiveValue) || (value instanceof Ref))) {
-    throw new TypeError(`Attribute value for destiny:ref must be a ReactiveValue, but it was [${
-      isObject(value)
-      ? `${value.constructor.name} (Object)`
-      : `${String(value)} (${typeof value})`
-    }] in \n${element.outerHTML}`);
+  if (!hasValueField(value)) {
+    throw new TypeError(`Attribute value for destiny:ref must be an object that has a "value" field, but it was ${describeType(value)} in \n${element.outerHTML}`);
   }
   queueMicrotask(() => {
     value.value = element;
   });
 
-  if (value instanceof ReactiveValue) { // This check can be removed once support for Refs is removed
-    deferredElements.set(
-      element,
-      () => value.value = undefined,
-    );
-  }
+  deferredElements.set(
+    element,
+    () => value.value = undefined,
+  );
+}
+
+function hasValueField (
+  input: unknown,
+): input is { value: unknown } {
+  return !(isObject(input) && "value" in input);
 }
