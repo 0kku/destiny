@@ -2,16 +2,17 @@ import type { ReactiveArray } from "../ReactiveArray/_ReactiveArray.js";
 import type { TSpecialCaseObject } from "../reactiveProperties/specialCaseObjects.js";
 import type { TReactiveProperties } from "../reactiveProperties/TReactiveProperties.js";
 import type { ReactiveValue } from "../ReactiveValue/_ReactiveValue.js";
+import type { TPrimitive } from "./TPrimitive.js";
 import type { TReactive } from "./TReactive.js";
 
 export type TReactiveValueType<T> = (
   T extends TReactive<unknown> ? T :
-  [T, unknown] extends [unknown, T] ? TReactive<T> : 
   T extends TSpecialCaseObject ? ReactiveValue<T> :
   T extends Promise<infer V> ? ReactiveValue<V | undefined> :
   T extends ReadonlyArray<infer V> ? ReactiveArray<V> :
   // eslint-disable-next-line @typescript-eslint/ban-types
   T extends object ? TReactiveProperties<T> :
   T extends boolean ? ReactiveValue<boolean> :
-  ReactiveValue<T>
+  T extends TPrimitive ? ReactiveValue<T> :
+  TReactive<T>
 );
