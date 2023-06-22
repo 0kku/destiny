@@ -6,6 +6,7 @@ import type { TReactive } from "./TReactive.js";
 
 export type TReactiveValueType<T> = (
   T extends TReactive<unknown> ? T :
+  [T, unknown] extends [unknown, T] ? TReactive<T> : 
   T extends TSpecialCaseObject ? ReactiveValue<T> :
   T extends Promise<infer V> ? ReactiveValue<V | undefined> :
   T extends ReadonlyArray<infer V> ? ReactiveArray<V> :
