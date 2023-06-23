@@ -71,33 +71,29 @@ function reactive<T, V = T, K = unknown> (
  */
 function reactive<T, K = unknown> (
   initialValue: T | undefined = undefined,
-  options: {
+  {fallback, parent}: {
     fallback?: T,
     parent?: ReactiveValue<K> | ReadonlyReactiveArray<K> | undefined,
   } = {},
-): unknown {
+) {
   if (isReactive(initialValue)) {
     return initialValue;
   }
   
-  const {parent} = options;
   let ref: TReactiveEntity<unknown>;
 
-  if (isObject(initialValue)) {
-    if (Array.isArray(initialValue)) {
-      ref = new ReactiveArray(...initialValue);
-    } else if (initialValue instanceof Promise) {
-      const temp = new ReactiveValue(options.fallback);
-      void initialValue.then(value => temp.value = value as T);
-      ref = temp as ReactiveValue<unknown>;
-    } else if (isSpecialCaseObject(initialValue)) {
-      ref = new ReactiveValue<unknown>(initialValue);
-    } else {
-      // objects passed to reactiveProperties don't get callbacks bound to them: the callbacks are attached to each field separately.
-      return reactiveProperties(initialValue, parent);
-    }
+  if (Array.isArray(initialValue)) {
+    ref = new ReactiveArray(...initialValue);
+  } else if (initialValue instanceof Promise) {
+    const temp = new ReactiveValue(fallback);
+    void initialValue.then((value: T) => temp.value = value);
+    ref = temp;
+  } else if (isSpecialCaseObject(initialValue)) {
+    ref = new ReactiveValue(initialValue);
+  } else if (isObject(initialValue)) {
+    return reactiveProperties(initialValue, parent);
   } else {
-    ref = new ReactiveValue<unknown>(initialValue);
+    ref = new ReactiveValue(initialValue);
   }
 
   if (parent) {
