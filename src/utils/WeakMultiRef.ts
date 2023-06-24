@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
-
 const refs = new Set<object>();
 
 export class WeakMultiRef {

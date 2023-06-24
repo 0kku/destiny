@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference
-
 export { ReactiveValue             } from "./reactive/ReactiveValue/_ReactiveValue.js";
 export { ReadonlyReactiveValue     } from "./reactive/ReactiveValue/_ReadonlyReactiveValue.js";
 export { ReactiveArray             } from "./reactive/ReactiveArray/_ReactiveArray.js";

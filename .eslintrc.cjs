@@ -136,7 +136,7 @@ module.exports = {
     "@typescript-eslint/no-non-null-assertion": ["off"],
     "@typescript-eslint/no-parameter-properties": ["warn"],
     "@typescript-eslint/no-require-imports": ["error"],
-    "@typescript-eslint/no-this-alias": ["warn"],
+    "@typescript-eslint/no-this-alias": ["off"],
     "@typescript-eslint/no-throw-literal": ["error"],
     "@typescript-eslint/no-unnecessary-boolean-literal-compare": ["warn"],
     "@typescript-eslint/no-unnecessary-condition": ["warn", {
@@ -176,5 +176,12 @@ module.exports = {
     "@typescript-eslint/type-annotation-spacing": ["warn"],
     "@typescript-eslint/unbound-method": ["warn"],
     "@typescript-eslint/unified-signatures": ["warn"],
+    "@typescript-eslint/ban-types": ["warn", {
+      "types": {
+        "{}": false,
+        "object": false,
+        "Function": false,
+      },
+    }],
   },
 };

@@ -14,6 +14,7 @@ import type { CSSTemplate } from "../styling/CSSTemplate.js";
 import type { TElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/elementData/TElementData.js";
 import type { Context } from "./Context.js";
 
+// Use of interface necessary for declaration merging.
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 interface ComponentImplementation {
   destinySlot?: Slot,
@@ -42,7 +43,6 @@ class ComponentImplementation extends HTMLElement {
     queueMicrotask(() => {
       // Upgrade values that have an associated setter but were assigned before the setters existed:
       for (const [key, value] of this.elementData?.prop ?? []) {
-        // eslint-disable-next-line @typescript-eslint/ban-types
         let proto = this.constructor.prototype as Function | undefined;
         let descriptor: PropertyDescriptor | undefined;
 
@@ -51,10 +51,10 @@ class ComponentImplementation extends HTMLElement {
             proto,
             key,
           );
-          // eslint-disable-next-line @typescript-eslint/ban-types
           proto = Object.getPrototypeOf(proto) as Function;
         }
         if (!descriptor?.set) continue;
+        // Deleting old property from instance that was added by the parser to the object before its prototype was set to this class. It would interfere with the accessors on the prototype if not deleted. The same value is assigned after to trigger the setter.
         // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
         delete this[key as keyof this];
         this[key as keyof this] = (
@@ -178,8 +178,8 @@ class ComponentImplementation extends HTMLElement {
   #findContextTarget <T>(
     key: Context<T>,
   ) {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
     let parent: Element | undefined = this;
+    // Not a mistake. Assigning next parent until we've reached the root and parent is null.
     // eslint-disable-next-line no-cond-assign
     while (parent = parent.parentElement ?? (parent.parentNode as ShadowRoot | null)?.host) {
       const map = Component.#contextStore.get(parent as ComponentImplementation);
@@ -200,9 +200,9 @@ class ComponentImplementation extends HTMLElement {
   }
 }
 
+// This is a type for the Component value, which is a constructor. So this naming is necessary in order to have type behavior typical of exported classes.
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export type Component<
-  // eslint-disable-next-line @typescript-eslint/ban-types
   TProperties extends object = {}
 > = (
   & ComponentImplementation
@@ -210,10 +210,10 @@ export type Component<
 );
 
 type TComponentConstructor = (
-  // eslint-disable-next-line @typescript-eslint/ban-types
   & (new <TProperties extends object = {}> () => Component<TProperties>)
   & typeof ComponentImplementation
 );
 
+// This is a constructor so PascalCase is appropriate.
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const Component = ComponentImplementation as TComponentConstructor;

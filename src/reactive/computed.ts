@@ -11,7 +11,6 @@ export let computedConsumer: {
 const hold = new WeakMap<ReactiveValue<any> | WeakMultiRef, VoidFunction>();
 
 type TComputedOptions = {
-  // eslint-disable-next-line @typescript-eslint/ban-types
   dependents?: ReadonlyArray<object>,
 };
 

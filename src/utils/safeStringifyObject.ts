@@ -1,5 +1,4 @@
 export function safeStringifyObject (
-  // eslint-disable-next-line @typescript-eslint/ban-types
   input: object,
 ): string {
   try {

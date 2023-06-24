@@ -20,7 +20,6 @@ export class ReadonlyReactiveValue<out T> {
   readonly #callbacks: Set<TReactiveValueCallback<any>> = new Set;
 
   // SAFETY: `any` used instead of `T` to avoid getting T's variance detected as invariant. The consumer is only ever called internally and is not exposed directly in the public API.
-  // eslint-disable-next-line @typescript-eslint/ban-types
   readonly #consumers = new IterableWeakMap<object, TReactiveValueCallback<any>>();
 
   readonly dependencies = new Map<ReadonlyReactiveValue<any> | ReadonlyReactiveArray<any>, VoidFunction>();
@@ -91,9 +90,7 @@ export class ReadonlyReactiveValue<out T> {
   /**
    * When the object is attempted to be cast to a primitive, the current value of `this.value` is used as a hint. Obviously, if you're trying to cast a `ReactiveValue<string>` into a `number`, it'll just cast `this.value` from a `string` to a `number`. Trying to cast `ReactiveValue<object>` to a primitive will throw.
    */
-  // eslint-disable-next-line @typescript-eslint/ban-types
   [Symbol.toPrimitive] (): T extends object ? never : T {
-    // eslint-disable-next-line @typescript-eslint/ban-types
     return this.value as T extends object ? never : T;
   }
 
@@ -140,7 +137,6 @@ export class ReadonlyReactiveValue<out T> {
     callback: TReactiveValueCallback<T>,
     options: {
       noFirstRun?:  boolean,
-      // eslint-disable-next-line @typescript-eslint/ban-types
       dependents?: ReadonlyArray<object>,
     } = {},
   ): this {

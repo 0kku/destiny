@@ -2,6 +2,7 @@ import { getXmlErrorMessage } from "./getXmlErrorMessage.js";
 import { parseAsNewDocument } from "./parseAsNewDocument.js";
 import { parseInSafari } from "./parseInSafari.js";
 
+// Different quotes used to prevent having to escape. Probably should look into eventually removing this rule in favor of a formatter.
 // eslint-disable-next-line @typescript-eslint/quotes
 export const namespaces = `xmlns="http://www.w3.org/1999/xhtml" xmlns:on="p:u" xmlns:prop="p:u" xmlns:destiny="p:u"`;
 

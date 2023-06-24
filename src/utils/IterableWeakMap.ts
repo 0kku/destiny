@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */ 
-
 type TEmplaceOptions<K extends object, V> = {
   insert: (key: K, map: IterableWeakMap<K, V>) => V,
   update: (oldValue: V, key: K, map: IterableWeakMap<K, V>) => V,

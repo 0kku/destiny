@@ -5,7 +5,6 @@ export let currentSideEffect: VoidFunction | undefined;
 const hold = new WeakMap<object, VoidFunction>();
 
 type TSideEffectOptions = {
-  // eslint-disable-next-line @typescript-eslint/ban-types
   dependents?: ReadonlyArray<object>,
 };
 

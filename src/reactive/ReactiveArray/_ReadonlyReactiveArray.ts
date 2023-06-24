@@ -26,8 +26,7 @@ import type { TMask } from "./TMask.js";
  */
  export class ReadonlyReactiveArray<out InputType> {
   /** An Array containing the current values of the ReactiveArray */
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly #__value: Array<TArrayValueType<InputType>>;
+  readonly #underlyingArray: Array<TArrayValueType<InputType>>;
   /** A getter for an Array containing the current values of the ReactiveArray. Notifies computed values when it's being accessed. */
   get #value (): Array<TArrayValueType<InputType>> {
     if (computedConsumer) {
@@ -41,7 +40,7 @@ import type { TMask } from "./TMask.js";
       this.#callbacks.add(currentSideEffect);
     }
 
-    return this.#__value;
+    return this.#underlyingArray;
   }
 
   /** An Array containing ReactiveValues for each index of the ReadonlyReactiveArray */
@@ -52,7 +51,6 @@ import type { TMask } from "./TMask.js";
   readonly #callbacks: Set<TReactiveArrayCallback<TArrayValueType<any>>> = new Set;
 
   // SAFETY: `any` used instead of `T` to avoid getting T's variance detected as invariant. The consumer is only ever called internally and is not exposed directly in the public API.
-  // eslint-disable-next-line @typescript-eslint/ban-types
   readonly #consumers = new IterableWeakMap<object, TReactiveArrayCallback<TArrayValueType<any>>>();
 
   /** Size of the ReactiveArray as a ReactiveValue */
@@ -68,7 +66,7 @@ import type { TMask } from "./TMask.js";
     if (currentSideEffect) {
       throw new Error("Illegal construction of reactive array inside sideEffect()");
     }
-    this.#__value = makeNonPrimitiveItemsReactive(
+    this.#underlyingArray = makeNonPrimitiveItemsReactive(
       input,
       this,
     );
@@ -77,7 +75,7 @@ import type { TMask } from "./TMask.js";
       (_, i) => new ReactiveValue(i),
     );
     splicers.set(this, (...args) => this.#splice(...args));
-    internalArrays.set(this, this.#__value);
+    internalArrays.set(this, this.#underlyingArray);
   }
 
   /**
@@ -215,7 +213,6 @@ import type { TMask } from "./TMask.js";
     callback: TReactiveArrayCallback<TArrayValueType<InputType>>,
     options: {
       noFirstRun?: boolean,
-      // eslint-disable-next-line @typescript-eslint/ban-types
       dependents?: ReadonlyArray<object>,
     } = {},
   ): this {
