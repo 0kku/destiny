@@ -41,5 +41,5 @@ export function destinyRef (
 function hasValueField (
   input: unknown,
 ): input is { value: unknown } {
-  return !(isObject(input) && "value" in input);
+  return isObject(input) && "value" in input;
 }
