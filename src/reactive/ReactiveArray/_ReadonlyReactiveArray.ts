@@ -53,6 +53,8 @@ import type { TMask } from "./TMask.js";
   // SAFETY: `any` used instead of `T` to avoid getting T's variance detected as invariant. The consumer is only ever called internally and is not exposed directly in the public API.
   readonly #consumers = new IterableWeakMap<object, TReactiveArrayCallback<TArrayValueType<any>>>();
 
+  readonly dependencies = new Map<ReadonlyReactiveValue<any> | ReadonlyReactiveArray<any>, VoidFunction>();
+
   /** Size of the ReactiveArray as a ReactiveValue */
   readonly #length: ReadonlyReactiveValue<number>;
 
@@ -134,7 +136,7 @@ import type { TMask } from "./TMask.js";
    * @param items array of items to replace the current ones with.
    */
   set value (
-    items: ReadonlyArray<InputType | TArrayValueType<InputType>>,
+    items: Iterable<InputType | TArrayValueType<InputType>>,
   ) {
     this.#splice(
       0,
