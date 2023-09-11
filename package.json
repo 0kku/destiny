@@ -6,10 +6,10 @@
   "types": "./src/mod.ts",
   "type": "module",
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.61.0",
-    "@typescript-eslint/parser": "^5.61.0",
-    "eslint": "^8.44.0",
-    "typescript": "^5.1.6"
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "eslint": "^8.49.0",
+    "typescript": "^5.2.2"
   },
   "scripts": {
     "lint": "npm run lint:types && npm run lint:code",
