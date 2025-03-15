@@ -14,12 +14,12 @@ export class CSSTemplate {
     );
   }
 
-  #stylesheet: CSSStyleSheet | undefined;
+  #styleSheet: CSSStyleSheet | undefined;
   get styleSheet (): CSSStyleSheet {
-    if (!this.#stylesheet) {
-      this.#stylesheet = new CSSStyleSheet;
-      void this.#stylesheet.replace(this.cssText);
+    if (!this.#styleSheet) {
+      this.#styleSheet = new CSSStyleSheet;
+      void this.#styleSheet.replaceSync(this.cssText);
     }
-    return this.#stylesheet;
+    return this.#styleSheet;
   }
 }
