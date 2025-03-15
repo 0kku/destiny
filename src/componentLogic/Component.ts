@@ -2,7 +2,6 @@ import { xml } from "../parsing/_xml.js";
 import { register } from "./register.js";
 import { attachCSSProperties } from "../styling/attachCSSProperties.js";
 import { deferredElements } from "../parsing/deferredElements.js";
-import { supportsAdoptedStyleSheets } from "../styling/supportsAdoptedStyleSheets.js";
 import { arrayWrap } from "../utils/arrayWrap.js";
 import { getElementData } from "./elementData.js";
 import { isReactive } from "../typeChecks/isReactive.js";
@@ -70,13 +69,9 @@ class ComponentImplementation extends HTMLElement {
         : this.template.content,
       );
 
-      if (supportsAdoptedStyleSheets) {
-        shadow.adoptedStyleSheets = shadow.adoptedStyleSheets.concat(
-          arrayWrap(new.target.styles).map(v => v.styleSheet),
-        );
-      } else {
-        shadow.append(...arrayWrap(new.target.styles).map(v => v.styleElement));
-      }
+      shadow.adoptedStyleSheets = shadow.adoptedStyleSheets.concat(
+        arrayWrap(new.target.styles).map(v => v.styleSheet),
+      );
     });
 
     // Disabled for now due to lack of vendor support
