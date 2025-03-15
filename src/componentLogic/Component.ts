@@ -2,14 +2,12 @@ import { xml } from "../parsing/_xml.js";
 import { register } from "./register.js";
 import { attachCSSProperties } from "../styling/attachCSSProperties.js";
 import { deferredElements } from "../parsing/deferredElements.js";
-import { arrayWrap } from "../utils/arrayWrap.js";
 import { getElementData } from "./elementData.js";
 import { isReactive } from "../typeChecks/isReactive.js";
 import { ReadonlyReactiveValue } from "../reactive/ReactiveValue/_ReadonlyReactiveValue.js";
 import type { Renderable } from "../parsing/Renderable.js";
 import type { Slot } from "../parsing/Slot.js";
 import type { ReadonlyReactiveArray } from "../reactive/ReactiveArray/_ReadonlyReactiveArray.js";
-import type { CSSTemplate } from "../styling/CSSTemplate.js";
 import type { TElementData } from "../parsing/hookSlotsUp/hookAttributeSlotsUp/elementData/TElementData.js";
 import type { Context } from "./Context.js";
 
@@ -29,7 +27,7 @@ class ComponentImplementation extends HTMLElement {
     | ReadonlyReactiveValue<unknown>
     | ReadonlyReactiveArray<unknown>
   ) = xml`<slot />`;
-  static styles: Array<CSSTemplate> | CSSTemplate = [];
+  static styles: Array<CSSStyleSheet> | CSSStyleSheet = [];
 
   constructor () {
     super();
@@ -70,7 +68,7 @@ class ComponentImplementation extends HTMLElement {
       );
 
       shadow.adoptedStyleSheets = shadow.adoptedStyleSheets.concat(
-        arrayWrap(new.target.styles).map(v => v.styleSheet),
+        new.target.styles,
       );
     });
 

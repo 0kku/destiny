@@ -15,7 +15,6 @@ export { Ref                       } from "./componentLogic/Ref.js";
 export { Context                   } from "./componentLogic/Context.js";
 export { classNames                } from "./reactive/classNames.js";
 export { css                       } from "./styling/css.js";
-export { CSSTemplate               } from "./styling/CSSTemplate.js";
 export { attachCSSProperties       } from "./styling/attachCSSProperties.js";
 
 export type { TReactiveValueType   } from "./reactive/types/TReactiveValueType.js";

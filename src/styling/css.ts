@@ -1,7 +1,4 @@
-import {
-  Component,
-  CSSTemplate,
-} from "../mod.js";
+import type { Component } from "../mod.js";
 
 export type TCssTemplateSlot = (
   | string
@@ -35,12 +32,15 @@ export type TCssTemplateSlot = (
 export function css (
   strings: TemplateStringsArray,
   ...slots: ReadonlyArray<TCssTemplateSlot>
-): CSSTemplate {
-  return new CSSTemplate(
+): CSSStyleSheet {
+  const styleSheet = new CSSStyleSheet;
+  styleSheet.replaceSync(
     strings.reduce(
-      (result, string, i) => `${result}${stringifyCssSlot(slots[i - 1])}${string}`,
+      (result, string, i) => result + stringifyCssSlot(slots[i - 1]) + string,
     ),
   );
+
+  return styleSheet;
 }
 
 function stringifyCssSlot (
